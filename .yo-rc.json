@@ -33,5 +33,5 @@
     "otherModules": [],
     "blueprints": []
   },
-  "entities": ["Person", "Course", "Participation"]
+  "entities": ["Course", "Participation", "Person"]
 }

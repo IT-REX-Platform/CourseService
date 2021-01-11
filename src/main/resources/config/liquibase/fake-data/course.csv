@@ -1,11 +1,11 @@
-id;name;start_date;end_date;max_food_sum;course_description;course_description_content_type
-1;New Taiwan Dollar connecting Fiji Dollar;2021-01-11;2021-01-11;38052;../fake-data/blob/hipster.png;image/png
-2;infomediaries holistic;2021-01-11;2021-01-11;20270;../fake-data/blob/hipster.png;image/png
-3;embrace;2021-01-11;2021-01-10;23357;../fake-data/blob/hipster.png;image/png
-4;protocol;2021-01-11;2021-01-11;92422;../fake-data/blob/hipster.png;image/png
-5;niches Facilitator navigate;2021-01-10;2021-01-11;10994;../fake-data/blob/hipster.png;image/png
-6;Tasty generating Guarani;2021-01-11;2021-01-11;41543;../fake-data/blob/hipster.png;image/png
-7;Streamlined exuding;2021-01-11;2021-01-11;5862;../fake-data/blob/hipster.png;image/png
-8;Architect violet reboot;2021-01-11;2021-01-11;31567;../fake-data/blob/hipster.png;image/png
-9;Toys;2021-01-11;2021-01-11;83933;../fake-data/blob/hipster.png;image/png
-10;cyan override;2021-01-11;2021-01-10;54358;../fake-data/blob/hipster.png;image/png
+id;name;start_date;end_date;max_food_sum;course_description
+1;New Taiwan Dollar connecting Fiji Dollar;2021-01-11;2021-01-11;38052;../fake-data/blob/hipster.txt
+2;infomediaries holistic;2021-01-11;2021-01-11;20270;../fake-data/blob/hipster.txt
+3;embrace;2021-01-11;2021-01-10;23357;../fake-data/blob/hipster.txt
+4;protocol;2021-01-11;2021-01-11;92422;../fake-data/blob/hipster.txt
+5;niches Facilitator navigate;2021-01-10;2021-01-11;10994;../fake-data/blob/hipster.txt
+6;Tasty generating Guarani;2021-01-11;2021-01-11;41543;../fake-data/blob/hipster.txt
+7;Streamlined exuding;2021-01-11;2021-01-11;5862;../fake-data/blob/hipster.txt
+8;Architect violet reboot;2021-01-11;2021-01-11;31567;../fake-data/blob/hipster.txt
+9;Toys;2021-01-11;2021-01-11;83933;../fake-data/blob/hipster.txt
+10;cyan override;2021-01-11;2021-01-10;54358;../fake-data/blob/hipster.txt

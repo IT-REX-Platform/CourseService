@@ -27,10 +27,7 @@
             <column name="max_food_sum" type="integer">
                 <constraints nullable="true" />
             </column>
-            <column name="course_description" type="longblob">
-                <constraints nullable="true" />
-            </column>
-            <column name="course_description_content_type" type="varchar(255)">
+            <column name="course_description" type="${clobType}">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -60,8 +57,7 @@
             <column name="start_date" type="date"/>
             <column name="end_date" type="date"/>
             <column name="max_food_sum" type="numeric"/>
-            <column name="course_description" type="blob"/>
-            <column name="course_description_content_type" type="string"/>
+            <column name="course_description" type="clob"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>
