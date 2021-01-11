@@ -17,7 +17,7 @@ logging:
   level:
     ROOT: DEBUG
     io.github.jhipster: DEBUG
-    de.uni_stutgart.it_rex.course: DEBUG
+    de.uni_stuttgart.it_rex.course: DEBUG
 
 eureka:
   instance:

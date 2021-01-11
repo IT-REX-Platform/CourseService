@@ -1,7 +1,7 @@
 apply plugin: "war"
 
 bootWar {
-    mainClassName = "de.uni_stutgart.it_rex.course.CourseServiceApp"
+    mainClassName = "de.uni_stuttgart.it_rex.course.CourseServiceApp"
     includes = ["WEB-INF/**", "META-INF/**"]
 }
 

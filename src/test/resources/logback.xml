@@ -4,7 +4,7 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="de.uni_stutgart.it_rex.course" level="INFO"/>
+    <logger name="de.uni_stuttgart.it_rex.course" level="INFO"/>
 
     <logger name="io.github.jhipster" level="WARN"/>
 

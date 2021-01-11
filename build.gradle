@@ -28,7 +28,7 @@ plugins {
     //jhipster-needle-gradle-plugins - JHipster will add additional gradle plugins here
 }
 
-group = "de.uni_stutgart.it_rex.course"
+group = "de.uni_stuttgart.it_rex.course"
 version = "0.0.1-SNAPSHOT"
 
 description = ""
@@ -88,7 +88,7 @@ eclipse {
 defaultTasks "bootRun"
 
 springBoot {
-    mainClassName = "de.uni_stutgart.it_rex.course.CourseServiceApp"
+    mainClassName = "de.uni_stuttgart.it_rex.course.CourseServiceApp"
 }
 
 test {
@@ -178,7 +178,7 @@ liquibase {
             username "CourseService"
             password ""
             changeLogFile project.ext.diffChangelogFile
-            referenceUrl "hibernate:spring:de.uni_stutgart.it_rex.course.domain?dialect=org.hibernate.dialect.H2Dialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
+            referenceUrl "hibernate:spring:de.uni_stuttgart.it_rex.course.domain?dialect=org.hibernate.dialect.H2Dialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
             defaultSchemaName ""
             logLevel "debug"
             classpath "$buildDir/classes/java/main"

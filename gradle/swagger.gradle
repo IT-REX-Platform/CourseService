@@ -8,8 +8,8 @@ openApiGenerate {
     generatorName = "spring"
     inputSpec = "$rootDir/src/main/resources/swagger/api.yml".toString()
     outputDir = "$buildDir/openapi".toString()
-    apiPackage = "de.uni_stutgart.it_rex.course.web.api"
-    modelPackage = "de.uni_stutgart.it_rex.course.web.api.model"
+    apiPackage = "de.uni_stuttgart.it_rex.course.web.api"
+    modelPackage = "de.uni_stuttgart.it_rex.course.web.api.model"
     apiFilesConstrainedTo = [""]
     modelFilesConstrainedTo = [""]
     supportingFilesConstrainedTo = ["ApiUtil.java"]
