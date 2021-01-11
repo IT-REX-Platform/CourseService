@@ -1,0 +1,38 @@
+{
+  "name": "Participation",
+  "fields": [
+    {
+      "fieldName": "status",
+      "fieldType": "ROLE",
+      "fieldValues": "STUDENT,LECTURER,HIWI"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "course",
+      "relationshipName": "person",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "course",
+      "otherEntityRelationshipName": "participation",
+      "relationshipName": "course",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210111160140",
+  "entityTableName": "participation",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["Gateway", "CourseService"],
+  "microserviceName": "CourseService"
+}

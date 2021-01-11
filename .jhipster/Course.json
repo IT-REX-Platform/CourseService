@@ -1,0 +1,46 @@
+{
+  "name": "Course",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "maxFoodSum",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "courseDescription",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "participation",
+      "otherEntityRelationshipName": "course",
+      "relationshipName": "participation"
+    }
+  ],
+  "changelogDate": "20210111160040",
+  "entityTableName": "course",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["Gateway", "CourseService"],
+  "microserviceName": "CourseService"
+}
