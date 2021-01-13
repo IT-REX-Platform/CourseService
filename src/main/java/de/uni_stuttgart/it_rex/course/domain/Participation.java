@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 import java.io.Serializable;
 
-import de.uni_stuttgart.it_rex.course.domain.enumeration.ROLE;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PARTICIPATIONTYPE;
 
 /**
  * A Participation.
@@ -26,12 +26,12 @@ public class Participation implements Serializable {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private ROLE status;
+    @Column(name = "type")
+    private PARTICIPATIONTYPE type;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = "courses", allowSetters = true)
-    private Person person;
+    @JsonIgnoreProperties(value = "participations", allowSetters = true)
+    private User user;
 
     @ManyToOne
     @JsonIgnoreProperties(value = "participations", allowSetters = true)
@@ -46,30 +46,30 @@ public class Participation implements Serializable {
         this.id = id;
     }
 
-    public ROLE getStatus() {
-        return status;
+    public PARTICIPATIONTYPE getType() {
+        return type;
     }
 
-    public Participation status(ROLE status) {
-        this.status = status;
+    public Participation type(PARTICIPATIONTYPE type) {
+        this.type = type;
         return this;
     }
 
-    public void setStatus(ROLE status) {
-        this.status = status;
+    public void setType(PARTICIPATIONTYPE type) {
+        this.type = type;
     }
 
-    public Person getPerson() {
-        return person;
+    public User getUser() {
+        return user;
     }
 
-    public Participation person(Person person) {
-        this.person = person;
+    public Participation user(User user) {
+        this.user = user;
         return this;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Course getCourse() {
@@ -107,7 +107,7 @@ public class Participation implements Serializable {
     public String toString() {
         return "Participation{" +
             "id=" + getId() +
-            ", status='" + getStatus() + "'" +
+            ", type='" + getType() + "'" +
             "}";
     }
 }

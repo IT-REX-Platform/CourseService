@@ -31,7 +31,7 @@
       "relationshipName": "participation"
     }
   ],
-  "changelogDate": "20210111160040",
+  "changelogDate": "20210113223125",
   "entityTableName": "course",
   "dto": "mapstruct",
   "pagination": "no",
@@ -41,6 +41,6 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": ["Gateway", "CourseService"],
+  "applications": ["CourseService"],
   "microserviceName": "CourseService"
 }
