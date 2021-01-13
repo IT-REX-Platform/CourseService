@@ -49,8 +49,10 @@ public class CourseResourceIT {
     private static final Integer DEFAULT_MAX_FOOD_SUM = 1;
     private static final Integer UPDATED_MAX_FOOD_SUM = 2;
 
-    private static final String DEFAULT_COURSE_DESCRIPTION = "AAAAAAAAAA";
-    private static final String UPDATED_COURSE_DESCRIPTION = "BBBBBBBBBB";
+    private static final byte[] DEFAULT_COURSE_DESCRIPTION = TestUtil.createByteArray(1, "0");
+    private static final byte[] UPDATED_COURSE_DESCRIPTION = TestUtil.createByteArray(1, "1");
+    private static final String DEFAULT_COURSE_DESCRIPTION_CONTENT_TYPE = "image/jpg";
+    private static final String UPDATED_COURSE_DESCRIPTION_CONTENT_TYPE = "image/png";
 
     @Autowired
     private CourseRepository courseRepository;
@@ -81,7 +83,8 @@ public class CourseResourceIT {
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
             .maxFoodSum(DEFAULT_MAX_FOOD_SUM)
-            .courseDescription(DEFAULT_COURSE_DESCRIPTION);
+            .courseDescription(DEFAULT_COURSE_DESCRIPTION)
+            .courseDescriptionContentType(DEFAULT_COURSE_DESCRIPTION_CONTENT_TYPE);
         return course;
     }
     /**
@@ -96,7 +99,8 @@ public class CourseResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .maxFoodSum(UPDATED_MAX_FOOD_SUM)
-            .courseDescription(UPDATED_COURSE_DESCRIPTION);
+            .courseDescription(UPDATED_COURSE_DESCRIPTION)
+            .courseDescriptionContentType(UPDATED_COURSE_DESCRIPTION_CONTENT_TYPE);
         return course;
     }
 
@@ -125,6 +129,7 @@ public class CourseResourceIT {
         assertThat(testCourse.getEndDate()).isEqualTo(DEFAULT_END_DATE);
         assertThat(testCourse.getMaxFoodSum()).isEqualTo(DEFAULT_MAX_FOOD_SUM);
         assertThat(testCourse.getCourseDescription()).isEqualTo(DEFAULT_COURSE_DESCRIPTION);
+        assertThat(testCourse.getCourseDescriptionContentType()).isEqualTo(DEFAULT_COURSE_DESCRIPTION_CONTENT_TYPE);
     }
 
     @Test
@@ -163,7 +168,8 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
-            .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].courseDescriptionContentType").value(hasItem(DEFAULT_COURSE_DESCRIPTION_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(Base64Utils.encodeToString(DEFAULT_COURSE_DESCRIPTION))));
     }
     
     @Test
@@ -181,7 +187,8 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.maxFoodSum").value(DEFAULT_MAX_FOOD_SUM))
-            .andExpect(jsonPath("$.courseDescription").value(DEFAULT_COURSE_DESCRIPTION.toString()));
+            .andExpect(jsonPath("$.courseDescriptionContentType").value(DEFAULT_COURSE_DESCRIPTION_CONTENT_TYPE))
+            .andExpect(jsonPath("$.courseDescription").value(Base64Utils.encodeToString(DEFAULT_COURSE_DESCRIPTION)));
     }
     @Test
     @Transactional
@@ -208,7 +215,8 @@ public class CourseResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .maxFoodSum(UPDATED_MAX_FOOD_SUM)
-            .courseDescription(UPDATED_COURSE_DESCRIPTION);
+            .courseDescription(UPDATED_COURSE_DESCRIPTION)
+            .courseDescriptionContentType(UPDATED_COURSE_DESCRIPTION_CONTENT_TYPE);
         CourseDTO courseDTO = courseMapper.toDto(updatedCourse);
 
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
@@ -225,6 +233,7 @@ public class CourseResourceIT {
         assertThat(testCourse.getEndDate()).isEqualTo(UPDATED_END_DATE);
         assertThat(testCourse.getMaxFoodSum()).isEqualTo(UPDATED_MAX_FOOD_SUM);
         assertThat(testCourse.getCourseDescription()).isEqualTo(UPDATED_COURSE_DESCRIPTION);
+        assertThat(testCourse.getCourseDescriptionContentType()).isEqualTo(UPDATED_COURSE_DESCRIPTION_CONTENT_TYPE);
     }
 
     @Test

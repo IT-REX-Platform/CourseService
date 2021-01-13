@@ -20,8 +20,9 @@ public class CourseDTO implements Serializable {
     private Integer maxFoodSum;
 
     @Lob
-    private String courseDescription;
+    private byte[] courseDescription;
 
+    private String courseDescriptionContentType;
     
     public Long getId() {
         return id;
@@ -63,12 +64,20 @@ public class CourseDTO implements Serializable {
         this.maxFoodSum = maxFoodSum;
     }
 
-    public String getCourseDescription() {
+    public byte[] getCourseDescription() {
         return courseDescription;
     }
 
-    public void setCourseDescription(String courseDescription) {
+    public void setCourseDescription(byte[] courseDescription) {
         this.courseDescription = courseDescription;
+    }
+
+    public String getCourseDescriptionContentType() {
+        return courseDescriptionContentType;
+    }
+
+    public void setCourseDescriptionContentType(String courseDescriptionContentType) {
+        this.courseDescriptionContentType = courseDescriptionContentType;
     }
 
     @Override

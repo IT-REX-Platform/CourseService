@@ -2,7 +2,6 @@ package de.uni_stuttgart.it_rex.course.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -39,9 +38,11 @@ public class Course implements Serializable {
     private Integer maxFoodSum;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "course_description")
-    private String courseDescription;
+    private byte[] courseDescription;
+
+    @Column(name = "course_description_content_type")
+    private String courseDescriptionContentType;
 
     @OneToMany(mappedBy = "course")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -108,17 +109,30 @@ public class Course implements Serializable {
         this.maxFoodSum = maxFoodSum;
     }
 
-    public String getCourseDescription() {
+    public byte[] getCourseDescription() {
         return courseDescription;
     }
 
-    public Course courseDescription(String courseDescription) {
+    public Course courseDescription(byte[] courseDescription) {
         this.courseDescription = courseDescription;
         return this;
     }
 
-    public void setCourseDescription(String courseDescription) {
+    public void setCourseDescription(byte[] courseDescription) {
         this.courseDescription = courseDescription;
+    }
+
+    public String getCourseDescriptionContentType() {
+        return courseDescriptionContentType;
+    }
+
+    public Course courseDescriptionContentType(String courseDescriptionContentType) {
+        this.courseDescriptionContentType = courseDescriptionContentType;
+        return this;
+    }
+
+    public void setCourseDescriptionContentType(String courseDescriptionContentType) {
+        this.courseDescriptionContentType = courseDescriptionContentType;
     }
 
     public Set<Participation> getParticipations() {
@@ -173,6 +187,7 @@ public class Course implements Serializable {
             ", endDate='" + getEndDate() + "'" +
             ", maxFoodSum=" + getMaxFoodSum() +
             ", courseDescription='" + getCourseDescription() + "'" +
+            ", courseDescriptionContentType='" + getCourseDescriptionContentType() + "'" +
             "}";
     }
 }

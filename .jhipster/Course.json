@@ -20,7 +20,7 @@
     {
       "fieldName": "courseDescription",
       "fieldType": "byte[]",
-      "fieldTypeBlobContent": "text"
+      "fieldTypeBlobContent": "any"
     }
   ],
   "relationships": [

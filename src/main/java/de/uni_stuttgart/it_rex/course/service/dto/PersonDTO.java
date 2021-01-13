@@ -12,7 +12,6 @@ public class PersonDTO implements Serializable {
 
     private String name;
 
-    @NotNull
     private String mail;
 
 

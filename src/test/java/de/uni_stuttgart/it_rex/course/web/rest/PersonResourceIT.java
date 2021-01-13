@@ -3,6 +3,7 @@ package de.uni_stuttgart.it_rex.course.web.rest;
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.Person;
+import de.uni_stuttgart.it_rex.course.domain.User;
 import de.uni_stuttgart.it_rex.course.repository.PersonRepository;
 import de.uni_stuttgart.it_rex.course.service.PersonService;
 import de.uni_stuttgart.it_rex.course.service.dto.PersonDTO;
@@ -67,6 +68,11 @@ public class PersonResourceIT {
         Person person = new Person()
             .name(DEFAULT_NAME)
             .mail(DEFAULT_MAIL);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        person.setUser(user);
         return person;
     }
     /**
@@ -79,6 +85,11 @@ public class PersonResourceIT {
         Person person = new Person()
             .name(UPDATED_NAME)
             .mail(UPDATED_MAIL);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        person.setUser(user);
         return person;
     }
 
@@ -126,26 +137,6 @@ public class PersonResourceIT {
         assertThat(personList).hasSize(databaseSizeBeforeCreate);
     }
 
-
-    @Test
-    @Transactional
-    public void checkMailIsRequired() throws Exception {
-        int databaseSizeBeforeTest = personRepository.findAll().size();
-        // set the field null
-        person.setMail(null);
-
-        // Create the Person, which fails.
-        PersonDTO personDTO = personMapper.toDto(person);
-
-
-        restPersonMockMvc.perform(post("/api/people").with(csrf())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(personDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Person> personList = personRepository.findAll();
-        assertThat(personList).hasSize(databaseSizeBeforeTest);
-    }
 
     @Test
     @Transactional

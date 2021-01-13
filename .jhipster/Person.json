@@ -7,8 +7,7 @@
     },
     {
       "fieldName": "mail",
-      "fieldType": "String",
-      "fieldValidateRules": ["required", "unique"]
+      "fieldType": "String"
     }
   ],
   "relationships": [
@@ -16,6 +15,7 @@
       "relationshipType": "one-to-one",
       "otherEntityName": "user",
       "otherEntityRelationshipName": "person",
+      "relationshipValidateRules": "required",
       "relationshipName": "user",
       "otherEntityField": "login",
       "ownerSide": true

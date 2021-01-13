@@ -28,11 +28,11 @@ public class Person implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @NotNull
-    @Column(name = "mail", nullable = false, unique = true)
+    @Column(name = "mail")
     private String mail;
 
-    @OneToOne
+    @OneToOne(optional = false)
+    @NotNull
     @JoinColumn(unique = true)
     private User user;
 
