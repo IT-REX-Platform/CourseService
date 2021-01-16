@@ -79,7 +79,7 @@ spring:
         enabled: true
 
 server:
-  port: 8081
+  port: 8083
 
 # ===================================================================
 # JHipster specific properties
@@ -106,7 +106,7 @@ jhipster:
   #     allow-credentials: true
   #     max-age: 1800
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://127.0.0.1:8081
+    base-url: http://127.0.0.1:8083
   metrics:
     logs: # Reports metrics in the logs
       enabled: false
