@@ -2,18 +2,18 @@
   "name": "Participation",
   "fields": [
     {
-      "fieldName": "status",
-      "fieldType": "ROLE",
+      "fieldName": "type",
+      "fieldType": "PARTICIPATIONTYPE",
       "fieldValues": "STUDENT,LECTURER,HIWI"
     }
   ],
   "relationships": [
     {
       "relationshipType": "many-to-one",
-      "otherEntityName": "person",
-      "otherEntityRelationshipName": "course",
-      "relationshipName": "person",
-      "otherEntityField": "id"
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "participation",
+      "relationshipName": "user",
+      "otherEntityField": "login"
     },
     {
       "relationshipType": "many-to-one",
@@ -23,7 +23,7 @@
       "otherEntityField": "id"
     }
   ],
-  "changelogDate": "20210111160140",
+  "changelogDate": "20210113223225",
   "entityTableName": "participation",
   "dto": "mapstruct",
   "pagination": "no",
@@ -32,7 +32,7 @@
   "fluentMethods": true,
   "readOnly": false,
   "embedded": false,
-  "clientRootFolder": "",
-  "applications": ["Gateway", "CourseService"],
+  "clientRootFolder": "CourseService",
+  "applications": ["CourseService"],
   "microserviceName": "CourseService"
 }

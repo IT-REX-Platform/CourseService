@@ -9,14 +9,15 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Participation} and its DTO {@link ParticipationDTO}.
  */
-@Mapper(componentModel = "spring", uses = {PersonMapper.class, CourseMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, CourseMapper.class})
 public interface ParticipationMapper extends EntityMapper<ParticipationDTO, Participation> {
 
-    @Mapping(source = "person.id", target = "personId")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.login", target = "userLogin")
     @Mapping(source = "course.id", target = "courseId")
     ParticipationDTO toDto(Participation participation);
 
-    @Mapping(source = "personId", target = "person")
+    @Mapping(source = "userId", target = "user")
     @Mapping(source = "courseId", target = "course")
     Participation toEntity(ParticipationDTO participationDTO);
 

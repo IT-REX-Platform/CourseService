@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.dto;
 
 import java.io.Serializable;
-import de.uni_stuttgart.it_rex.course.domain.enumeration.ROLE;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PARTICIPATIONTYPE;
 
 /**
  * A DTO for the {@link de.uni_stuttgart.it_rex.course.domain.Participation} entity.
@@ -10,10 +10,12 @@ public class ParticipationDTO implements Serializable {
     
     private Long id;
 
-    private ROLE status;
+    private PARTICIPATIONTYPE type;
 
 
-    private Long personId;
+    private String userId;
+
+    private String userLogin;
 
     private Long courseId;
     
@@ -25,20 +27,28 @@ public class ParticipationDTO implements Serializable {
         this.id = id;
     }
 
-    public ROLE getStatus() {
-        return status;
+    public PARTICIPATIONTYPE getType() {
+        return type;
     }
 
-    public void setStatus(ROLE status) {
-        this.status = status;
+    public void setType(PARTICIPATIONTYPE type) {
+        this.type = type;
     }
 
-    public Long getPersonId() {
-        return personId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setPersonId(Long personId) {
-        this.personId = personId;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 
     public Long getCourseId() {
@@ -71,8 +81,9 @@ public class ParticipationDTO implements Serializable {
     public String toString() {
         return "ParticipationDTO{" +
             "id=" + getId() +
-            ", status='" + getStatus() + "'" +
-            ", personId=" + getPersonId() +
+            ", type='" + getType() + "'" +
+            ", userId='" + getUserId() + "'" +
+            ", userLogin='" + getUserLogin() + "'" +
             ", courseId=" + getCourseId() +
             "}";
     }

@@ -26,7 +26,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import de.uni_stuttgart.it_rex.course.domain.enumeration.ROLE;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PARTICIPATIONTYPE;
 /**
  * Integration tests for the {@link ParticipationResource} REST controller.
  */
@@ -35,8 +35,8 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.ROLE;
 @WithMockUser
 public class ParticipationResourceIT {
 
-    private static final ROLE DEFAULT_STATUS = ROLE.STUDENT;
-    private static final ROLE UPDATED_STATUS = ROLE.LECTURER;
+    private static final PARTICIPATIONTYPE DEFAULT_TYPE = PARTICIPATIONTYPE.STUDENT;
+    private static final PARTICIPATIONTYPE UPDATED_TYPE = PARTICIPATIONTYPE.LECTURER;
 
     @Autowired
     private ParticipationRepository participationRepository;
@@ -63,7 +63,7 @@ public class ParticipationResourceIT {
      */
     public static Participation createEntity(EntityManager em) {
         Participation participation = new Participation()
-            .status(DEFAULT_STATUS);
+            .type(DEFAULT_TYPE);
         return participation;
     }
     /**
@@ -74,7 +74,7 @@ public class ParticipationResourceIT {
      */
     public static Participation createUpdatedEntity(EntityManager em) {
         Participation participation = new Participation()
-            .status(UPDATED_STATUS);
+            .type(UPDATED_TYPE);
         return participation;
     }
 
@@ -98,7 +98,7 @@ public class ParticipationResourceIT {
         List<Participation> participationList = participationRepository.findAll();
         assertThat(participationList).hasSize(databaseSizeBeforeCreate + 1);
         Participation testParticipation = participationList.get(participationList.size() - 1);
-        assertThat(testParticipation.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testParticipation.getType()).isEqualTo(DEFAULT_TYPE);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class ParticipationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(participation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
     
     @Test
@@ -147,7 +147,7 @@ public class ParticipationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(participation.getId().intValue()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
     @Test
     @Transactional
@@ -170,7 +170,7 @@ public class ParticipationResourceIT {
         // Disconnect from session so that the updates on updatedParticipation are not directly saved in db
         em.detach(updatedParticipation);
         updatedParticipation
-            .status(UPDATED_STATUS);
+            .type(UPDATED_TYPE);
         ParticipationDTO participationDTO = participationMapper.toDto(updatedParticipation);
 
         restParticipationMockMvc.perform(put("/api/participations").with(csrf())
@@ -182,7 +182,7 @@ public class ParticipationResourceIT {
         List<Participation> participationList = participationRepository.findAll();
         assertThat(participationList).hasSize(databaseSizeBeforeUpdate);
         Participation testParticipation = participationList.get(participationList.size() - 1);
-        assertThat(testParticipation.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testParticipation.getType()).isEqualTo(UPDATED_TYPE);
     }
 
     @Test
