@@ -3,6 +3,7 @@ package de.uni_stuttgart.it_rex.course.service.dto;
 import java.time.LocalDate;
 import java.io.Serializable;
 import javax.persistence.Lob;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 
 /**
  * A DTO for the {@link de.uni_stuttgart.it_rex.course.domain.Course} entity.
@@ -21,6 +22,8 @@ public class CourseDTO implements Serializable {
 
     @Lob
     private String courseDescription;
+
+    private PUBLISHSTATE publishState;
 
     
     public Long getId() {
@@ -71,6 +74,14 @@ public class CourseDTO implements Serializable {
         this.courseDescription = courseDescription;
     }
 
+    public PUBLISHSTATE getPublishState() {
+        return publishState;
+    }
+
+    public void setPublishState(PUBLISHSTATE publishState) {
+        this.publishState = publishState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -98,6 +109,7 @@ public class CourseDTO implements Serializable {
             ", endDate='" + getEndDate() + "'" +
             ", maxFoodSum=" + getMaxFoodSum() +
             ", courseDescription='" + getCourseDescription() + "'" +
+            ", publishState='" + getPublishState() + "'" +
             "}";
     }
 }

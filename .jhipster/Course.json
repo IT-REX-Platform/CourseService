@@ -21,6 +21,11 @@
       "fieldName": "courseDescription",
       "fieldType": "byte[]",
       "fieldTypeBlobContent": "text"
+    },
+    {
+      "fieldName": "publishState",
+      "fieldType": "PUBLISHSTATE",
+      "fieldValues": "UNPUBLISHED,PUBLISHED"
     }
   ],
   "relationships": [
@@ -41,6 +46,6 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": ["CourseService"],
+  "applications": ["Gateway", "CourseService"],
   "microserviceName": "CourseService"
 }

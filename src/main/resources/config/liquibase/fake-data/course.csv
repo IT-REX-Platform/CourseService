@@ -1,11 +1,11 @@
-id;name;start_date;end_date;max_food_sum;course_description
-1;New Taiwan Dollar connecting Fiji Dollar;2021-01-13;2021-01-13;38052;../fake-data/blob/hipster.txt
-2;infomediaries holistic;2021-01-13;2021-01-13;20270;../fake-data/blob/hipster.txt
-3;embrace;2021-01-13;2021-01-13;23357;../fake-data/blob/hipster.txt
-4;protocol;2021-01-13;2021-01-13;92422;../fake-data/blob/hipster.txt
-5;niches Facilitator navigate;2021-01-13;2021-01-13;10994;../fake-data/blob/hipster.txt
-6;Tasty generating Guarani;2021-01-13;2021-01-13;41543;../fake-data/blob/hipster.txt
-7;Streamlined exuding;2021-01-13;2021-01-13;5862;../fake-data/blob/hipster.txt
-8;Architect violet reboot;2021-01-13;2021-01-13;31567;../fake-data/blob/hipster.txt
-9;Toys;2021-01-13;2021-01-13;83933;../fake-data/blob/hipster.txt
-10;cyan override;2021-01-13;2021-01-13;54358;../fake-data/blob/hipster.txt
+id;name;start_date;end_date;max_food_sum;course_description;publish_state
+1;New Taiwan Dollar connecting Fiji Dollar;2021-01-13;2021-01-13;38052;../fake-data/blob/hipster.txt;UNPUBLISHED
+2;yellow;2021-01-13;2021-01-13;11803;../fake-data/blob/hipster.txt;PUBLISHED
+3;niches Facilitator navigate;2021-01-13;2021-01-13;10994;../fake-data/blob/hipster.txt;UNPUBLISHED
+4;e-commerce Streamlined;2021-01-13;2021-01-13;14001;../fake-data/blob/hipster.txt;PUBLISHED
+5;vortals encoding Toys;2021-01-13;2021-01-13;83933;../fake-data/blob/hipster.txt;UNPUBLISHED
+6;Palestinian Territory Executive Refined;2021-01-13;2021-01-13;88944;../fake-data/blob/hipster.txt;UNPUBLISHED
+7;ROI;2021-01-13;2021-01-13;10262;../fake-data/blob/hipster.txt;UNPUBLISHED
+8;Quality neural;2021-01-13;2021-01-13;60475;../fake-data/blob/hipster.txt;PUBLISHED
+9;Kids;2021-01-13;2021-01-13;45969;../fake-data/blob/hipster.txt;PUBLISHED
+10;Bhutan one-to-one Turkey;2021-01-13;2021-01-13;91514;../fake-data/blob/hipster.txt;PUBLISHED

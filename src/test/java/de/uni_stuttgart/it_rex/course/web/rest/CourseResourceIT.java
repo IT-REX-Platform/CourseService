@@ -29,6 +29,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 /**
  * Integration tests for the {@link CourseResource} REST controller.
  */
@@ -51,6 +52,9 @@ public class CourseResourceIT {
 
     private static final String DEFAULT_COURSE_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_COURSE_DESCRIPTION = "BBBBBBBBBB";
+
+    private static final PUBLISHSTATE DEFAULT_PUBLISH_STATE = PUBLISHSTATE.UNPUBLISHED;
+    private static final PUBLISHSTATE UPDATED_PUBLISH_STATE = PUBLISHSTATE.PUBLISHED;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -81,7 +85,8 @@ public class CourseResourceIT {
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
             .maxFoodSum(DEFAULT_MAX_FOOD_SUM)
-            .courseDescription(DEFAULT_COURSE_DESCRIPTION);
+            .courseDescription(DEFAULT_COURSE_DESCRIPTION)
+            .publishState(DEFAULT_PUBLISH_STATE);
         return course;
     }
     /**
@@ -96,7 +101,8 @@ public class CourseResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .maxFoodSum(UPDATED_MAX_FOOD_SUM)
-            .courseDescription(UPDATED_COURSE_DESCRIPTION);
+            .courseDescription(UPDATED_COURSE_DESCRIPTION)
+            .publishState(UPDATED_PUBLISH_STATE);
         return course;
     }
 
@@ -125,6 +131,7 @@ public class CourseResourceIT {
         assertThat(testCourse.getEndDate()).isEqualTo(DEFAULT_END_DATE);
         assertThat(testCourse.getMaxFoodSum()).isEqualTo(DEFAULT_MAX_FOOD_SUM);
         assertThat(testCourse.getCourseDescription()).isEqualTo(DEFAULT_COURSE_DESCRIPTION);
+        assertThat(testCourse.getPublishState()).isEqualTo(DEFAULT_PUBLISH_STATE);
     }
 
     @Test
@@ -163,7 +170,8 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
-            .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
     }
     
     @Test
@@ -181,7 +189,8 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.maxFoodSum").value(DEFAULT_MAX_FOOD_SUM))
-            .andExpect(jsonPath("$.courseDescription").value(DEFAULT_COURSE_DESCRIPTION.toString()));
+            .andExpect(jsonPath("$.courseDescription").value(DEFAULT_COURSE_DESCRIPTION.toString()))
+            .andExpect(jsonPath("$.publishState").value(DEFAULT_PUBLISH_STATE.toString()));
     }
     @Test
     @Transactional
@@ -208,7 +217,8 @@ public class CourseResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .maxFoodSum(UPDATED_MAX_FOOD_SUM)
-            .courseDescription(UPDATED_COURSE_DESCRIPTION);
+            .courseDescription(UPDATED_COURSE_DESCRIPTION)
+            .publishState(UPDATED_PUBLISH_STATE);
         CourseDTO courseDTO = courseMapper.toDto(updatedCourse);
 
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
@@ -225,6 +235,7 @@ public class CourseResourceIT {
         assertThat(testCourse.getEndDate()).isEqualTo(UPDATED_END_DATE);
         assertThat(testCourse.getMaxFoodSum()).isEqualTo(UPDATED_MAX_FOOD_SUM);
         assertThat(testCourse.getCourseDescription()).isEqualTo(UPDATED_COURSE_DESCRIPTION);
+        assertThat(testCourse.getPublishState()).isEqualTo(UPDATED_PUBLISH_STATE);
     }
 
     @Test

@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
+
 /**
  * A Course.
  */
@@ -42,6 +44,10 @@ public class Course implements Serializable {
     @Type(type = "org.hibernate.type.TextType")
     @Column(name = "course_description")
     private String courseDescription;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "publish_state")
+    private PUBLISHSTATE publishState;
 
     @OneToMany(mappedBy = "course")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -121,6 +127,19 @@ public class Course implements Serializable {
         this.courseDescription = courseDescription;
     }
 
+    public PUBLISHSTATE getPublishState() {
+        return publishState;
+    }
+
+    public Course publishState(PUBLISHSTATE publishState) {
+        this.publishState = publishState;
+        return this;
+    }
+
+    public void setPublishState(PUBLISHSTATE publishState) {
+        this.publishState = publishState;
+    }
+
     public Set<Participation> getParticipations() {
         return participations;
     }
@@ -173,6 +192,7 @@ public class Course implements Serializable {
             ", endDate='" + getEndDate() + "'" +
             ", maxFoodSum=" + getMaxFoodSum() +
             ", courseDescription='" + getCourseDescription() + "'" +
+            ", publishState='" + getPublishState() + "'" +
             "}";
     }
 }
