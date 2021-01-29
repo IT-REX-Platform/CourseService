@@ -37,7 +37,7 @@ public class CourseResourceExtended {
      *
      * @return todo.
      */
-    @GetMapping("/courses/filtered")
+    @GetMapping("/courses/extended")
     public List<CourseDTO> getFilteredCourses() {
         log.debug("REST request to get filtered Courses");
         return courseServiceExtended.findAllFiltered();
