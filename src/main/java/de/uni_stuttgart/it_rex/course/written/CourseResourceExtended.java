@@ -13,37 +13,43 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * todo.
+ * Class contains course endpoints in addition to those found in
+ * CourseResource.java.
  */
 @RestController
 @RequestMapping("/api")
 public class CourseResourceExtended {
-
+    /**
+     * Class logger.
+     */
     private final Logger log =
             LoggerFactory.getLogger(CourseResourceExtended.class);
 
     /**
-     * todo.
+     * Course service extended.
      */
     private final CourseServiceExtended courseServiceExtended;
 
     /**
-     * @param courseServiceExtended todo.
+     * @param courseServiceExt Instance of course service extended.
      */
     @Autowired
-    public CourseResourceExtended(CourseServiceExtended courseServiceExtended) {
-        this.courseServiceExtended = courseServiceExtended;
+    public CourseResourceExtended(
+            final CourseServiceExtended courseServiceExt) {
+        this.courseServiceExtended = courseServiceExt;
     }
 
     /**
-     * @param publishState todo.
-     * @return todo.
+     * @param publishState Publish state of course.
+     * @return A list of courses that fit the given parameters.
      */
     @GetMapping("/courses/extended")
     public List<CourseDTO> getFilteredCourses(
-            @RequestParam("publishState") final PUBLISHSTATE publishState) {
+            @RequestParam("publishState")
+            final Optional<PUBLISHSTATE> publishState) {
         log.debug("REST request to get filtered Courses");
         return courseServiceExtended.findAllFiltered(publishState);
     }
