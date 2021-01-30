@@ -1,11 +1,15 @@
 package de.uni_stuttgart.it_rex.course.written;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,7 +21,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class CourseResourceExtended {
 
-    private final Logger log = LoggerFactory.getLogger(CourseResourceExtended.class);
+    private final Logger log =
+            LoggerFactory.getLogger(CourseResourceExtended.class);
 
     /**
      * todo.
@@ -25,7 +30,6 @@ public class CourseResourceExtended {
     private final CourseServiceExtended courseServiceExtended;
 
     /**
-     *
      * @param courseServiceExtended todo.
      */
     @Autowired
@@ -34,12 +38,13 @@ public class CourseResourceExtended {
     }
 
     /**
-     *
+     * @param publishState todo.
      * @return todo.
      */
     @GetMapping("/courses/extended")
-    public List<CourseDTO> getFilteredCourses() {
+    public List<CourseDTO> getFilteredCourses(
+            @RequestParam("publishState") final PUBLISHSTATE publishState) {
         log.debug("REST request to get filtered Courses");
-        return courseServiceExtended.findAllFiltered();
+        return courseServiceExtended.findAllFiltered(publishState);
     }
 }

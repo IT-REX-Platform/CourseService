@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.written;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.repository.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.CourseMapper;
@@ -19,21 +20,23 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class CourseServiceExtended {
-    private final Logger log = LoggerFactory.getLogger(CourseServiceExtended.class);
+    private final Logger log =
+            LoggerFactory.getLogger(CourseServiceExtended.class);
 
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
 
-    public CourseServiceExtended(CourseRepository courseRepository, CourseMapper courseMapper) {
+    public CourseServiceExtended(CourseRepository courseRepository,
+                                 CourseMapper courseMapper) {
         this.courseRepository = courseRepository;
         this.courseMapper = courseMapper;
     }
 
     /**
-     *
+     * @param publishState todo.
      * @return todo.
      */
-    public List<CourseDTO> findAllFiltered() {
+    public List<CourseDTO> findAllFiltered(final PUBLISHSTATE publishState) {
         log.debug("Request to get filtered Courses");
         return courseRepository.findAll().stream()
                 .map(courseMapper::toDto)
