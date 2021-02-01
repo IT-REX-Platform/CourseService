@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.written;
+package de.uni_stuttgart.it_rex.course.written.service;
 
 import de.uni_stuttgart.it_rex.course.domain.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;

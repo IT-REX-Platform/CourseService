@@ -1,8 +1,9 @@
-package de.uni_stuttgart.it_rex.course.written;
+package de.uni_stuttgart.it_rex.course.written.web.rest;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
 
+import de.uni_stuttgart.it_rex.course.written.service.CourseServiceExtended;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

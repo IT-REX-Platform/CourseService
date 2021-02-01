@@ -1,10 +1,11 @@
-package de.uni_stuttgart.it_rex.course.written;
+package de.uni_stuttgart.it_rex.course.written.web.rest;
 
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.repository.CourseRepository;
+import de.uni_stuttgart.it_rex.course.written.web.rest.CourseResourceExtended;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
