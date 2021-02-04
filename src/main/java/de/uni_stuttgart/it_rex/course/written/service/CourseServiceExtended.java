@@ -70,7 +70,7 @@ public class CourseServiceExtended {
     }
 
     /**
-     * Update a course.
+     * Update a course without overwriting it.
      *
      * @param courseDTO the entity to use to update a created entity.
      * @return the persisted entity.
