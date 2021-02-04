@@ -85,7 +85,7 @@ class CourseResourceExtendedIT {
 
         // Get all the courseList
         restCourseMockMvc
-                .perform(get("/api/courses/extended?publishState=PUBLISHED")
+                .perform(get("/api/extended/courses?publishState=PUBLISHED")
                         .param("publishState", publishState))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
