@@ -1,10 +1,12 @@
 package de.uni_stuttgart.it_rex.course.written.web.rest;
 
+
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.repository.CourseRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +17,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 /**
  * Integration tests for the {@link CourseResourceExtended} REST controller.
  */
@@ -44,10 +45,13 @@ class CourseResourceExtendedIT {
     private static final String DEFAULT_COURSE_DESCRIPTION = "AAAAAAAAAA";
 
     private static final PUBLISHSTATE DEFAULT_PUBLISH_STATE =
-            PUBLISHSTATE.PUBLISHED;
+        PUBLISHSTATE.PUBLISHED;
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private CourseResourceExtended courseResourceExtended;
 
     @Autowired
     private MockMvc restCourseMockMvc;
@@ -85,16 +89,42 @@ class CourseResourceExtendedIT {
 
         // Get all the courseList
         restCourseMockMvc
-                .perform(get("/api/courses/extended?publishState=PUBLISHED")
-                        .param("publishState", publishState))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().intValue())))
-                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
-                .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
-                .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
-                .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION)))
-                .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
+            .perform(get("/api/extended/courses?publishState=PUBLISHED")
+                .param("publishState", publishState))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
+            .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
+    }
+
+    @Test
+    @Transactional
+    void updateCourse() throws URISyntaxException {
+        CourseDTO toUpdate = new CourseDTO();
+        toUpdate.setName("Herr der Ringe schauen");
+        toUpdate.setCourseDescription("Cool Course");
+        toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
+
+        Long id = courseResourceExtended.createCourse(toUpdate).getBody().getId();
+        CourseDTO update = new CourseDTO();
+        update.setId(id);
+        update.setCourseDescription("Really cool Course");
+        update.setPublishState(PUBLISHSTATE.PUBLISHED);
+
+        CourseDTO result = courseResourceExtended.updateCourse(update).getBody();
+
+        CourseDTO expected = new CourseDTO();
+        expected.setId(id);
+        expected.setName("Herr der Ringe schauen");
+        expected.setCourseDescription("Really cool Course");
+        expected.setMaxFoodSum(Integer.MAX_VALUE);
+        expected.setPublishState(PUBLISHSTATE.PUBLISHED);
+
+        assertThat(result).isEqualTo(expected);
     }
 }
