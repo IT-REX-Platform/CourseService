@@ -1,8 +1,9 @@
-package de.uni_stuttgart.it_rex.course.written.web.rest;
+package de.uni_stuttgart.it_rex.course.written.service;
 
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
+import de.uni_stuttgart.it_rex.course.written.web.rest.CourseResourceExtended;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
