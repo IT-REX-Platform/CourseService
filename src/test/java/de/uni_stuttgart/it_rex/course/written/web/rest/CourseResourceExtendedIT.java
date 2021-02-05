@@ -52,6 +52,16 @@ class CourseResourceExtendedIT {
 
     private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 
+    private static final String OLD_NAME = "Herr der Ringe schauen";
+
+    private static final String OLD_DESCRIPTION = "Cool Course";
+
+    private static final Integer OLD_MAX_FOOD_SUM = Integer.MAX_VALUE;
+
+    private static final String NEW_DESCRIPTION = "Really cool Course";
+
+    private static final PUBLISHSTATE NEW_PUBLISHED_STATE = PUBLISHSTATE.PUBLISHED;
+
     @Autowired
     private CourseRepository courseRepository;
 
@@ -111,24 +121,24 @@ class CourseResourceExtendedIT {
     @Transactional
     void updateCourse() throws URISyntaxException {
         CourseDTO toUpdate = new CourseDTO();
-        toUpdate.setName("Herr der Ringe schauen");
-        toUpdate.setCourseDescription("Cool Course");
-        toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
+        toUpdate.setName(OLD_NAME);
+        toUpdate.setCourseDescription(OLD_DESCRIPTION);
+        toUpdate.setMaxFoodSum(OLD_MAX_FOOD_SUM);
 
         Long id = courseResourceExtended.createCourse(toUpdate).getBody().getId();
         CourseDTO update = new CourseDTO();
         update.setId(id);
-        update.setCourseDescription("Really cool Course");
-        update.setPublishState(PUBLISHSTATE.PUBLISHED);
+        update.setCourseDescription(NEW_DESCRIPTION);
+        update.setPublishState(NEW_PUBLISHED_STATE);
 
         CourseDTO result = courseResourceExtended.updateCourse(update).getBody();
 
         CourseDTO expected = new CourseDTO();
         expected.setId(id);
-        expected.setName("Herr der Ringe schauen");
-        expected.setCourseDescription("Really cool Course");
-        expected.setMaxFoodSum(Integer.MAX_VALUE);
-        expected.setPublishState(PUBLISHSTATE.PUBLISHED);
+        expected.setName(OLD_NAME);
+        expected.setCourseDescription(NEW_DESCRIPTION);
+        expected.setMaxFoodSum(OLD_MAX_FOOD_SUM);
+        expected.setPublishState(NEW_PUBLISHED_STATE);
 
         assertThat(result).isEqualTo(expected);
     }
