@@ -7,6 +7,7 @@ import de.uni_stuttgart.it_rex.course.domain.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.repository.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
+import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,10 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 /**
  * Integration tests for the {@link CourseResourceExtended} REST controller.
  */
@@ -46,6 +49,8 @@ class CourseResourceExtendedIT {
 
     private static final PUBLISHSTATE DEFAULT_PUBLISH_STATE =
         PUBLISHSTATE.PUBLISHED;
+
+    private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 
     @Autowired
     private CourseRepository courseRepository;
@@ -126,5 +131,17 @@ class CourseResourceExtendedIT {
         expected.setPublishState(PUBLISHSTATE.PUBLISHED);
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @Transactional
+    void updateCourseWithoutId() throws URISyntaxException {
+        CourseDTO toUpdate = new CourseDTO();
+        toUpdate.setName("Herr der Ringe schauen");
+        toUpdate.setCourseDescription("Cool Course");
+        toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
+
+        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResourceExtended.updateCourse(toUpdate));
+        assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
     }
 }
