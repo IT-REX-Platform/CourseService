@@ -145,7 +145,7 @@ class CourseResourceExtendedIT {
 
     @Test
     @Transactional
-    void updateCourseWithoutId() throws URISyntaxException {
+    void updateCourseWithoutId() {
         CourseDTO toUpdate = new CourseDTO();
         toUpdate.setName("Herr der Ringe schauen");
         toUpdate.setCourseDescription("Cool Course");
