@@ -36,7 +36,7 @@ public class CourseServiceExtendedTestIT {
     courseDTO.setMaxFoodSum(COURSE_MAX_FOOD_SUM);
 
     BadRequestAlertException e = assertThrows(BadRequestAlertException.class,
-        () -> courseResourceExtended.updateCourse(courseDTO));
+        () -> courseResourceExtended.patchCourse(courseDTO));
     assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
   }
 }
