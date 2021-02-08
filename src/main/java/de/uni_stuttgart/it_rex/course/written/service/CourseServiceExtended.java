@@ -75,7 +75,7 @@ public class CourseServiceExtended {
      * @param courseDTO the entity to use to update a created entity.
      * @return the persisted entity.
      */
-    public CourseDTO update(final CourseDTO courseDTO) {
+    public CourseDTO patch(final CourseDTO courseDTO) {
         log.debug("Request to update Course : {}", courseDTO);
         Optional<Course> oldCourse =
                 courseRepository.findById(courseDTO.getId());

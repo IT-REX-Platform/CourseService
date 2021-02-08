@@ -126,7 +126,7 @@ class CourseResourceExtendedIT {
 
     @Test
     @Transactional
-    void updateCourse() throws URISyntaxException {
+    void patchCourse() throws URISyntaxException {
         CourseDTO toUpdate = new CourseDTO();
         toUpdate.setName(OLD_NAME);
         toUpdate.setCourseDescription(OLD_DESCRIPTION);
@@ -138,7 +138,7 @@ class CourseResourceExtendedIT {
         update.setCourseDescription(NEW_DESCRIPTION);
         update.setPublishState(NEW_PUBLISHED_STATE);
 
-        CourseDTO result = courseResourceExtended.updateCourse(update).getBody();
+        CourseDTO result = courseResourceExtended.patchCourse(update).getBody();
 
         CourseDTO expected = new CourseDTO();
         expected.setId(id);
@@ -152,13 +152,13 @@ class CourseResourceExtendedIT {
 
     @Test
     @Transactional
-    void updateCourseWithoutId() {
+    void patchCourseWithoutId() {
         CourseDTO toUpdate = new CourseDTO();
         toUpdate.setName("Herr der Ringe schauen");
         toUpdate.setCourseDescription("Cool Course");
         toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
 
-        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResourceExtended.updateCourse(toUpdate));
+        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResourceExtended.patchCourse(toUpdate));
         assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
     }
 

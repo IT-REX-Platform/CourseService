@@ -2,19 +2,18 @@ package de.uni_stuttgart.it_rex.course.written.web.rest;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
-
 import de.uni_stuttgart.it_rex.course.web.rest.CourseResource;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import de.uni_stuttgart.it_rex.course.written.service.CourseServiceExtended;
 import io.github.jhipster.web.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -92,6 +91,32 @@ public class CourseResourceExtended {
     }
 
     /**
+     * {@code PATCH  /courses} : Patches an existing course.
+     *
+     * @param courseDTO the courseDTO to patch.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
+     * body the updated courseDTO,
+     * or with status {@code 400 (Bad Request)} if the courseDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the courseDTO
+     * couldn't be patched.
+     */
+    @PatchMapping("/courses")
+    public ResponseEntity<CourseDTO> patchCourse(
+        @RequestBody final CourseDTO courseDTO) {
+        log.debug("REST request to patch Course : {}", courseDTO);
+        if (courseDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
+                "idnull");
+        }
+        CourseDTO result = courseServiceExtended.patch(courseDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil
+                .createEntityUpdateAlert(applicationName, true,
+                    ENTITY_NAME, courseDTO.getId().toString()))
+            .body(result);
+    }
+
+    /**
      * {@code PUT  /courses} : Updates an existing course.
      *
      * @param courseDTO the courseDTO to update.
@@ -103,18 +128,9 @@ public class CourseResourceExtended {
      */
     @PutMapping("/courses")
     public ResponseEntity<CourseDTO> updateCourse(
-            @RequestBody final CourseDTO courseDTO) {
-        log.debug("REST request to update Course : {}", courseDTO);
-        if (courseDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
-                    "idnull");
-        }
-        CourseDTO result = courseServiceExtended.update(courseDTO);
-        return ResponseEntity.ok()
-                .headers(HeaderUtil
-                        .createEntityUpdateAlert(applicationName, true,
-                                ENTITY_NAME, courseDTO.getId().toString()))
-                .body(result);
+        @RequestBody final CourseDTO courseDTO)
+        throws URISyntaxException {
+        return courseResource.updateCourse(courseDTO);
     }
 
     /**
@@ -123,8 +139,8 @@ public class CourseResourceExtended {
      */
     @GetMapping("/courses")
     public List<CourseDTO> getFilteredCourses(
-            @RequestParam("publishState")
-            final Optional<PUBLISHSTATE> publishState) {
+        @RequestParam("publishState") final Optional<PUBLISHSTATE>
+            publishState) {
         log.debug("REST request to get filtered Courses");
         return courseServiceExtended.findAllFiltered(publishState);
     }
