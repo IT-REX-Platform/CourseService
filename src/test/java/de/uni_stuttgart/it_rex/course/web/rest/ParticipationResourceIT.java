@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -34,6 +35,9 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.PARTICIPATIONTYPE;
 @AutoConfigureMockMvc
 @WithMockUser
 public class ParticipationResourceIT {
+
+    private static final UUID DEFAULT_UUID = UUID.randomUUID();
+    private static final UUID UPDATED_UUID = UUID.randomUUID();
 
     private static final PARTICIPATIONTYPE DEFAULT_TYPE = PARTICIPATIONTYPE.STUDENT;
     private static final PARTICIPATIONTYPE UPDATED_TYPE = PARTICIPATIONTYPE.LECTURER;
@@ -63,6 +67,7 @@ public class ParticipationResourceIT {
      */
     public static Participation createEntity(EntityManager em) {
         Participation participation = new Participation()
+            .uuid(DEFAULT_UUID)
             .type(DEFAULT_TYPE);
         return participation;
     }
@@ -74,6 +79,7 @@ public class ParticipationResourceIT {
      */
     public static Participation createUpdatedEntity(EntityManager em) {
         Participation participation = new Participation()
+            .uuid(UPDATED_UUID)
             .type(UPDATED_TYPE);
         return participation;
     }
@@ -98,6 +104,7 @@ public class ParticipationResourceIT {
         List<Participation> participationList = participationRepository.findAll();
         assertThat(participationList).hasSize(databaseSizeBeforeCreate + 1);
         Participation testParticipation = participationList.get(participationList.size() - 1);
+        assertThat(testParticipation.getUuid()).isEqualTo(DEFAULT_UUID);
         assertThat(testParticipation.getType()).isEqualTo(DEFAULT_TYPE);
     }
 
@@ -133,6 +140,7 @@ public class ParticipationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(participation.getId().intValue())))
+            .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
     
@@ -147,6 +155,7 @@ public class ParticipationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(participation.getId().intValue()))
+            .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
     @Test
@@ -170,6 +179,7 @@ public class ParticipationResourceIT {
         // Disconnect from session so that the updates on updatedParticipation are not directly saved in db
         em.detach(updatedParticipation);
         updatedParticipation
+            .uuid(UPDATED_UUID)
             .type(UPDATED_TYPE);
         ParticipationDTO participationDTO = participationMapper.toDto(updatedParticipation);
 
@@ -182,6 +192,7 @@ public class ParticipationResourceIT {
         List<Participation> participationList = participationRepository.findAll();
         assertThat(participationList).hasSize(databaseSizeBeforeUpdate);
         Participation testParticipation = participationList.get(participationList.size() - 1);
+        assertThat(testParticipation.getUuid()).isEqualTo(UPDATED_UUID);
         assertThat(testParticipation.getType()).isEqualTo(UPDATED_TYPE);
     }
 

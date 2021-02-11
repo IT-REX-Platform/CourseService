@@ -1,6 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.dto;
 
 import java.io.Serializable;
+import java.util.UUID;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PARTICIPATIONTYPE;
 
 /**
@@ -9,6 +10,8 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.PARTICIPATIONTYPE;
 public class ParticipationDTO implements Serializable {
     
     private Long id;
+
+    private UUID uuid;
 
     private PARTICIPATIONTYPE type;
 
@@ -25,6 +28,14 @@ public class ParticipationDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public PARTICIPATIONTYPE getType() {
@@ -81,6 +92,7 @@ public class ParticipationDTO implements Serializable {
     public String toString() {
         return "ParticipationDTO{" +
             "id=" + getId() +
+            ", uuid='" + getUuid() + "'" +
             ", type='" + getType() + "'" +
             ", userId='" + getUserId() + "'" +
             ", userLogin='" + getUserLogin() + "'" +

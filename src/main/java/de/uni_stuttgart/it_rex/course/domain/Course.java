@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 
@@ -27,6 +28,9 @@ public class Course implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @Column(name = "name")
     private String name;
@@ -60,6 +64,19 @@ public class Course implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public Course uuid(UUID uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {
@@ -187,6 +204,7 @@ public class Course implements Serializable {
     public String toString() {
         return "Course{" +
             "id=" + getId() +
+            ", uuid='" + getUuid() + "'" +
             ", name='" + getName() + "'" +
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +

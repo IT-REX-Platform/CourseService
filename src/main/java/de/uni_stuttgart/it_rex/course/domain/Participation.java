@@ -7,6 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PARTICIPATIONTYPE;
 
@@ -24,6 +25,9 @@ public class Participation implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -44,6 +48,19 @@ public class Participation implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public Participation uuid(UUID uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public PARTICIPATIONTYPE getType() {
@@ -107,6 +124,7 @@ public class Participation implements Serializable {
     public String toString() {
         return "Participation{" +
             "id=" + getId() +
+            ", uuid='" + getUuid() + "'" +
             ", type='" + getType() + "'" +
             "}";
     }

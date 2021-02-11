@@ -2,6 +2,10 @@
   "name": "Course",
   "fields": [
     {
+      "fieldName": "uuid",
+      "fieldType": "UUID"
+    },
+    {
       "fieldName": "name",
       "fieldType": "String"
     },

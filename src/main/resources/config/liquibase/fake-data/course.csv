@@ -1,11 +1,11 @@
-id;name;start_date;end_date;max_food_sum;course_description;publish_state
-1;New Taiwan Dollar connecting Fiji Dollar;2021-01-13;2021-01-13;38052;../fake-data/blob/hipster.txt;UNPUBLISHED
-2;yellow;2021-01-13;2021-01-13;11803;../fake-data/blob/hipster.txt;PUBLISHED
-3;niches Facilitator navigate;2021-01-13;2021-01-13;10994;../fake-data/blob/hipster.txt;UNPUBLISHED
-4;e-commerce Streamlined;2021-01-13;2021-01-13;14001;../fake-data/blob/hipster.txt;PUBLISHED
-5;vortals encoding Toys;2021-01-13;2021-01-13;83933;../fake-data/blob/hipster.txt;UNPUBLISHED
-6;Palestinian Territory Executive Refined;2021-01-13;2021-01-13;88944;../fake-data/blob/hipster.txt;UNPUBLISHED
-7;ROI;2021-01-13;2021-01-13;10262;../fake-data/blob/hipster.txt;UNPUBLISHED
-8;Quality neural;2021-01-13;2021-01-13;60475;../fake-data/blob/hipster.txt;PUBLISHED
-9;Kids;2021-01-13;2021-01-13;45969;../fake-data/blob/hipster.txt;PUBLISHED
-10;Bhutan one-to-one Turkey;2021-01-13;2021-01-13;91514;../fake-data/blob/hipster.txt;PUBLISHED
+id;uuid;name;start_date;end_date;max_food_sum;course_description;publish_state
+1;fbdd8b44-6687-4a5f-8131-621c33b042ee;recontextualize synthesizing;2021-01-13;2021-01-13;31635;../fake-data/blob/hipster.txt;PUBLISHED
+2;d9ba186a-3d46-4290-9f73-6ce67540835d;cyan override;2021-01-13;2021-01-13;54358;../fake-data/blob/hipster.txt;PUBLISHED
+3;26804641-a146-4b17-bacc-029095a1097d;invoice moratorium;2021-01-13;2021-01-13;74893;../fake-data/blob/hipster.txt;PUBLISHED
+4;abe4e5a9-8021-4520-84a6-3da5d4ace9cc;back-end;2021-01-13;2021-01-13;53220;../fake-data/blob/hipster.txt;UNPUBLISHED
+5;a0bc49de-b51b-4f05-a613-522ccb8fcbef;Borders;2021-01-13;2021-01-13;62969;../fake-data/blob/hipster.txt;UNPUBLISHED
+6;10846ca5-c09d-497d-99d4-46d3604a3bf4;hack Dalasi Regional;2021-01-13;2021-01-13;57908;../fake-data/blob/hipster.txt;UNPUBLISHED
+7;3428c607-7e25-44e6-8645-f4018fe741ff;generating architect;2021-01-13;2021-01-13;99647;../fake-data/blob/hipster.txt;UNPUBLISHED
+8;22b9e31c-3837-4d1d-bbb6-ec404147cab8;Research Shoes;2021-01-13;2021-01-13;10158;../fake-data/blob/hipster.txt;UNPUBLISHED
+9;5003c162-7d65-438b-829a-cc111a12795b;B2C;2021-01-13;2021-01-13;76246;../fake-data/blob/hipster.txt;PUBLISHED
+10;b0b1d2d5-0a32-411e-8e55-999b3a97ca40;Salad 1080p Cayman Islands;2021-01-13;2021-01-13;81631;../fake-data/blob/hipster.txt;PUBLISHED

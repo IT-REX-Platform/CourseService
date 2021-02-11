@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.course.service.dto;
 
 import java.time.LocalDate;
 import java.io.Serializable;
+import java.util.UUID;
 import javax.persistence.Lob;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 
@@ -11,6 +12,8 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 public class CourseDTO implements Serializable {
     
     private Long id;
+
+    private UUID uuid;
 
     private String name;
 
@@ -32,6 +35,14 @@ public class CourseDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {
@@ -104,6 +115,7 @@ public class CourseDTO implements Serializable {
     public String toString() {
         return "CourseDTO{" +
             "id=" + getId() +
+            ", uuid='" + getUuid() + "'" +
             ", name='" + getName() + "'" +
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +

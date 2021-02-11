@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -37,6 +38,9 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 @AutoConfigureMockMvc
 @WithMockUser
 public class CourseResourceIT {
+
+    private static final UUID DEFAULT_UUID = UUID.randomUUID();
+    private static final UUID UPDATED_UUID = UUID.randomUUID();
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -81,6 +85,7 @@ public class CourseResourceIT {
      */
     public static Course createEntity(EntityManager em) {
         Course course = new Course()
+            .uuid(DEFAULT_UUID)
             .name(DEFAULT_NAME)
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
@@ -97,6 +102,7 @@ public class CourseResourceIT {
      */
     public static Course createUpdatedEntity(EntityManager em) {
         Course course = new Course()
+            .uuid(UPDATED_UUID)
             .name(UPDATED_NAME)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -126,6 +132,7 @@ public class CourseResourceIT {
         List<Course> courseList = courseRepository.findAll();
         assertThat(courseList).hasSize(databaseSizeBeforeCreate + 1);
         Course testCourse = courseList.get(courseList.size() - 1);
+        assertThat(testCourse.getUuid()).isEqualTo(DEFAULT_UUID);
         assertThat(testCourse.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testCourse.getStartDate()).isEqualTo(DEFAULT_START_DATE);
         assertThat(testCourse.getEndDate()).isEqualTo(DEFAULT_END_DATE);
@@ -166,6 +173,7 @@ public class CourseResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().intValue())))
+            .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
@@ -185,6 +193,7 @@ public class CourseResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(course.getId().intValue()))
+            .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID.toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
@@ -213,6 +222,7 @@ public class CourseResourceIT {
         // Disconnect from session so that the updates on updatedCourse are not directly saved in db
         em.detach(updatedCourse);
         updatedCourse
+            .uuid(UPDATED_UUID)
             .name(UPDATED_NAME)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -230,6 +240,7 @@ public class CourseResourceIT {
         List<Course> courseList = courseRepository.findAll();
         assertThat(courseList).hasSize(databaseSizeBeforeUpdate);
         Course testCourse = courseList.get(courseList.size() - 1);
+        assertThat(testCourse.getUuid()).isEqualTo(UPDATED_UUID);
         assertThat(testCourse.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testCourse.getStartDate()).isEqualTo(UPDATED_START_DATE);
         assertThat(testCourse.getEndDate()).isEqualTo(UPDATED_END_DATE);
