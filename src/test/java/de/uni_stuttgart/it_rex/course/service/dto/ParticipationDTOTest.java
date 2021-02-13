@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.dto;
 
+import de.uni_stuttgart.it_rex.course.service.written.dto.ParticipationDTO;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;

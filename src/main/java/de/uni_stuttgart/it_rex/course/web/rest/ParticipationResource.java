@@ -1,8 +1,9 @@
 package de.uni_stuttgart.it_rex.course.web.rest;
 
-import de.uni_stuttgart.it_rex.course.service.ParticipationService;
+import de.uni_stuttgart.it_rex.course.domain.written.Participation;
+import de.uni_stuttgart.it_rex.course.service.written.ParticipationService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
-import de.uni_stuttgart.it_rex.course.service.dto.ParticipationDTO;
+import de.uni_stuttgart.it_rex.course.service.written.dto.ParticipationDTO;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -16,9 +17,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
- * REST controller for managing {@link de.uni_stuttgart.it_rex.course.domain.Participation}.
+ * REST controller for managing {@link Participation}.
  */
 @RestController
 @RequestMapping("/api")
@@ -95,7 +97,7 @@ public class ParticipationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the participationDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/participations/{id}")
-    public ResponseEntity<ParticipationDTO> getParticipation(@PathVariable Long id) {
+    public ResponseEntity<ParticipationDTO> getParticipation(@PathVariable final UUID id) {
         log.debug("REST request to get Participation : {}", id);
         Optional<ParticipationDTO> participationDTO = participationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(participationDTO);
@@ -108,7 +110,7 @@ public class ParticipationResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/participations/{id}")
-    public ResponseEntity<Void> deleteParticipation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteParticipation(@PathVariable final UUID id) {
         log.debug("REST request to delete Participation : {}", id);
         participationService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();

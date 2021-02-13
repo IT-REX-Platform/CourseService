@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.domain;
 
+import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
