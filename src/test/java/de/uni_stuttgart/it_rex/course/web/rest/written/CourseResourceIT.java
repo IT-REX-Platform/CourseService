@@ -5,8 +5,8 @@ import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
-import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
+import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,14 +55,24 @@ public class CourseResourceIT {
     private static final String DEFAULT_COURSE_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_COURSE_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final PUBLISHSTATE DEFAULT_PUBLISH_STATE = PUBLISHSTATE.UNPUBLISHED;
-    private static final PUBLISHSTATE UPDATED_PUBLISH_STATE = PUBLISHSTATE.PUBLISHED;
+    private static final PUBLISHSTATE DEFAULT_PUBLISH_STATE = PUBLISHSTATE.PUBLISHED;
+    private static final PUBLISHSTATE UPDATED_PUBLISH_STATE = PUBLISHSTATE.UNPUBLISHED;
+
+
+    private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
+
+    private static final String OLD_NAME = "Herr der Ringe schauen";
+    private static final String OLD_DESCRIPTION = "Cool Course";
+    private static final Integer OLD_MAX_FOOD_SUM = Integer.MAX_VALUE;
+
+    private static final String NEW_DESCRIPTION = "Really cool Course";
+    private static final PUBLISHSTATE NEW_PUBLISHED_STATE = PUBLISHSTATE.PUBLISHED;
 
     @Autowired
     private CourseRepository courseRepository;
 
     @Autowired
-    private CourseService courseService;
+    private CourseResource courseResource;
 
     @Autowired
     private EntityManager em;
@@ -264,5 +276,66 @@ public class CourseResourceIT {
         // Validate the database contains one less item
         List<Course> courseList = courseRepository.findAll();
         assertThat(courseList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    void getFilteredCourses() throws Exception {
+        String publishState = "PUBLISHED";
+
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList
+        restCourseMockMvc
+            .perform(get("/api/courses?publishState=PUBLISHED")
+                .param("publishState", publishState))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
+            .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
+    }
+
+    @Test
+    @Transactional
+    void patchCourse() throws URISyntaxException {
+        Course toUpdate = new Course();
+        toUpdate.setName(OLD_NAME);
+        toUpdate.setCourseDescription(OLD_DESCRIPTION);
+        toUpdate.setMaxFoodSum(OLD_MAX_FOOD_SUM);
+
+        UUID id = courseResource.createCourse(toUpdate).getBody().getId();
+        Course update = new Course();
+        update.setId(id);
+        update.setCourseDescription(NEW_DESCRIPTION);
+        update.setPublishState(NEW_PUBLISHED_STATE);
+
+        Course result = courseResource.patchCourse(update).getBody();
+
+        Course expected = new Course();
+        expected.setId(id);
+        expected.setName(OLD_NAME);
+        expected.setCourseDescription(NEW_DESCRIPTION);
+        expected.setMaxFoodSum(OLD_MAX_FOOD_SUM);
+        expected.setPublishState(NEW_PUBLISHED_STATE);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @Transactional
+    void patchCourseWithoutId() {
+        Course toUpdate = new Course();
+        toUpdate.setName("Herr der Ringe schauen");
+        toUpdate.setCourseDescription("Cool Course");
+        toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
+
+        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResource.patchCourse(toUpdate));
+        assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
     }
 }
