@@ -4,12 +4,17 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.service.dto.CourseDTO;
 import de.uni_stuttgart.it_rex.course.web.rest.CourseResource;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
+import de.uni_stuttgart.it_rex.course.written.KeycloakCommunicator;
 import de.uni_stuttgart.it_rex.course.written.service.CourseServiceExtended;
 import io.github.jhipster.web.util.HeaderUtil;
+
+import org.keycloak.representations.idm.GroupRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +38,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/extended")
 public class CourseResourceExtended {
+    public enum CourseRole {
+        Owner,
+        Manager,
+        Participant
+    }
+
     /**
      * Class logger.
      */
@@ -61,6 +72,11 @@ public class CourseResourceExtended {
     private final CourseServiceExtended courseServiceExtended;
 
     /**
+     * The Keycloak communicator used for Service-to-Service communication.
+     */
+    private final KeycloakCommunicator keycloakCommunicator;
+
+    /**
      * Constructor.
      *
      * @param courseServiceExt Instance of course service extended.
@@ -73,6 +89,7 @@ public class CourseResourceExtended {
     ) {
         this.courseServiceExtended = courseServiceExt;
         this.courseResource = courseRes;
+        this.keycloakCommunicator = new KeycloakCommunicator();
     }
 
     /**
@@ -87,7 +104,31 @@ public class CourseResourceExtended {
     @PostMapping("/courses")
     public ResponseEntity<CourseDTO> createCourse(
             @RequestBody final CourseDTO courseDTO) throws URISyntaxException {
-        return courseResource.createCourse(courseDTO);
+        ResponseEntity<CourseDTO> createdCourse = courseResource.createCourse(courseDTO);
+
+        // If the creation was successful, also create roles and groups for the course.
+        // TODO: Should cancel creation of course if Keycloak gets errored.
+        if (createdCourse.getStatusCode() == HttpStatus.CREATED) {
+            for (CourseRole role : CourseRole.values()) {
+                String roleName = KeycloakCommunicator.makeNameForCourse(
+                    KeycloakCommunicator.ROLE_COURSE_TEMPLATE, courseDTO.getId(), role);
+                String groupName = KeycloakCommunicator.makeNameForCourse(
+                    KeycloakCommunicator.GROUP_COURSE_TEMPLATE, courseDTO.getId(), role);
+
+                RoleRepresentation newRoleRep = new RoleRepresentation();
+                newRoleRep.setName(roleName);
+                newRoleRep.setDescription(
+                    String.format("Role created automatically for course %s and role %s.",
+                    courseDTO.getName(), role.toString()));
+                keycloakCommunicator.addRole(newRoleRep);
+
+                GroupRepresentation newGroupRep = new GroupRepresentation();
+                newGroupRep.setName(groupName);
+                keycloakCommunicator.addGroup(newGroupRep);
+            }
+        }
+
+        return createdCourse;
     }
 
     /**
@@ -165,6 +206,22 @@ public class CourseResourceExtended {
      */
     @DeleteMapping("/courses/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable final Long id) {
-        return courseResource.deleteCourse(id);
+        ResponseEntity<Void> deletedCourseResp = courseResource.deleteCourse(id);
+
+        // TODO: Really check if deletion was successful.
+        // TODO: Should cancel deletion of course if Keycloak gets errored.
+        if (deletedCourseResp.getStatusCode() == HttpStatus.NO_CONTENT) {
+            for (CourseRole role : CourseRole.values()) {
+                String roleName = KeycloakCommunicator.makeNameForCourse(
+                    KeycloakCommunicator.ROLE_COURSE_TEMPLATE, id, role);
+                String groupName = KeycloakCommunicator.makeNameForCourse(
+                    KeycloakCommunicator.GROUP_COURSE_TEMPLATE, id, role);
+
+                keycloakCommunicator.removeRole(roleName);
+                keycloakCommunicator.removeGroup(groupName);
+            }
+        }
+
+        return deletedCourseResp;
     }
 }
