@@ -6,8 +6,6 @@ import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
-import de.uni_stuttgart.it_rex.course.service.written.dto.CourseDTO;
-import de.uni_stuttgart.it_rex.course.service.written.mapper.CourseMapper;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,9 +74,6 @@ class CourseResourceExtendedIT {
     @Autowired
     private MockMvc restCourseMockMvc;
 
-    @Autowired
-    private CourseMapper courseMapper;
-
     private Course course;
 
     /**
@@ -128,20 +123,20 @@ class CourseResourceExtendedIT {
     @Test
     @Transactional
     void patchCourse() throws URISyntaxException {
-        CourseDTO toUpdate = new CourseDTO();
+        Course toUpdate = new Course();
         toUpdate.setName(OLD_NAME);
         toUpdate.setCourseDescription(OLD_DESCRIPTION);
         toUpdate.setMaxFoodSum(OLD_MAX_FOOD_SUM);
 
         UUID id = courseResourceExtended.createCourse(toUpdate).getBody().getId();
-        CourseDTO update = new CourseDTO();
+        Course update = new Course();
         update.setId(id);
         update.setCourseDescription(NEW_DESCRIPTION);
         update.setPublishState(NEW_PUBLISHED_STATE);
 
-        CourseDTO result = courseResourceExtended.patchCourse(update).getBody();
+        Course result = courseResourceExtended.patchCourse(update).getBody();
 
-        CourseDTO expected = new CourseDTO();
+        Course expected = new Course();
         expected.setId(id);
         expected.setName(OLD_NAME);
         expected.setCourseDescription(NEW_DESCRIPTION);
@@ -154,7 +149,7 @@ class CourseResourceExtendedIT {
     @Test
     @Transactional
     void patchCourseWithoutId() {
-        CourseDTO toUpdate = new CourseDTO();
+        Course toUpdate = new Course();
         toUpdate.setName("Herr der Ringe schauen");
         toUpdate.setCourseDescription("Cool Course");
         toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
@@ -203,24 +198,13 @@ class CourseResourceExtendedIT {
 
     @Test
     @Transactional
-    public void getNonExistingCourse() throws Exception {
-        // Get the course
-        restCourseMockMvc.perform(get("/api/extended/courses/{id}", Long.MAX_VALUE))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
     public void updateNonExistingCourse() throws Exception {
         int databaseSizeBeforeUpdate = courseRepository.findAll().size();
-
-        // Create the Course
-        CourseDTO courseDTO = courseMapper.toDto(course);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCourseMockMvc.perform(put("/api/extended/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(courseDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(course)))
             .andExpect(status().isBadRequest());
 
         // Validate the Course in the database

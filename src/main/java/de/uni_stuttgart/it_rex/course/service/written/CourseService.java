@@ -2,11 +2,8 @@ package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
-import de.uni_stuttgart.it_rex.course.service.written.dto.CourseDTO;
-import de.uni_stuttgart.it_rex.course.service.written.mapper.CourseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,24 +24,19 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    private final CourseMapper courseMapper;
-
-    public CourseService(CourseRepository courseRepository, CourseMapper courseMapper) {
+    public CourseService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
-        this.courseMapper = courseMapper;
     }
 
     /**
      * Save a course.
      *
-     * @param courseDTO the entity to save.
+     * @param course the entity to save.
      * @return the persisted entity.
      */
-    public CourseDTO save(CourseDTO courseDTO) {
-        log.debug("Request to save Course : {}", courseDTO);
-        Course course = courseMapper.toEntity(courseDTO);
-        course = courseRepository.save(course);
-        return courseMapper.toDto(course);
+    public Course save(Course course) {
+        log.debug("Request to save Course : {}", course);
+        return courseRepository.save(course);
     }
 
     /**
@@ -53,11 +45,9 @@ public class CourseService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<CourseDTO> findAll() {
+    public List<Course> findAll() {
         log.debug("Request to get all Courses");
-        return courseRepository.findAll().stream()
-            .map(courseMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+        return courseRepository.findAll();
     }
 
 
@@ -68,10 +58,9 @@ public class CourseService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<CourseDTO> findOne(final UUID id) {
+    public Optional<Course> findOne(final UUID id) {
         log.debug("Request to get Course : {}", id);
-        return courseRepository.findById(id)
-            .map(courseMapper::toDto);
+        return courseRepository.findById(id);
     }
 
     /**

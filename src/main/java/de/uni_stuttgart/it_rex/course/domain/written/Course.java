@@ -12,12 +12,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -55,11 +52,6 @@ public class Course implements Serializable {
     @Column(name = "publish_state")
     private PUBLISHSTATE publishState;
 
-    @OneToMany(mappedBy = "course")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<Participation> participations = new HashSet<>();
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
     public UUID getId() {
         return id;
     }
@@ -145,32 +137,6 @@ public class Course implements Serializable {
     public void setPublishState(PUBLISHSTATE publishState) {
         this.publishState = publishState;
     }
-
-    public Set<Participation> getParticipations() {
-        return participations;
-    }
-
-    public Course participations(Set<Participation> participations) {
-        this.participations = participations;
-        return this;
-    }
-
-    public Course addParticipation(Participation participation) {
-        this.participations.add(participation);
-        participation.setCourse(this);
-        return this;
-    }
-
-    public Course removeParticipation(Participation participation) {
-        this.participations.remove(participation);
-        participation.setCourse(null);
-        return this;
-    }
-
-    public void setParticipations(Set<Participation> participations) {
-        this.participations = participations;
-    }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {

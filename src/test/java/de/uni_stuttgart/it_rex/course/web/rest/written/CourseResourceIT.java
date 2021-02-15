@@ -2,14 +2,11 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
-import de.uni_stuttgart.it_rex.course.service.written.dto.CourseDTO;
-import de.uni_stuttgart.it_rex.course.service.written.mapper.CourseMapper;
-
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
-import de.uni_stuttgart.it_rex.course.web.rest.written.CourseResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +28,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 /**
  * Integration tests for the {@link CourseResource} REST controller.
  */
@@ -41,8 +36,7 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 @WithMockUser
 public class CourseResourceIT {
 
-    private static final UUID DEFAULT_UUID = UUID.randomUUID();
-    private static final UUID UPDATED_UUID = UUID.randomUUID();
+    private static final UUID NON_EXISTING_ID = UUID.randomUUID();
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -64,9 +58,6 @@ public class CourseResourceIT {
 
     @Autowired
     private CourseRepository courseRepository;
-
-    @Autowired
-    private CourseMapper courseMapper;
 
     @Autowired
     private CourseService courseService;
@@ -122,10 +113,9 @@ public class CourseResourceIT {
     public void createCourse() throws Exception {
         int databaseSizeBeforeCreate = courseRepository.findAll().size();
         // Create the Course
-        CourseDTO courseDTO = courseMapper.toDto(course);
         restCourseMockMvc.perform(post("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(courseDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(course)))
             .andExpect(status().isCreated());
 
         // Validate the Course in the database
@@ -147,12 +137,11 @@ public class CourseResourceIT {
 
         // Create the Course with an existing ID
         course.setId(UUID.randomUUID());
-        CourseDTO courseDTO = courseMapper.toDto(course);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCourseMockMvc.perform(post("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(courseDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(course)))
             .andExpect(status().isBadRequest());
 
         // Validate the Course in the database
@@ -172,7 +161,6 @@ public class CourseResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().toString())))
-            .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
@@ -192,7 +180,6 @@ public class CourseResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(course.getId().toString()))
-            .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID.toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
@@ -204,7 +191,7 @@ public class CourseResourceIT {
     @Transactional
     public void getNonExistingCourse() throws Exception {
         // Get the course
-        restCourseMockMvc.perform(get("/api/courses/{id}", Long.MAX_VALUE))
+        restCourseMockMvc.perform(get("/api/courses/{id}", NON_EXISTING_ID))
             .andExpect(status().isNotFound());
     }
 
@@ -227,11 +214,10 @@ public class CourseResourceIT {
             .maxFoodSum(UPDATED_MAX_FOOD_SUM)
             .courseDescription(UPDATED_COURSE_DESCRIPTION)
             .publishState(UPDATED_PUBLISH_STATE);
-        CourseDTO courseDTO = courseMapper.toDto(updatedCourse);
 
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(courseDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedCourse)))
             .andExpect(status().isOk());
 
         // Validate the Course in the database
@@ -251,13 +237,10 @@ public class CourseResourceIT {
     public void updateNonExistingCourse() throws Exception {
         int databaseSizeBeforeUpdate = courseRepository.findAll().size();
 
-        // Create the Course
-        CourseDTO courseDTO = courseMapper.toDto(course);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(courseDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(course)))
             .andExpect(status().isBadRequest());
 
         // Validate the Course in the database
