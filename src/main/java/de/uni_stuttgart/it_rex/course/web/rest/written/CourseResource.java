@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
@@ -11,11 +12,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -85,17 +88,6 @@ public class CourseResource {
     }
 
     /**
-     * {@code GET  /courses} : get all the courses.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of courses in body.
-     */
-    @GetMapping("/courses")
-    public List<Course> getAllCourses() {
-        log.debug("REST request to get all Courses");
-        return courseService.findAll();
-    }
-
-    /**
      * {@code GET  /courses/:id} : get the "id" course.
      *
      * @param id the id of the courseDTO to retrieve.
@@ -119,5 +111,44 @@ public class CourseResource {
         log.debug("REST request to delete Course : {}", id.toString());
         courseService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * {@code PATCH  /courses} : Patches an existing course.
+     *
+     * @param course the course to patch.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
+     * body the updated course,
+     * or with status {@code 400 (Bad Request)} if the course is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the course
+     * couldn't be patched.
+     */
+    @PatchMapping("/courses")
+    public ResponseEntity<Course> patchCourse(
+        @RequestBody final Course course) {
+        log.debug("REST request to patch Course : {}", course);
+        if (course.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
+                "idnull");
+        }
+        Course result = courseService.patch(course);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, course.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * {@code GET  /courses} : get all the courses.
+     * Filters them by the publish state if it exists.
+     *
+     * @param publishState Publish state of course.
+     * @return A list of courses that fit the given parameters.
+     */
+    @GetMapping("/courses")
+    public List<Course> getAllCourses(
+        @RequestParam("publishState") final Optional<PUBLISHSTATE>
+            publishState) {
+        log.debug("REST request to get filtered Courses");
+        return courseService.findAll(publishState);
     }
 }

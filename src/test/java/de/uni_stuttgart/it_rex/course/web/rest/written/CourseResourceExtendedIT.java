@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link CourseResourceExtended} REST controller.
+ * Integration tests for the {@link CourseResource} REST controller.
  */
 @SpringBootTest(classes = {CourseServiceApp.class,
         TestSecurityConfiguration.class})
@@ -69,7 +69,7 @@ class CourseResourceExtendedIT {
     private CourseRepository courseRepository;
 
     @Autowired
-    private CourseResourceExtended courseResourceExtended;
+    private CourseResource courseResource;
 
     @Autowired
     private MockMvc restCourseMockMvc;
@@ -107,7 +107,7 @@ class CourseResourceExtendedIT {
 
         // Get all the courseList
         restCourseMockMvc
-            .perform(get("/api/extended/courses?publishState=PUBLISHED")
+            .perform(get("/api/courses?publishState=PUBLISHED")
                 .param("publishState", publishState))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -128,13 +128,13 @@ class CourseResourceExtendedIT {
         toUpdate.setCourseDescription(OLD_DESCRIPTION);
         toUpdate.setMaxFoodSum(OLD_MAX_FOOD_SUM);
 
-        UUID id = courseResourceExtended.createCourse(toUpdate).getBody().getId();
+        UUID id = courseResource.createCourse(toUpdate).getBody().getId();
         Course update = new Course();
         update.setId(id);
         update.setCourseDescription(NEW_DESCRIPTION);
         update.setPublishState(NEW_PUBLISHED_STATE);
 
-        Course result = courseResourceExtended.patchCourse(update).getBody();
+        Course result = courseResource.patchCourse(update).getBody();
 
         Course expected = new Course();
         expected.setId(id);
@@ -154,7 +154,7 @@ class CourseResourceExtendedIT {
         toUpdate.setCourseDescription("Cool Course");
         toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
 
-        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResourceExtended.patchCourse(toUpdate));
+        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResource.patchCourse(toUpdate));
         assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
     }
 
@@ -165,7 +165,7 @@ class CourseResourceExtendedIT {
         courseRepository.saveAndFlush(course);
 
         // Get all the courseList
-        restCourseMockMvc.perform(get("/api/extended/courses?sort=id,desc"))
+        restCourseMockMvc.perform(get("/api/courses?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().toString())))
@@ -184,7 +184,7 @@ class CourseResourceExtendedIT {
         courseRepository.saveAndFlush(course);
 
         // Get the course
-        restCourseMockMvc.perform(get("/api/extended/courses/{id}", course.getId()))
+        restCourseMockMvc.perform(get("/api/courses/{id}", course.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(course.getId().toString()))
@@ -202,7 +202,7 @@ class CourseResourceExtendedIT {
         int databaseSizeBeforeUpdate = courseRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restCourseMockMvc.perform(put("/api/extended/courses").with(csrf())
+        restCourseMockMvc.perform(put("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(course)))
             .andExpect(status().isBadRequest());
@@ -221,7 +221,7 @@ class CourseResourceExtendedIT {
         int databaseSizeBeforeDelete = courseRepository.findAll().size();
 
         // Delete the course
-        restCourseMockMvc.perform(delete("/api/extended/courses/{id}", course.getId()).with(csrf())
+        restCourseMockMvc.perform(delete("/api/courses/{id}", course.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
