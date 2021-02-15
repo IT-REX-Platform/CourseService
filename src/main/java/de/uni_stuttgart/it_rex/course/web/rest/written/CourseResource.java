@@ -50,17 +50,17 @@ public class CourseResource {
     /**
      * {@code POST  /courses} : Create a new course.
      *
-     * @param courseDTO the course to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new courseDTO, or with status {@code 400 (Bad Request)} if the course has already an ID.
+     * @param course the course to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new course, or with status {@code 400 (Bad Request)} if the course has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@RequestBody Course courseDTO) throws URISyntaxException {
-        log.debug("REST request to save Course : {}", courseDTO);
-        if (courseDTO.getId() != null) {
+    public ResponseEntity<Course> createCourse(@RequestBody Course course) throws URISyntaxException {
+        log.debug("REST request to save Course : {}", course);
+        if (course.getId() != null) {
             throw new BadRequestAlertException("A new course cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Course result = courseService.save(courseDTO);
+        Course result = courseService.save(course);
         return ResponseEntity.created(new URI("/api/courses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
