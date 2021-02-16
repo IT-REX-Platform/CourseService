@@ -1,0 +1,316 @@
+{
+  "info": {
+    "_postman_id": "d419bb55-b4a1-4463-a3e2-59d93c07ba0b",
+    "name": "course-service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "createCourse",
+      "request": {
+        "auth": {
+          "type": "oauth2",
+          "oauth2": [
+            {
+              "key": "tokenType",
+              "value": "bearer",
+              "type": "string"
+            },
+            {
+              "key": "accessToken",
+              "value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1QVB6cUdIR1pQZjRsT0FYUGJEY2pLZkZSTEVOWXJHYVNTb3JGTnJjeGNVIn0.eyJleHAiOjE2MTM0MTIxNzMsImlhdCI6MTYxMzQxMTg3MywiYXV0aF90aW1lIjoxNjEzNDEwMjEyLCJqdGkiOiI1MDBiYjFkMS05YjM5LTRmNmUtYmQ2OS1hOTVkMmE3YjgwODIiLCJpc3MiOiJodHRwOi8va2V5Y2xvYWs6OTA4MC9hdXRoL3JlYWxtcy9qaGlwc3RlciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0Yzk3Mzg5Ni01NzYxLTQxZmMtODIxNy0wN2M1ZDEzYTAwNGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjcwNDNjNmQ4LWFhYzgtNDNiNS04ZGZmLTI3YWFhZDcwNjY4YyIsImFjciI6IjAiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzEyNy4wLjAuMTo4NzYxIiwiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaHR0cDovL2xvY2FsaG9zdDo4MTAwIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6ODA4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImpoaXBzdGVyIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXSwibmFtZSI6IkFkbWluIEFkbWluaXN0cmF0b3IiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW5pc3RyYXRvciIsImVtYWlsIjoiYWRtaW5AbG9jYWxob3N0In0.YDuNq6N769bkUV93k_pmHIoRrlz2JSHD5HRZwT0gtAGULq7hgyyYXhYrVFJfwYrZNtdJDRlykNNgVzMCshytzFRI9e4-1EAov9PrY-h_duvKh7q5EbhhqxwobVp4TkDho-pF-iuYsSBuEIqCXVwsCedOTooKlK1TmVGunXLR20Bh6M7m-bqDccwJ_8YImVCoDnfhSVngvvjDBVyUwm5mumG23-8xyDFIgut7zmqPTGIOoioWrjQnO9nSeXL3xDfl3dqqEzU0KcRj9AUU6DpT-mUEa95iqZBjP9NqpAII_mIT5XL0OrAK3H4W_5egPTQ1GVAqfBSgxHvfMjH5K9AYtQ",
+              "type": "string"
+            },
+            {
+              "key": "tokenName",
+              "value": "MyToken",
+              "type": "string"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "http://localhost:19006",
+              "type": "string"
+            },
+            {
+              "key": "accessTokenUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+              "type": "string"
+            },
+            {
+              "key": "authUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+              "type": "string"
+            },
+            {
+              "key": "clientId",
+              "value": "web_app",
+              "type": "string"
+            },
+            {
+              "key": "scope",
+              "value": "jhipster",
+              "type": "string"
+            },
+            {
+              "key": "addTokenTo",
+              "value": "header",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "",
+            "value": "",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Cooler Kurs\",\n  \"startDate\": \"2019-09-20\",\n  \"endDate\": \"2222-02-22\",\n  \"maxFoodSum\": 4242,\n  \"courseDescription\": null,\n  \"publishState\": \"PUBLISHED\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/services/courseservice/api/courses/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["services", "courseservice", "api", "courses", ""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getAllCourses",
+      "request": {
+        "auth": {
+          "type": "oauth2",
+          "oauth2": [
+            {
+              "key": "tokenType",
+              "value": "bearer",
+              "type": "string"
+            },
+            {
+              "key": "accessToken",
+              "value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhNDYxajVvTTY3RDFVVzlxUnZPV3EwTHNrVEFzZVF6NmRkNk5MSFc1REcwIn0.eyJleHAiOjE2MTI3OTU0NDgsImlhdCI6MTYxMjc5NTE0OCwiYXV0aF90aW1lIjoxNjEyNzk1MTQ4LCJqdGkiOiI4MTM4MmIzMy0zODA4LTRlMjQtODUyYi02Nzk5ZDI2NzQ0MjMiLCJpc3MiOiJodHRwOi8va2V5Y2xvYWs6OTA4MC9hdXRoL3JlYWxtcy9qaGlwc3RlciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0Yzk3Mzg5Ni01NzYxLTQxZmMtODIxNy0wN2M1ZDEzYTAwNGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjgwYWY5YzkwLWRlNjgtNGFiMS1hODI0LTJkMDAyNDU3MGVjZSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzEyNy4wLjAuMTo4NzYxIiwiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaHR0cDovL2xvY2FsaG9zdDo4MTAwIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6ODA4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImpoaXBzdGVyIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXSwibmFtZSI6IkFkbWluIEFkbWluaXN0cmF0b3IiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW5pc3RyYXRvciIsImVtYWlsIjoiYWRtaW5AbG9jYWxob3N0In0.r269qyfvPmKs4j82XOT-fdaaD2CuB0aUUvvLVkBE6H96d6ZeJVQhY_WOcTodBsfXGy33-W_NDP4Wrj0h_TifOk3DKr4LP1Ywk5KHGSHOoJ_aczmcSnmc8pR4k13YET9Y444rYQU01BOxzOM6acw_MAdoAOMw1NjyZXqggMiAb69i87rSkmyGYMBYAfqhAlR78XV93q_Mdt0PpszcSvp712v3Akx_tYDrPSW6GxxLtjPX5LOvICciKcz-zePiiz4RgqTjk8_t0ZBY2WmWBRne4mS0qyZLh0iC3q-IROhqyJSLVnyJDa_FXQB5X7_s1yUCg41LnXzFo-X8W49hS1qafA",
+              "type": "string"
+            },
+            {
+              "key": "addTokenTo",
+              "value": "header",
+              "type": "string"
+            },
+            {
+              "key": "tokenName",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "http://localhost:19006",
+              "type": "string"
+            },
+            {
+              "key": "accessTokenUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+              "type": "string"
+            },
+            {
+              "key": "authUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+              "type": "string"
+            },
+            {
+              "key": "clientId",
+              "value": "web_app",
+              "type": "string"
+            },
+            {
+              "key": "scope",
+              "value": "jhipster",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "",
+            "value": "",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/services/courseservice/api/courses/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["services", "courseservice", "api", "courses", ""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deleteCourses",
+      "request": {
+        "auth": {
+          "type": "oauth2",
+          "oauth2": [
+            {
+              "key": "tokenType",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "key": "addTokenTo",
+              "value": "header",
+              "type": "string"
+            },
+            {
+              "key": "tokenName",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "http://localhost:19006",
+              "type": "string"
+            },
+            {
+              "key": "accessTokenUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+              "type": "string"
+            },
+            {
+              "key": "authUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+              "type": "string"
+            },
+            {
+              "key": "clientId",
+              "value": "web_app",
+              "type": "string"
+            },
+            {
+              "key": "scope",
+              "value": "jhipster",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "value": "",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/services/courseservice/api/courses",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["services", "courseservice", "api", "courses"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getCourse",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "oauth2",
+          "oauth2": [
+            {
+              "key": "tokenType",
+              "value": "bearer",
+              "type": "string"
+            },
+            {
+              "key": "accessToken",
+              "value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJlbzVZbEthMTgzcmotN0RFa28xS3EwNFZ5RE1MNkg4WFhtamNQZWZrQXFjIn0.eyJleHAiOjE2MTIyODc0MTMsImlhdCI6MTYxMjI4NzExMywiYXV0aF90aW1lIjoxNjEyMjg3MTEyLCJqdGkiOiI1MGZiYjdhNS1mYmU1LTQ0MDktYmJiZS0wMTI4ZDNlM2MxNWEiLCJpc3MiOiJodHRwOi8va2V5Y2xvYWs6OTA4MC9hdXRoL3JlYWxtcy9qaGlwc3RlciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0Yzk3Mzg5Ni01NzYxLTQxZmMtODIxNy0wN2M1ZDEzYTAwNGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjlmNThkZGYzLTMxZTMtNDQyMi1hMGM5LTcxZjkyMWFmNjk1NiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzEyNy4wLjAuMTo4NzYxIiwiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaHR0cDovL2xvY2FsaG9zdDo4MTAwIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6ODA4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImpoaXBzdGVyIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXSwibmFtZSI6IkFkbWluIEFkbWluaXN0cmF0b3IiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW5pc3RyYXRvciIsImVtYWlsIjoiYWRtaW5AbG9jYWxob3N0In0.aylJsMU_CtDmHjAKrd_K9_E8KqfMaKXsuXZ4E5PBXLXzphMoAGcolWSOz5FxXglWcjemZHsY-dgWGUsR1UtKRib3mSVjvR9xSpojly461-4H3zLTKZcSjrUuqUWEJvxOUiFcmV02EUAUF12wMrfq_Qrp1rqloKNeTA2po6Atktxmv6RWF80X6tahkgSu6xkL3dUH2lzqraKR3KlMTtpXInrAkz6lCH28EMMwVMafCVerSjBSuJXMxHqKHqmmNutLLxUra187na-9UBZTR6ML1_U3j2plkG_ODcuJ3fH0_q6XSF7146DqNNoHnCQYv2tlkbI7CSUPt30qT4AawWb6ag",
+              "type": "string"
+            },
+            {
+              "key": "addTokenTo",
+              "value": "header",
+              "type": "string"
+            },
+            {
+              "key": "tokenName",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "http://localhost:19006",
+              "type": "string"
+            },
+            {
+              "key": "accessTokenUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+              "type": "string"
+            },
+            {
+              "key": "authUrl",
+              "value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+              "type": "string"
+            },
+            {
+              "key": "clientId",
+              "value": "web_app",
+              "type": "string"
+            },
+            {
+              "key": "scope",
+              "value": "jhipster",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "",
+            "value": "",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/home/christian/GitRepos/MediaService/src/main/resources/2_5435963561916500351.mp4"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/services/courseservice/api/courses/9119539c-3eb1-4392-8341-438a6b711312",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["services", "courseservice", "api", "courses", "9119539c-3eb1-4392-8341-438a6b711312"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
