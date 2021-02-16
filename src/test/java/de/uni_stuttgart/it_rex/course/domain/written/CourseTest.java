@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain;
+package de.uni_stuttgart.it_rex.course.domain.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
