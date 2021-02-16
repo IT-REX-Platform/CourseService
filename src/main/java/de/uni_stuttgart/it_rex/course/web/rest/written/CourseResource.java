@@ -34,35 +34,57 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class CourseResource {
 
+    /**
+     * Logger.
+     */
     private final Logger log = LoggerFactory.getLogger(CourseResource.class);
 
-    private static final String ENTITY_NAME = "courseServiceCourse";
+    /**
+     * Entity name.
+     */
+    private static final String ENTITY_NAME = "Course";
 
+    /**
+     * Application name.
+     */
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    /**
+     * Used course service.
+     */
     private final CourseService courseService;
 
-    public CourseResource(CourseService courseService) {
-        this.courseService = courseService;
+    /**
+     * Constructor.
+     *
+     * @param newCourseService the course service.
+     */
+    public CourseResource(final CourseService newCourseService) {
+        this.courseService = newCourseService;
     }
 
     /**
      * {@code POST  /courses} : Create a new course.
      *
      * @param course the course to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new course, or with status {@code 400 (Bad Request)} if the course has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)}
+     * and with body the new course, or with status {@code 400 (Bad Request)}
+     * if the course has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) throws URISyntaxException {
+    public ResponseEntity<Course> createCourse(@RequestBody final Course course)
+        throws URISyntaxException {
         log.debug("REST request to save Course : {}", course);
         if (course.getId() != null) {
-            throw new BadRequestAlertException("A new course cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new course cannot already "
+                + "have an ID", ENTITY_NAME, "idexists");
         }
         Course result = courseService.save(course);
         return ResponseEntity.created(new URI("/api/courses/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName,
+                true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -70,20 +92,25 @@ public class CourseResource {
      * {@code PUT  /courses} : Updates an existing course.
      *
      * @param course the course to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated course,
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
+     * body the updated course,
      * or with status {@code 400 (Bad Request)} if the course is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the course couldn't be updated.
+     * or with status {@code 500 (Internal Server Error)} if the course couldn't
+     * be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/courses")
-    public ResponseEntity<Course> updateCourse(@RequestBody Course course) throws URISyntaxException {
+    public ResponseEntity<Course> updateCourse(@RequestBody final Course course)
+        throws URISyntaxException {
         log.debug("REST request to update Course : {}", course);
         if (course.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException(
+                "Invalid id", ENTITY_NAME, "idnull");
         }
         Course result = courseService.save(course);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, course.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
+                true, ENTITY_NAME, course.getId().toString()))
             .body(result);
     }
 
@@ -91,11 +118,12 @@ public class CourseResource {
      * {@code GET  /courses/:id} : get the "id" course.
      *
      * @param id the id of the courseDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the courseDTO, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)}
+     * and with body the courseDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/courses/{id}")
-    public ResponseEntity<Course> getCourse(@PathVariable UUID id) {
-        log.debug("REST request to get Course : {}", id.toString());
+    public ResponseEntity<Course> getCourse(@PathVariable final UUID id) {
+        log.debug("REST request to get Course : {}", id);
         Optional<Course> course = courseService.findOne(id);
         return ResponseUtil.wrapOrNotFound(course);
     }
@@ -107,10 +135,12 @@ public class CourseResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/courses/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable UUID id) {
-        log.debug("REST request to delete Course : {}", id.toString());
+    public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
+        log.debug("REST request to delete Course : {}", id);
         courseService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent().headers(HeaderUtil
+            .createEntityDeletionAlert(applicationName, true, ENTITY_NAME,
+                id.toString())).build();
     }
 
     /**
@@ -133,7 +163,8 @@ public class CourseResource {
         }
         Course result = courseService.patch(course);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, course.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
+                true, ENTITY_NAME, course.getId().toString()))
             .body(result);
     }
 

@@ -9,11 +9,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Course}.
@@ -22,12 +20,24 @@ import java.util.stream.Collectors;
 @Transactional
 public class CourseService {
 
-    private final Logger log = LoggerFactory.getLogger(CourseService.class);
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER
+        = LoggerFactory.getLogger(CourseService.class);
 
+    /**
+     * CourseRepository.
+     */
     private final CourseRepository courseRepository;
 
-    public CourseService(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
+    /**
+     * Constructor.
+     *
+     * @param newCourseRepository the course repository.
+     */
+    public CourseService(final CourseRepository newCourseRepository) {
+        this.courseRepository = newCourseRepository;
     }
 
     /**
@@ -36,8 +46,8 @@ public class CourseService {
      * @param course the entity to save.
      * @return the persisted entity.
      */
-    public Course save(Course course) {
-        log.debug("Request to save Course : {}", course);
+    public Course save(final Course course) {
+        LOGGER.debug("Request to save Course : {}", course);
         return courseRepository.save(course);
     }
 
@@ -48,7 +58,7 @@ public class CourseService {
      */
     @Transactional(readOnly = true)
     public List<Course> findAll() {
-        log.debug("Request to get all Courses");
+        LOGGER.debug("Request to get all Courses");
         return courseRepository.findAll();
     }
 
@@ -61,7 +71,7 @@ public class CourseService {
      */
     @Transactional(readOnly = true)
     public Optional<Course> findOne(final UUID id) {
-        log.debug("Request to get Course : {}", id);
+        LOGGER.debug("Request to get Course : {}", id);
         return courseRepository.findById(id);
     }
 
@@ -71,7 +81,7 @@ public class CourseService {
      * @param id the id of the entity.
      */
     public void delete(final UUID id) {
-        log.debug("Request to delete Course : {}", id);
+        LOGGER.debug("Request to delete Course : {}", id);
         courseRepository.deleteById(id);
     }
 
@@ -82,7 +92,7 @@ public class CourseService {
      * @return the persisted entity.
      */
     public Course patch(final Course course) {
-        log.debug("Request to update Course : {}", course);
+        LOGGER.debug("Request to update Course : {}", course);
         Optional<Course> oldCourse =
             courseRepository.findById(course.getId());
 
@@ -102,9 +112,9 @@ public class CourseService {
      */
     public List<Course> findAll(
         final Optional<PUBLISHSTATE> publishState) {
-        log.debug("Request to get filtered Courses");
+        LOGGER.debug("Request to get filtered Courses");
 
-        log.trace("Applying filters.");
+        LOGGER.trace("Applying filters.");
         Course courseExample = applyFiltersToExample(publishState);
 
         return courseRepository
