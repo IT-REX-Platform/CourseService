@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Lecturer implements Serializable {
 
   /**
-   * id.
+   * Id.
    */
   @Id
   @GeneratedValue

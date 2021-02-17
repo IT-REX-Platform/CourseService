@@ -32,7 +32,7 @@ public class Course implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * id.
+     * Id.
      */
     @Id
     @GeneratedValue
@@ -45,19 +45,19 @@ public class Course implements Serializable {
     private String name;
 
     /**
-     * start date.
+     * Start date.
      */
     @Column(name = "start_date")
     private LocalDate startDate;
 
     /**
-     * end date.
+     * End date.
      */
     @Column(name = "end_date")
     private LocalDate endDate;
 
     /**
-     * max food sum for the course.
+     * Max food sum for the course.
      */
     @Column(name = "max_food_sum")
     private Integer maxFoodSum;
