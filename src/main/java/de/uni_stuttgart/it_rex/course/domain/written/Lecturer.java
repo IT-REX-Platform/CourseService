@@ -13,43 +13,85 @@ import java.util.UUID;
 @Table
 public class Lecturer implements Serializable {
 
+  /**
+   * id.
+   */
   @Id
   @GeneratedValue
   private UUID id;
 
+  /**
+   * Name.
+   */
   @Column
   private String name;
 
+  /**
+   * Getter.
+   *
+   * @return the id.
+   */
   public UUID getId() {
     return id;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the name.
+   */
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  /**
+   * Setter.
+   *
+   * @param newName the name
+   */
+  public void setName(final String newName) {
+    this.name = newName;
   }
 
+  /**
+   * Equals method.
+   *
+   * @param o the other object.
+   * @return if they are equal.
+   */
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Lecturer)) return false;
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Lecturer)) {
+      return false;
+    }
     Lecturer lecturer = (Lecturer) o;
-    return Objects.equals(getId(), lecturer.getId()) && Objects.equals(getName(), lecturer.getName());
+    return Objects.equals(getId(), lecturer.getId())
+        && Objects.equals(getName(), lecturer.getName());
   }
 
+  /**
+   * Hash code.
+   *
+   * @return
+   */
   @Override
   public int hashCode() {
     return Objects.hash(getId(), getName());
   }
 
+  /**
+   * Converts the instance to a string.
+   *
+   * @return the string.
+   */
   @Override
   public String toString() {
-    return "Lecturer{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        '}';
+    return "Lecturer{"
+        + "id=" + id
+        + ", name='" + name + '\''
+        + '}';
   }
 }
