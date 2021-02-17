@@ -89,13 +89,13 @@ public class CourseResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Course createEntity(EntityManager em) {
-        Course course = new Course()
-            .name(DEFAULT_NAME)
-            .startDate(DEFAULT_START_DATE)
-            .endDate(DEFAULT_END_DATE)
-            .maxFoodSum(DEFAULT_MAX_FOOD_SUM)
-            .courseDescription(DEFAULT_COURSE_DESCRIPTION)
-            .publishState(DEFAULT_PUBLISH_STATE);
+        Course course = new Course();
+        course.setName(DEFAULT_NAME);
+        course.setStartDate(DEFAULT_START_DATE);
+        course.setEndDate(DEFAULT_END_DATE);
+        course.setMaxFoodSum(DEFAULT_MAX_FOOD_SUM);
+        course.setCourseDescription(DEFAULT_COURSE_DESCRIPTION);
+        course.setPublishState(DEFAULT_PUBLISH_STATE);
         return course;
     }
     /**
@@ -105,13 +105,13 @@ public class CourseResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Course createUpdatedEntity(EntityManager em) {
-        Course course = new Course()
-            .name(UPDATED_NAME)
-            .startDate(UPDATED_START_DATE)
-            .endDate(UPDATED_END_DATE)
-            .maxFoodSum(UPDATED_MAX_FOOD_SUM)
-            .courseDescription(UPDATED_COURSE_DESCRIPTION)
-            .publishState(UPDATED_PUBLISH_STATE);
+        Course course = new Course();
+        course.setName(UPDATED_NAME);
+        course.setStartDate(UPDATED_START_DATE);
+        course.setEndDate(UPDATED_END_DATE);
+        course.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
+        course.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
+        course.setPublishState(UPDATED_PUBLISH_STATE);
         return course;
     }
 
@@ -219,13 +219,13 @@ public class CourseResourceIT {
         Course updatedCourse = courseRepository.findById(course.getId()).get();
         // Disconnect from session so that the updates on updatedCourse are not directly saved in db
         em.detach(updatedCourse);
-        updatedCourse
-            .name(UPDATED_NAME)
-            .startDate(UPDATED_START_DATE)
-            .endDate(UPDATED_END_DATE)
-            .maxFoodSum(UPDATED_MAX_FOOD_SUM)
-            .courseDescription(UPDATED_COURSE_DESCRIPTION)
-            .publishState(UPDATED_PUBLISH_STATE);
+
+        updatedCourse.setName(UPDATED_NAME);
+        updatedCourse.setStartDate(UPDATED_START_DATE);
+        updatedCourse.setEndDate(UPDATED_END_DATE);
+        updatedCourse.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
+        updatedCourse.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
+        updatedCourse.setPublishState(UPDATED_PUBLISH_STATE);
 
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
@@ -324,7 +324,9 @@ public class CourseResourceIT {
         expected.setMaxFoodSum(OLD_MAX_FOOD_SUM);
         expected.setPublishState(NEW_PUBLISHED_STATE);
 
-        assertThat(result).isEqualTo(expected);
+        Course updated = courseResource.getCourse(id).getBody();
+
+        assertThat(updated).isEqualTo(expected);
     }
 
     @Test

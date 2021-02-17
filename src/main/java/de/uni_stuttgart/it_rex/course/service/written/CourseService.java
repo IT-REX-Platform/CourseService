@@ -3,8 +3,10 @@ package de.uni_stuttgart.it_rex.course.service.written;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,13 +34,23 @@ public class CourseService {
     private final CourseRepository courseRepository;
 
     /**
+     * Course mapper.
+     */
+    private CourseMapper courseMapper;
+
+    /**
      * Constructor.
      *
      * @param newCourseRepository the course repository.
+     * @param newCourseMapper the course mapper.
      */
-    public CourseService(final CourseRepository newCourseRepository) {
+    @Autowired
+    public CourseService(final CourseRepository newCourseRepository,
+                         final CourseMapper newCourseMapper) {
         this.courseRepository = newCourseRepository;
+        this.courseMapper = newCourseMapper;
     }
+
 
     /**
      * Save a course.
@@ -98,7 +110,7 @@ public class CourseService {
 
         if (oldCourse.isPresent()) {
             Course oldCourseEntity = oldCourse.get();
-
+            courseMapper.updateCourseFromCourse(course, oldCourseEntity);
             return courseRepository.save(oldCourseEntity);
         }
         return null;

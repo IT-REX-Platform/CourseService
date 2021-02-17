@@ -164,7 +164,7 @@ public class CourseResource {
         Course result = courseService.patch(course);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME, course.getId().toString()))
+                true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
