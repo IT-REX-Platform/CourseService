@@ -33,7 +33,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 /**
- * Integration tests for the {@link CourseResource} REST controller.
+ * Integration tests for the {@link ChapterResource} REST controller.
  */
 @SpringBootTest(classes = { CourseServiceApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
