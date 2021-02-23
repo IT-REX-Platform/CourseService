@@ -64,6 +64,12 @@ public class Chapter implements Serializable {
   @Column(name = "end_date")
   private LocalDate endDate;
 
+  /**
+   * Equals method.
+   *
+   * @param o the other object.
+   * @return if they are equal
+   */
   @Override
   public boolean equals(final Object o) {
     if (this == o) {
@@ -82,6 +88,11 @@ public class Chapter implements Serializable {
         && Objects.equals(getEndDate(), chapter.getEndDate());
   }
 
+  /**
+   * Hash code method.
+   *
+   * @return the hash code.
+   */
   @Override
   public int hashCode() {
     return Objects.hash(
@@ -94,72 +105,145 @@ public class Chapter implements Serializable {
         getEndDate());
   }
 
+  /**
+   * To string method.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
-    return "Chapter{" +
-        "id=" + id +
-        ", title='" + title + '\'' +
-        ", courseId=" + courseId +
-        ", previousId=" + previousId +
-        ", nextId=" + nextId +
-        ", startDate=" + startDate +
-        ", endDate=" + endDate +
-        '}';
+    return "Chapter{" + "id=" + id
+        + ", title='" + title + '\''
+        + ", courseId=" + courseId
+        + ", previousId=" + previousId
+        + ", nextId=" + nextId
+        + ", startDate=" + startDate
+        + ", endDate=" + endDate + '}';
   }
 
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
+  /**
+   * Getter.
+   *
+   * @return the id
+   */
   public UUID getId() {
     return id;
   }
 
+  /**
+   * Setter.
+   *
+   * @param newId
+   */
+  public void setId(final UUID newId) {
+    this.id = newId;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the title
+   */
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(final String title) {
-    this.title = title;
+  /**
+   * Setter.
+   *
+   * @param newTitle the title
+   */
+  public void setTitle(final String newTitle) {
+    this.title = newTitle;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the course id.
+   */
   public UUID getCourseId() {
     return courseId;
   }
 
-  public void setCourseId(final UUID courseId) {
-    this.courseId = courseId;
+  /**
+   * Setter.
+   *
+   * @param newCourseId the course id
+   */
+  public void setCourseId(final UUID newCourseId) {
+    this.courseId = newCourseId;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the previous id.
+   */
   public UUID getPreviousId() {
     return previousId;
   }
 
-  public void setPreviousId(final UUID previousId) {
-    this.previousId = previousId;
+  /**
+   * Setter.
+   *
+   * @param newPreviousId the previous id.
+   */
+  public void setPreviousId(final UUID newPreviousId) {
+    this.previousId = newPreviousId;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the next id
+   */
   public UUID getNextId() {
     return nextId;
   }
 
-  public void setNextId(final UUID nextId) {
-    this.nextId = nextId;
+  /**
+   * Setter.
+   *
+   * @param newNextId the next id.
+   */
+  public void setNextId(final UUID newNextId) {
+    this.nextId = newNextId;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the start date.
+   */
   public LocalDate getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(final LocalDate startDate) {
-    this.startDate = startDate;
+  /**
+   * Setter.
+   *
+   * @param newStartDate the start date.
+   */
+  public void setStartDate(final LocalDate newStartDate) {
+    this.startDate = newStartDate;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the end date.
+   */
   public LocalDate getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(final LocalDate endDate) {
-    this.endDate = endDate;
+  /**
+   * Setter.
+   *
+   * @param newEndDate the end date.
+   */
+  public void setEndDate(final LocalDate newEndDate) {
+    this.endDate = newEndDate;
   }
 }
