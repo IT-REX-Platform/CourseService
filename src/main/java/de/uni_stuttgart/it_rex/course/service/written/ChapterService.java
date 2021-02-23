@@ -1,7 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
 import org.slf4j.Logger;
@@ -41,9 +40,11 @@ public class ChapterService {
    * Constructor.
    *
    * @param newChapterRepository
+   * @param newChapterMapper
    */
   @Autowired
-  public ChapterService(final ChapterRepository newChapterRepository, final ChapterMapper newChapterMapper) {
+  public ChapterService(final ChapterRepository newChapterRepository,
+                        final ChapterMapper newChapterMapper) {
     this.chapterRepository = newChapterRepository;
     this.chapterMapper = newChapterMapper;
   }
@@ -98,14 +99,20 @@ public class ChapterService {
     }
 
     final Chapter toDelete = toDeleteOptional.get();
-    final Optional<Chapter> previous = chapterRepository.findById(toDelete.getPreviousId());
-    final Optional<Chapter> next = chapterRepository.findById(toDelete.getNextId());
+    final Optional<Chapter> previous = chapterRepository.
+        findById(toDelete.getPreviousId());
+    final Optional<Chapter> next = chapterRepository.
+        findById(toDelete.getNextId());
 
-    previous.ifPresent(chapter -> chapter.setNextId(toDelete.getNextId()));
-    next.ifPresent(chapter -> chapter.setPreviousId(toDelete.getPreviousId()));
+    previous.ifPresent(chapter -> {
+      chapter.setNextId(toDelete.getNextId());
+      chapterRepository.save(previous.get());
+    });
+    next.ifPresent(chapter -> {
+      chapter.setPreviousId(toDelete.getPreviousId());
+      chapterRepository.save(next.get());
+    });
 
-    chapterRepository.save(previous.get());
-    chapterRepository.save(next.get());
     chapterRepository.deleteById(id);
   }
 

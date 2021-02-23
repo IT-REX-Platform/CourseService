@@ -1,7 +1,6 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.service.written.ChapterService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -73,7 +72,8 @@ public class ChapterResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PostMapping("/chapters")
-  public ResponseEntity<Chapter> createChapter(@RequestBody final Chapter chapter)
+  public ResponseEntity<Chapter> createChapter(
+      @RequestBody final Chapter chapter)
       throws URISyntaxException {
     log.debug("REST request to save Chapter : {}", chapter);
     if (chapter.getId() != null) {
@@ -99,7 +99,8 @@ public class ChapterResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PutMapping("/chapters")
-  public ResponseEntity<Chapter> updateChapter(@RequestBody final Chapter chapter)
+  public ResponseEntity<Chapter> updateChapter(
+      @RequestBody final Chapter chapter)
       throws URISyntaxException {
     log.debug("REST request to update Chapter : {}", chapter);
     if (chapter.getId() == null) {
