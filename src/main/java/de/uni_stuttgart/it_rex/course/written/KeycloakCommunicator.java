@@ -3,8 +3,10 @@ package de.uni_stuttgart.it_rex.course.written;
 import javax.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.GroupsResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
@@ -12,8 +14,8 @@ import de.uni_stuttgart.it_rex.course.written.web.rest.CourseResourceExtended.Co
 
 public class KeycloakCommunicator {
     // Extract those into a file maybe?
-    private static final String URL = "https://keycloak:9443/auth";
-    private static final String REALM = "Jhipster";
+    private static final String URL = "https://keycloak:9080/auth";
+    private static final String REALM = "jhipster";
     private static final String USER = "admin";
     private static final String PASSWD = "admin";
     private static final String CLIENT_ID = "admin-cli";
@@ -71,7 +73,19 @@ public class KeycloakCommunicator {
      * Creates a new communicator with an initialized {@link Keycloak} instance.
      */
     public KeycloakCommunicator() {
-        this(URL);
+        keycloak = KeycloakBuilder.builder().
+            serverUrl("http://keycloak:9080/auth")
+            .grantType(OAuth2Constants.PASSWORD)
+            .realm("master")
+            .clientId("admin-cli")
+            .username("admin")
+            .password("admin")
+            .build();
+            // .resteasyClient(
+            //     new ResteasyClientBuilder()
+            //         .connectionPoolSize(10).build())
+        // keycloak.tokenManager().getAccessToken();
+        // RealmResource realmResource = keycloak.realm("realm-name");
     }
 
     /**
@@ -80,9 +94,9 @@ public class KeycloakCommunicator {
      *
      * @param url the URL of the Keycloak to connect to.
      */
-    public KeycloakCommunicator(String url) {
-        keycloak = Keycloak.getInstance(url, REALM, USER, PASSWD, CLIENT_ID);
-    }
+    // public KeycloakCommunicator(String url) {
+    //     keycloak = Keycloak.getInstance(url, REALM, USER, PASSWD, CLIENT_ID);
+    // }
 
     /**
      * Adds a role in the main realm of Keycloak.
