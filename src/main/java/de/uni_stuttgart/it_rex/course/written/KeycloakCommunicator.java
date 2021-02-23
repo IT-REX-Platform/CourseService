@@ -1,5 +1,9 @@
 package de.uni_stuttgart.it_rex.course.written;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
@@ -13,8 +17,8 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import de.uni_stuttgart.it_rex.course.written.web.rest.CourseResourceExtended.CourseRole;
 
 public class KeycloakCommunicator {
-    // Extract those into a file maybe?
-    private static final String URL = "https://keycloak:9080/auth";
+    // TODO: Extract those into a file.
+    private static final String URL = "http://keycloak:9080/auth";
     private static final String REALM = "jhipster";
     private static final String USER = "admin";
     private static final String PASSWD = "admin";
@@ -73,48 +77,73 @@ public class KeycloakCommunicator {
      * Creates a new communicator with an initialized {@link Keycloak} instance.
      */
     public KeycloakCommunicator() {
-        keycloak = KeycloakBuilder.builder().
-            serverUrl("http://keycloak:9080/auth")
+        keycloak = KeycloakBuilder.builder()
+            .serverUrl(URL)
             .grantType(OAuth2Constants.PASSWORD)
             .realm("master")
-            .clientId("admin-cli")
-            .username("admin")
-            .password("admin")
+            .clientId(CLIENT_ID)
+            .username(USER)
+            .password(PASSWD)
             .build();
-            // .resteasyClient(
-            //     new ResteasyClientBuilder()
-            //         .connectionPoolSize(10).build())
-        // keycloak.tokenManager().getAccessToken();
-        // RealmResource realmResource = keycloak.realm("realm-name");
-    }
 
-    /**
-     * Creates a new communicator with an initialized {@link Keycloak} instance
-     * with a custom uri to connect to.
-     *
-     * @param url the URL of the Keycloak to connect to.
-     */
-    // public KeycloakCommunicator(String url) {
-    //     keycloak = Keycloak.getInstance(url, REALM, USER, PASSWD, CLIENT_ID);
-    // }
+        // TODO: Resteasy client for pooling, for handling multiple requests at the same time.
+        // .resteasyClient(
+        //     new ResteasyClientBuilder()
+        //         .connectionPoolSize(10).build())
+    }
 
     /**
      * Adds a role in the main realm of Keycloak.
      *
-     * @param role the representation of the role to add.
+     * @param roleName the name of the role to add.
      */
-    public void addRole(RoleRepresentation role) {
-        keycloak.realm(REALM).roles().create(role);
+    public void addRole(String roleName) {
+        addRole(roleName, "Automatically created role.");
     }
 
     /**
-     * Adds a group given by a presentation to the main realm in Keycloak.
+     * Adds a role with a given description in the main realm of Keycloak.
      *
-     * @param group the representation of the group to add.
-     * @return the response by the operation given by Keycloak.
+     * @param roleName the name of the role to add.
+     * @param description the description the role has.
      */
-    public Response addGroup(GroupRepresentation group) {
-        return keycloak.realm(REALM).groups().add(group);
+    public void addRole(String roleName, String description) {
+        RoleRepresentation newRoleRep = new RoleRepresentation();
+        newRoleRep.setName(roleName);
+        newRoleRep.setDescription(description);
+        keycloak.realm(REALM).roles().create(newRoleRep);
+    }
+
+    /**
+     * Adds a group to the main realm in Keycloak.
+     *
+     * @param groupName the name of the group to add.
+     */
+    public void addGroup(String groupName) {
+        GroupRepresentation newGroupRep = new GroupRepresentation();
+        newGroupRep.setName(groupName);
+        keycloak.realm(REALM).groups().add(newGroupRep);
+    }
+
+    /**
+     * Adds the given roles to the given group.
+     *
+     * @param groupName the name of the group to add the role(s) to.
+     * @param roleNames the name(s) of the role(s) to add to the group.
+     */
+    public void addRolesToGroup(String groupName, String... roleNames) {
+        List<GroupRepresentation> groups = keycloak.realm(REALM)
+            .groups().groups(groupName, 0, Integer.MAX_VALUE);
+        String groupId = groups.get(0).getId();
+
+        List<RoleRepresentation> roles = new ArrayList<RoleRepresentation>(roleNames.length);
+        for (String curRoleName : roleNames) {
+            roles.add(keycloak.realm(REALM)
+                .roles().get(curRoleName).toRepresentation());
+        }
+
+        keycloak.realm(REALM).groups().group(groupId)
+            .roles().realmLevel().add(roles);
     }
 
     /**
@@ -144,13 +173,13 @@ public class KeycloakCommunicator {
         GroupsResource groups = keycloak.realm(REALM).groups();
         String groupIdToRemove = "";
         for (GroupRepresentation curGroup : groups.groups()) {
-            if (curGroup.getName() == groupName) {
+            if (curGroup.getName().equals(groupName)) {
                 groupIdToRemove = curGroup.getId();
                 break;
             }
         }
 
-        if (groupIdToRemove == "") {
+        if (groupIdToRemove.isEmpty()) {
             return;
         }
 

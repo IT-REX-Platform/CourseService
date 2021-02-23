@@ -31,6 +31,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ws.rs.core.Response;
+
 /**
  * Class contains course endpoints in addition to those found in
  * CourseResource.java.
@@ -38,10 +40,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/extended")
 public class CourseResourceExtended {
+    /**
+     * The role a course participant can have.
+     */
     public enum CourseRole {
-        Owner,
-        Manager,
-        Participant
+        OWNER,
+        MANAGER,
+        PARTICIPANT
     }
 
     /**
@@ -107,24 +112,25 @@ public class CourseResourceExtended {
         ResponseEntity<CourseDTO> createdCourse = courseResource.createCourse(courseDTO);
 
         // If the creation was successful, also create roles and groups for the course.
-        // TODO: Should cancel creation of course if Keycloak gets errored.
+        // TODO: Should cancel creation of course if Keycloak has an error. (see next TODO)
+        // TODO: Move this one "layer" lower (inside service?).
         if (createdCourse.getStatusCode() == HttpStatus.CREATED) {
             for (CourseRole role : CourseRole.values()) {
                 String roleName = KeycloakCommunicator.makeNameForCourse(
-                    KeycloakCommunicator.ROLE_COURSE_TEMPLATE, courseDTO.getId(), role);
+                    KeycloakCommunicator.ROLE_COURSE_TEMPLATE, createdCourse.getBody().getId(), role);
                 String groupName = KeycloakCommunicator.makeNameForCourse(
-                    KeycloakCommunicator.GROUP_COURSE_TEMPLATE, courseDTO.getId(), role);
+                    KeycloakCommunicator.GROUP_COURSE_TEMPLATE, createdCourse.getBody().getId(), role);
 
-                RoleRepresentation newRoleRep = new RoleRepresentation();
-                newRoleRep.setName(roleName);
-                newRoleRep.setDescription(
+                // Create the role rep for the new role.
+                keycloakCommunicator.addRole(roleName,
                     String.format("Role created automatically for course %s and role %s.",
-                    courseDTO.getName(), role.toString()));
-                keycloakCommunicator.addRole(newRoleRep);
+                        courseDTO.getName(), role.toString()));
 
-                GroupRepresentation newGroupRep = new GroupRepresentation();
-                newGroupRep.setName(groupName);
-                keycloakCommunicator.addGroup(newGroupRep);
+                // Create the group rep for the new group.
+                keycloakCommunicator.addGroup(groupName);
+
+                // Connect the roles to the group.
+                keycloakCommunicator.addRolesToGroup(groupName, roleName);
             }
         }
 
@@ -208,8 +214,8 @@ public class CourseResourceExtended {
     public ResponseEntity<Void> deleteCourse(@PathVariable final Long id) {
         ResponseEntity<Void> deletedCourseResp = courseResource.deleteCourse(id);
 
-        // TODO: Really check if deletion was successful.
-        // TODO: Should cancel deletion of course if Keycloak gets errored.
+        // TODO: Check if deletion was successful.
+        // TODO: Should cancel deletion of course if Keycloak has an error.
         if (deletedCourseResp.getStatusCode() == HttpStatus.NO_CONTENT) {
             for (CourseRole role : CourseRole.values()) {
                 String roleName = KeycloakCommunicator.makeNameForCourse(
