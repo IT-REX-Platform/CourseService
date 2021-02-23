@@ -1,10 +1,7 @@
 package de.uni_stuttgart.it_rex.course.written;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import javax.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -134,6 +131,11 @@ public class KeycloakCommunicator {
     public void addRolesToGroup(String groupName, String... roleNames) {
         List<GroupRepresentation> groups = keycloak.realm(REALM)
             .groups().groups(groupName, 0, Integer.MAX_VALUE);
+
+        if (groups.size() == 0) {
+            // TODO: Maybe throw exception?
+            return;
+        }
         String groupId = groups.get(0).getId();
 
         List<RoleRepresentation> roles = new ArrayList<RoleRepresentation>(roleNames.length);
@@ -144,6 +146,25 @@ public class KeycloakCommunicator {
 
         keycloak.realm(REALM).groups().group(groupId)
             .roles().realmLevel().add(roles);
+    }
+
+    /**
+     * Adds a given user by id to a group by name.
+     *
+     * @param userId the id of the user to add to the group.
+     * @param groupName the name of the group to add the user to.
+     */
+    public void addUserToGroup(String userId, String groupName) {
+        List<GroupRepresentation> groups = keycloak.realm(REALM)
+            .groups().groups(groupName, 0, Integer.MAX_VALUE);
+
+        if (groups.size() == 0) {
+            // TODO: Maybe throw exception?
+            return;
+        }
+        String groupId = groups.get(0).getId();
+
+        keycloak.realm(REALM).users().get(userId).joinGroup(groupId);
     }
 
     /**
@@ -171,18 +192,33 @@ public class KeycloakCommunicator {
      */
     public void removeGroup(String groupName) {
         GroupsResource groups = keycloak.realm(REALM).groups();
-        String groupIdToRemove = "";
-        for (GroupRepresentation curGroup : groups.groups()) {
-            if (curGroup.getName().equals(groupName)) {
-                groupIdToRemove = curGroup.getId();
-                break;
-            }
-        }
+        List<GroupRepresentation> groupsList = groups.groups(groupName, 0, Integer.MAX_VALUE);
 
-        if (groupIdToRemove.isEmpty()) {
+        if (groupsList.size() == 0) {
+            // TODO: Maybe throw exception?
             return;
         }
+        String groupId = groupsList.get(0).getId();
 
-        groups.group(groupIdToRemove).remove();
+        groups.group(groupId).remove();
+    }
+
+    /**
+     * Removes a user by id from a group by name.
+     *
+     * @param userId the user by id to remove from the group.
+     * @param groupName the name of the group to remove the user from.
+     */
+    public void removeUserFromGroup(String userId, String groupName) {
+        List<GroupRepresentation> groups = keycloak.realm(REALM)
+            .groups().groups(groupName, 0, Integer.MAX_VALUE);
+
+        if (groups.size() == 0) {
+            // TODO: Maybe throw exception?
+            return;
+        }
+        String groupId = groups.get(0).getId();
+
+        keycloak.realm(REALM).users().get(userId).leaveGroup(groupId);
     }
 }
