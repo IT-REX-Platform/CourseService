@@ -16,7 +16,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="chapter_id" type="${uuidType}">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
