@@ -3,8 +3,8 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
+import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
-import de.uni_stuttgart.it_rex.course.written.KeycloakCommunicator;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -66,18 +66,18 @@ public class CourseResource {
     private final CourseService courseService;
 
     /**
-     * The Keycloak communicator used for Service-to-Service communication.
+     * The KeycloakAdminService used for Service-to-Service communication.
      */
-    private final KeycloakCommunicator keycloakCommunicator;
+    private final KeycloakAdminService keycloakAdminService;
 
     /**
      * Constructor.
      *
      * @param newCourseService the course service.
      */
-    public CourseResource(final CourseService newCourseService) {
+    public CourseResource(final CourseService newCourseService, final KeycloakAdminService newKeycloakAdminService) {
         this.courseService = newCourseService;
-        this.keycloakCommunicator = new KeycloakCommunicator();
+        this.keycloakAdminService = newKeycloakAdminService;
     }
 
     /**
@@ -102,20 +102,20 @@ public class CourseResource {
 
         // Add keycloak roles and groups for the course.
         for (CourseRole role : CourseRole.values()) {
-            String roleName = KeycloakCommunicator.makeNameForCourse(
-                KeycloakCommunicator.ROLE_COURSE_TEMPLATE, result.getId(), role);
-            String groupName = KeycloakCommunicator.makeNameForCourse(
-                KeycloakCommunicator.GROUP_COURSE_TEMPLATE, result.getId(), role);
+            String roleName = keycloakAdminService.makeNameForCourse(
+                keycloakAdminService.ROLE_COURSE_TEMPLATE, result.getId(), role);
+            String groupName = keycloakAdminService.makeNameForCourse(
+                keycloakAdminService.GROUP_COURSE_TEMPLATE, result.getId(), role);
 
             // Create the role rep for the new role.
-            keycloakCommunicator.addRole(roleName,
+            keycloakAdminService.addRole(roleName,
                 String.format("Role created automatically for course %s and role %s.", result.getName(), role.toString()));
 
             // Create the group rep for the new group.
-            keycloakCommunicator.addGroup(groupName);
+            keycloakAdminService.addGroup(groupName);
 
             // Connect the roles to the group.
-            keycloakCommunicator.addRolesToGroup(groupName, roleName);
+            keycloakAdminService.addRolesToGroup(groupName, roleName);
         }
 
         // TODO: Make the current user join the course.
@@ -180,13 +180,13 @@ public class CourseResource {
 
         // Remove the keycloak roles and groups.
         for (CourseRole role : CourseRole.values()) {
-            String roleName = KeycloakCommunicator.makeNameForCourse(
-                KeycloakCommunicator.ROLE_COURSE_TEMPLATE, id, role);
-            String groupName = KeycloakCommunicator.makeNameForCourse(
-                KeycloakCommunicator.GROUP_COURSE_TEMPLATE, id, role);
+            String roleName = keycloakAdminService.makeNameForCourse(
+                keycloakAdminService.ROLE_COURSE_TEMPLATE, id, role);
+            String groupName = keycloakAdminService.makeNameForCourse(
+                keycloakAdminService.GROUP_COURSE_TEMPLATE, id, role);
 
-            keycloakCommunicator.removeRole(roleName);
-            keycloakCommunicator.removeGroup(groupName);
+            keycloakAdminService.removeRole(roleName);
+            keycloakAdminService.removeGroup(groupName);
         }
 
         return ResponseEntity.noContent().headers(HeaderUtil

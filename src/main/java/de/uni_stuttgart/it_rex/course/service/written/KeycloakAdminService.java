@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.written;
+package de.uni_stuttgart.it_rex.course.service.written;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,12 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
+import org.springframework.stereotype.Service;
 
 import de.uni_stuttgart.it_rex.course.web.rest.written.CourseResource.CourseRole;
 
-public class KeycloakCommunicator {
+@Service
+public class KeycloakAdminService {
     // TODO: Extract those into a file.
     private static final String URL = "http://keycloak:9080/auth";
     private static final String REALM = "jhipster";
@@ -74,7 +76,7 @@ public class KeycloakCommunicator {
     /**
      * Creates a new communicator with an initialized {@link Keycloak} instance.
      */
-    public KeycloakCommunicator() {
+    public KeycloakAdminService() {
         keycloak = KeycloakBuilder.builder()
             .serverUrl(URL)
             .grantType(OAuth2Constants.PASSWORD)
