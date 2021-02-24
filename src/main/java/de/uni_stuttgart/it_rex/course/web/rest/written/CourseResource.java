@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -192,6 +195,53 @@ public class CourseResource {
         return ResponseEntity.noContent().headers(HeaderUtil
             .createEntityDeletionAlert(applicationName, true, ENTITY_NAME,
                 id.toString())).build();
+    }
+
+    /**
+     * Makes the currently logged in user join a course by id.
+     *
+     * @param id the id of the course to join.
+     * @return an OK request for now.
+     */
+    @PostMapping("/courses/{id}/join")
+    public ResponseEntity<Void> joinCourse(@PathVariable final UUID id) {
+        log.debug("REST request to join a course: {}", id);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        // -- If needed, a Optional<CourseRole> role can be added.
+        // CourseRole roleToJoin = role.orElse(CourseRole.PARTICIPANT);
+        String groupName = KeycloakCommunicator.makeNameForCourse(
+            KeycloakCommunicator.GROUP_COURSE_TEMPLATE, id, CourseRole.PARTICIPANT);
+
+        // TODO: Check if joining actually worked out.
+        keycloakCommunicator.addUserToGroup(auth.getName(), groupName);
+
+        return ResponseEntity.ok()
+            .build();
+    }
+
+    /**
+     * Makes the currently logged in user leave a course by id.
+     *
+     * @param id the id of the course to leave.
+     * @return an OK request for now.
+     */
+    @PostMapping("/courses/{id}/leave")
+    public ResponseEntity<Void> leaveCourse(@PathVariable final UUID id) {
+        log.debug("REST request to leave a course: {}", id);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        // TODO: Currently just tries removing the user from every group.
+        for (CourseRole curRole : CourseRole.values()) {
+            String groupName = KeycloakCommunicator.makeNameForCourse(
+                KeycloakCommunicator.GROUP_COURSE_TEMPLATE, id, curRole);
+            keycloakCommunicator.removeUserFromGroup(auth.getName(), groupName);
+        }
+
+        return ResponseEntity.ok()
+            .build();
     }
 
     /**
