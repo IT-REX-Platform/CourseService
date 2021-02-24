@@ -3,13 +3,19 @@ package de.uni_stuttgart.it_rex.course.domain.written;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -41,18 +47,6 @@ public class Chapter implements Serializable {
   private UUID courseId;
 
   /**
-   * Previous Chapter id.
-   */
-  @Column(name = "previous_id")
-  private UUID previousId;
-
-  /**
-   * Next Chapter id.
-   */
-  @Column(name = "next_id")
-  private UUID nextId;
-
-  /**
    * Start date of the Chapter.
    */
   @Column(name = "start_date")
@@ -63,6 +57,14 @@ public class Chapter implements Serializable {
    */
   @Column(name = "end_date")
   private LocalDate endDate;
+
+  /**
+   * Content items
+   */
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "chapter_id", referencedColumnName = "id")
+  @OrderBy("index")
+  private List<ContentIndex> contents;
 
   /**
    * Equals method.
@@ -82,8 +84,6 @@ public class Chapter implements Serializable {
     return Objects.equals(getId(), chapter.getId())
         && Objects.equals(getTitle(), chapter.getTitle())
         && Objects.equals(getCourseId(), chapter.getCourseId())
-        && Objects.equals(getPreviousId(), chapter.getPreviousId())
-        && Objects.equals(getNextId(), chapter.getNextId())
         && Objects.equals(getStartDate(), chapter.getStartDate())
         && Objects.equals(getEndDate(), chapter.getEndDate());
   }
@@ -99,8 +99,6 @@ public class Chapter implements Serializable {
         getId(),
         getTitle(),
         getCourseId(),
-        getPreviousId(),
-        getNextId(),
         getStartDate(),
         getEndDate());
   }
@@ -115,8 +113,6 @@ public class Chapter implements Serializable {
     return "Chapter{" + "id=" + id
         + ", title='" + title + '\''
         + ", courseId=" + courseId
-        + ", previousId=" + previousId
-        + ", nextId=" + nextId
         + ", startDate=" + startDate
         + ", endDate=" + endDate + '}';
   }
@@ -178,42 +174,6 @@ public class Chapter implements Serializable {
   /**
    * Getter.
    *
-   * @return the previous id.
-   */
-  public UUID getPreviousId() {
-    return previousId;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param newPreviousId the previous id.
-   */
-  public void setPreviousId(final UUID newPreviousId) {
-    this.previousId = newPreviousId;
-  }
-
-  /**
-   * Getter.
-   *
-   * @return the next id
-   */
-  public UUID getNextId() {
-    return nextId;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param newNextId the next id.
-   */
-  public void setNextId(final UUID newNextId) {
-    this.nextId = newNextId;
-  }
-
-  /**
-   * Getter.
-   *
    * @return the start date.
    */
   public LocalDate getStartDate() {
@@ -245,5 +205,23 @@ public class Chapter implements Serializable {
    */
   public void setEndDate(final LocalDate newEndDate) {
     this.endDate = newEndDate;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the content ids.
+   */
+  public List<ContentIndex> getContents() {
+    return contents;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newContents the content ids.
+   */
+  public void setContents(final List<ContentIndex> newContents) {
+    this.contents = newContents;
   }
 }

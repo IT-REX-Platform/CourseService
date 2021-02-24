@@ -97,22 +97,6 @@ public class ChapterService {
     if (!toDeleteOptional.isPresent()) {
       return;
     }
-
-    final Chapter toDelete = toDeleteOptional.get();
-    final Optional<Chapter> previous = chapterRepository.
-        findById(toDelete.getPreviousId());
-    final Optional<Chapter> next = chapterRepository.
-        findById(toDelete.getNextId());
-
-    previous.ifPresent(chapter -> {
-      chapter.setNextId(toDelete.getNextId());
-      chapterRepository.save(previous.get());
-    });
-    next.ifPresent(chapter -> {
-      chapter.setPreviousId(toDelete.getPreviousId());
-      chapterRepository.save(next.get());
-    });
-
     chapterRepository.deleteById(id);
   }
 

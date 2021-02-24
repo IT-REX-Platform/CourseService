@@ -39,8 +39,6 @@ public class ChapterTest {private static final UUID FIRST_ID = UUID.randomUUID()
     course1.setStartDate(FIRST_START_DATE);
     course1.setEndDate(FIRST_END_DATE);
     course1.setCourseId(FIRST_COURSE_ID);
-    course1.setNextId(FIRST_NEXT);
-    course1.setPreviousId(FIRST_PREVIOUS);
 
     Chapter course2 = new Chapter();
     course2.setId(SECOND_ID);
@@ -48,8 +46,6 @@ public class ChapterTest {private static final UUID FIRST_ID = UUID.randomUUID()
     course2.setStartDate(SECOND_START_DATE);
     course2.setEndDate(SECOND_END_DATE);
     course2.setCourseId(SECOND_COURSE_ID);
-    course2.setNextId(SECOND_NEXT);
-    course2.setPreviousId(SECOND_PREVIOUS);
 
     Chapter course3 = new Chapter();
     course3.setId(FIRST_ID);
@@ -57,8 +53,6 @@ public class ChapterTest {private static final UUID FIRST_ID = UUID.randomUUID()
     course3.setStartDate(FIRST_START_DATE);
     course3.setEndDate(FIRST_END_DATE);
     course3.setCourseId(FIRST_COURSE_ID);
-    course3.setNextId(FIRST_NEXT);
-    course3.setPreviousId(FIRST_PREVIOUS);
 
     assertEquals(course1.hashCode(), course1.hashCode());
     assertEquals(course1, course1);

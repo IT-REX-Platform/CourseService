@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -276,28 +275,20 @@ public class ChapterResourceIT {
   @Transactional
   public void deleteCourse() throws Exception {
     // Initialize the database
-    final Chapter  prev = chapterRepository.saveAndFlush(previousChapter);
-    final Chapter  mid =  chapterRepository.saveAndFlush(middleChapter);
-    final Chapter  next = chapterRepository.saveAndFlush(nextChapter);
+    final Chapter toDelete = chapterRepository.saveAndFlush(middleChapter);
 
-    mid.setPreviousId(prev.getId());
-    mid.setNextId(next.getId());
-
-    chapterRepository.saveAndFlush(mid);
+    chapterRepository.saveAndFlush(toDelete);
 
     int databaseSizeBeforeDelete = chapterRepository.findAll().size();
 
     // Delete the chapter
-    restChapterMockMvc.perform(delete("/api/chapters/{id}", mid.getId()).with(csrf())
+    restChapterMockMvc.perform(delete("/api/chapters/{id}", toDelete.getId()).with(csrf())
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
 
     // Validate the database contains one less item
     List<Chapter> chapterList = chapterRepository.findAll();
     assertThat(chapterList).hasSize(databaseSizeBeforeDelete - 1);
-
-    assertEquals(prev.getId(), previousChapter.getId());
-    assertEquals(next.getId(), nextChapter.getId());
   }
 
   @Test
