@@ -59,9 +59,11 @@ public class Chapter implements Serializable {
   private LocalDate endDate;
 
   /**
-   * Content items
+   * Content items.
    */
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      orphanRemoval = true)
   @JoinColumn(name = "chapter_id", referencedColumnName = "id")
   @OrderBy("index")
   private List<ContentIndex> contents;
@@ -80,12 +82,13 @@ public class Chapter implements Serializable {
     if (!(o instanceof Chapter)) {
       return false;
     }
-    Chapter chapter = (Chapter) o;
+    final Chapter chapter = (Chapter) o;
     return Objects.equals(getId(), chapter.getId())
         && Objects.equals(getTitle(), chapter.getTitle())
         && Objects.equals(getCourseId(), chapter.getCourseId())
         && Objects.equals(getStartDate(), chapter.getStartDate())
-        && Objects.equals(getEndDate(), chapter.getEndDate());
+        && Objects.equals(getEndDate(), chapter.getEndDate())
+        && Objects.equals(getContents(), chapter.getContents());
   }
 
   /**
@@ -95,12 +98,12 @@ public class Chapter implements Serializable {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(
-        getId(),
+    return Objects.hash(getId(),
         getTitle(),
         getCourseId(),
         getStartDate(),
-        getEndDate());
+        getEndDate(),
+        getContents());
   }
 
   /**

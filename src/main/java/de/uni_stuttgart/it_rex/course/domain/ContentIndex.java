@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain.written;
+package de.uni_stuttgart.it_rex.course.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -35,6 +35,12 @@ public class ContentIndex implements Serializable {
    */
   @Column(name = "content_id")
   private UUID contentId;
+
+  /**
+   * Chapter id.
+   */
+  @Column(name = "chapter_id")
+  private UUID chapterId;
 
   /**
    * Getter.
@@ -88,6 +94,24 @@ public class ContentIndex implements Serializable {
    */
   public void setContentId(final UUID newContentId) {
     this.contentId = newContentId;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return chapter id
+   */
+  public UUID getChapterId() {
+    return chapterId;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newChapterId the chapter id
+   */
+  public void setChapterId(final UUID newChapterId) {
+    this.chapterId = newChapterId;
   }
 
   /**
