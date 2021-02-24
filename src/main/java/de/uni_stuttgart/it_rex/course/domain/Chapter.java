@@ -62,7 +62,7 @@ public class Chapter implements Serializable {
    * Content items.
    */
   @OneToMany(cascade = CascadeType.ALL,
-      fetch = FetchType.LAZY,
+      fetch = FetchType.EAGER,
       orphanRemoval = true)
   @JoinColumn(name = "chapter_id", referencedColumnName = "id")
   @OrderBy("index")
