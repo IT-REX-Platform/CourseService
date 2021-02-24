@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.course.written;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -11,7 +12,7 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
-import de.uni_stuttgart.it_rex.course.written.web.rest.CourseResourceExtended.CourseRole;
+import de.uni_stuttgart.it_rex.course.web.rest.written.CourseResource.CourseRole;
 
 public class KeycloakCommunicator {
     // TODO: Extract those into a file.
@@ -46,7 +47,7 @@ public class KeycloakCommunicator {
      * @param role the role to make the name for.
      * @return a string containing the filled-in name.
      */
-    public static String makeNameForCourse(String template, Long courseID, CourseRole role) {
+    public static String makeNameForCourse(String template, UUID courseID, CourseRole role) {
         return String.format(template, role.toString(), courseID);
     }
 
