@@ -3,10 +3,6 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
-import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
-import de.uni_stuttgart.it_rex.course.service.written.RexAuthz;
-import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;
-import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.RexAuthzConstants;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -14,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -62,18 +56,12 @@ public class CourseResource {
     private final CourseService courseService;
 
     /**
-     * The KeycloakAdminService used for Service-to-Service communication.
-     */
-    private final KeycloakAdminService keycloakAdminService;
-
-    /**
      * Constructor.
      *
      * @param newCourseService the course service.
      */
-    public CourseResource(final CourseService newCourseService, final KeycloakAdminService newKeycloakAdminService) {
+    public CourseResource(final CourseService newCourseService) {
         this.courseService = newCourseService;
-        this.keycloakAdminService = newKeycloakAdminService;
     }
 
     /**
@@ -93,30 +81,7 @@ public class CourseResource {
             throw new BadRequestAlertException("A new course cannot already "
                 + "have an ID", ENTITY_NAME, "idexists");
         }
-
-        Course result = courseService.save(course);
-
-        // Add keycloak roles and groups for the course.
-        for (CourseRole role : CourseRole.values()) {
-            String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, result.getId(), role);
-            String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, result.getId(),
-                    role);
-
-            // Create the role rep for the new role.
-            keycloakAdminService.addRole(roleName,
-                String.format("Role created automatically for course %s and role %s.", result.getName(), role.toString()));
-
-            // Create the group rep for the new group.
-            keycloakAdminService.addGroup(groupName);
-
-            // Connect the roles to the group.
-            keycloakAdminService.addRolesToGroup(groupName, roleName);
-        }
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, result.getId(), CourseRole.OWNER);
-        keycloakAdminService.addUserToGroup(auth.getName(), groupName);
-
+        Course result = courseService.create(course);
         return ResponseEntity
                 .created(new URI("/api/courses/" + result.getId())).headers(HeaderUtil
                         .createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -172,18 +137,7 @@ public class CourseResource {
     @DeleteMapping("/courses/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
         log.debug("REST request to delete Course : {}", id);
-
         courseService.delete(id);
-
-        // Remove the keycloak roles and groups.
-        for (CourseRole role : CourseRole.values()) {
-            String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, id, role);
-            String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, role);
-
-            keycloakAdminService.removeRole(roleName);
-            keycloakAdminService.removeGroup(groupName);
-        }
-
         return ResponseEntity.noContent().headers(HeaderUtil
             .createEntityDeletionAlert(applicationName, true, ENTITY_NAME,
                 id.toString())).build();
@@ -199,14 +153,7 @@ public class CourseResource {
     public ResponseEntity<Void> joinCourse(@PathVariable final UUID id) {
         log.debug("REST request to join a course: {}", id);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        // -- If needed, a Optional<CourseRole> role can be added.
-        // CourseRole roleToJoin = role.orElse(CourseRole.PARTICIPANT);
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
-
-        // TODO: Check if joining actually worked out.
-        keycloakAdminService.addUserToGroup(auth.getName(), groupName);
+        courseService.join(id);
 
         return ResponseEntity.ok().build();
     }
@@ -221,17 +168,9 @@ public class CourseResource {
     public ResponseEntity<Void> leaveCourse(@PathVariable final UUID id) {
         log.debug("REST request to leave a course: {}", id);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        courseService.leave(id);
 
-        // TODO: Currently just tries removing the user from every group.
-        for (CourseRole curRole : CourseRole.values()) {
-            String groupName = RexAuthz.makeNameForCourse(
-                RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, curRole);
-                keycloakAdminService.removeUserFromGroup(auth.getName(), groupName);
-        }
-
-        return ResponseEntity.ok()
-            .build();
+        return ResponseEntity.ok().build();
     }
 
     /**

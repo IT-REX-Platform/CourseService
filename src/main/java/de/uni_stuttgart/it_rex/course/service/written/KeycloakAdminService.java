@@ -26,7 +26,6 @@ public class KeycloakAdminService {
     final String clientId;
     final String clientSecret;
 
-
     /**
      * The keycloak instance used by the communicator.
      */
