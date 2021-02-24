@@ -113,12 +113,14 @@ public class CourseResource {
             keycloakAdminService.addRolesToGroup(groupName, roleName);
         }
 
-        // TODO: Make the current user join the course.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, result.getId(), CourseRole.OWNER);
+        keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
-        return ResponseEntity.created(new URI("/api/courses/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName,
-                true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        return ResponseEntity
+                .created(new URI("/api/courses/" + result.getId())).headers(HeaderUtil
+                        .createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     /**
@@ -201,14 +203,12 @@ public class CourseResource {
 
         // -- If needed, a Optional<CourseRole> role can be added.
         // CourseRole roleToJoin = role.orElse(CourseRole.PARTICIPANT);
-        String groupName = KeycloakCommunicator.makeNameForCourse(
-            KeycloakCommunicator.GROUP_COURSE_TEMPLATE, id, CourseRole.PARTICIPANT);
+        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
 
         // TODO: Check if joining actually worked out.
-        keycloakCommunicator.addUserToGroup(auth.getName(), groupName);
+        keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
-        return ResponseEntity.ok()
-            .build();
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -225,9 +225,9 @@ public class CourseResource {
 
         // TODO: Currently just tries removing the user from every group.
         for (CourseRole curRole : CourseRole.values()) {
-            String groupName = KeycloakCommunicator.makeNameForCourse(
-                KeycloakCommunicator.GROUP_COURSE_TEMPLATE, id, curRole);
-            keycloakCommunicator.removeUserFromGroup(auth.getName(), groupName);
+            String groupName = RexAuthz.makeNameForCourse(
+                RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, curRole);
+                keycloakAdminService.removeUserFromGroup(auth.getName(), groupName);
         }
 
         return ResponseEntity.ok()
