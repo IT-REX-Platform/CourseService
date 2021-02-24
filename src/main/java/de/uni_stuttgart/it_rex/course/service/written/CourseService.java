@@ -42,7 +42,7 @@ public class CourseService {
      * Constructor.
      *
      * @param newCourseRepository the course repository.
-     * @param newCourseMapper the course mapper.
+     * @param newCourseMapper     the course mapper.
      */
     @Autowired
     public CourseService(final CourseRepository newCourseRepository,
@@ -120,17 +120,37 @@ public class CourseService {
      * Method finds all courses and filters them by given parameters.
      *
      * @param publishState Publish state of course.
+     * @param activeOnly   Set true to only include active courses (current time
+     *                     between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
      */
     public List<Course> findAll(
-        final Optional<PUBLISHSTATE> publishState) {
+        final Optional<PUBLISHSTATE> publishState,
+        final Optional<Boolean> activeOnly) {
         LOGGER.debug("Request to get filtered Courses");
 
         LOGGER.trace("Applying filters.");
         Course courseExample = applyFiltersToExample(publishState);
 
-        return courseRepository
-            .findAll(Example.of(courseExample));
+        // man möge mir den umstand verzeihen, dass das oben in manchen fällen
+        // nicht verwendet wird und die folgenden zeilen das schönste
+        // sind, was ich in diesem projekt produziert habe </sarcasm>
+        // (konzeptcode ahead)
+
+        List<Course> courses = null;
+
+        if (activeOnly.isPresent()) {
+            courses = (
+                publishState.isPresent()
+                    ? courseRepository.findAllActiveWithPublishState(
+                        publishState.orElse(PUBLISHSTATE.PUBLISHED)
+                    )
+                    : courseRepository.findAllActive());
+        } else {
+            courses = courseRepository.findAll(Example.of(courseExample));
+        }
+
+        return courses;
     }
 
     /**
