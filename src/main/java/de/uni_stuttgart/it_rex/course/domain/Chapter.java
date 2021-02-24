@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain.written;
+package de.uni_stuttgart.it_rex.course.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

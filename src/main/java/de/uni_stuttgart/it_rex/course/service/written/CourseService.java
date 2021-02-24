@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import de.uni_stuttgart.it_rex.course.domain.written.Course;
+import de.uni_stuttgart.it_rex.course.domain.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;

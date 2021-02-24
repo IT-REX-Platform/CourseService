@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
+import de.uni_stuttgart.it_rex.course.domain.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import org.junit.jupiter.api.Test;
 

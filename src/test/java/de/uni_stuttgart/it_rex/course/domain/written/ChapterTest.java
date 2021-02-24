@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
+import de.uni_stuttgart.it_rex.course.domain.Chapter;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

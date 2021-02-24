@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written.Chapter;
+import de.uni_stuttgart.it_rex.course.domain.Chapter;
 import de.uni_stuttgart.it_rex.course.service.written.ChapterService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;

@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain.written;
+package de.uni_stuttgart.it_rex.course.domain;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import org.hibernate.annotations.Cache;
