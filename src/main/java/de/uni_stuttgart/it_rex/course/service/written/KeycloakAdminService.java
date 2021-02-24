@@ -13,7 +13,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.stereotype.Service;
 
-import de.uni_stuttgart.it_rex.course.web.rest.written.CourseResource.CourseRole;
+import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;
 
 @Service
 public class KeycloakAdminService {
@@ -25,53 +25,9 @@ public class KeycloakAdminService {
     private static final String CLIENT_ID = "admin-cli";
 
     /**
-     * The string template for a role created by the course manager.
-     * The first parameter is the role, the second one is the course ID.
-     */
-    public static final String ROLE_COURSE_TEMPLATE = "ROLE_COURSE_%1$s_%2$s";
-
-    /**
-     * The string template for a group created by the course manager.
-     * The first parameter is the role, the second one is the course ID.
-     */
-    public static final String GROUP_COURSE_TEMPLATE = "COURSE_%2$s_COURSE_%1$s";
-
-    /**
      * The keycloak instance used by the communicator.
      */
     private Keycloak keycloak;
-
-    /**
-     * Returns a name given a template and course id and role.
-     *
-     * @param template the format template which will be filled in.
-     * @param courseID the id of the course to fill in.
-     * @param role the role to make the name for.
-     * @return a string containing the filled-in name.
-     */
-    public static String makeNameForCourse(String template, UUID courseID, CourseRole role) {
-        return String.format(template, role.toString(), courseID);
-    }
-
-    /**
-     * Returns the id from a given, previously generated role or group name.
-     *
-     * @param roleOrGroupName the name to extract the course id from.
-     * @return the course id in the given role or group name string.
-     */
-    public static Long getCourseIdFromName(String roleOrGroupName) {
-        String[] splitStr = roleOrGroupName.split("_");
-        if (splitStr.length != 4) {
-            return -1L;
-        }
-
-        if (splitStr[0] == "ROLE") {
-            return Long.parseLong(splitStr[4]);
-        } else {
-            return Long.parseLong(splitStr[2]);
-        }
-    }
-
 
     /**
      * Creates a new communicator with an initialized {@link Keycloak} instance.
@@ -135,7 +91,7 @@ public class KeycloakAdminService {
         List<GroupRepresentation> groups = keycloak.realm(REALM)
             .groups().groups(groupName, 0, Integer.MAX_VALUE);
 
-        if (groups.size() == 0) {
+        if (groups.isEmpty()) {
             // TODO: Maybe throw exception?
             return;
         }
@@ -147,8 +103,7 @@ public class KeycloakAdminService {
                 .roles().get(curRoleName).toRepresentation());
         }
 
-        keycloak.realm(REALM).groups().group(groupId)
-            .roles().realmLevel().add(roles);
+        keycloak.realm(REALM).groups().group(groupId).roles().realmLevel().add(roles);
     }
 
     /**
@@ -158,10 +113,9 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to add the user to.
      */
     public void addUserToGroup(String userId, String groupName) {
-        List<GroupRepresentation> groups = keycloak.realm(REALM)
-            .groups().groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(REALM).groups().groups(groupName, 0, Integer.MAX_VALUE);
 
-        if (groups.size() == 0) {
+        if (groups.isEmpty()) {
             // TODO: Maybe throw exception?
             return;
         }
@@ -194,16 +148,15 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to remove.
      */
     public void removeGroup(String groupName) {
-        GroupsResource groups = keycloak.realm(REALM).groups();
-        List<GroupRepresentation> groupsList = groups.groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(REALM).groups().groups(groupName, 0, Integer.MAX_VALUE);
 
-        if (groupsList.size() == 0) {
+        if (groups.isEmpty()) {
             // TODO: Maybe throw exception?
             return;
         }
-        String groupId = groupsList.get(0).getId();
+        String groupId = groups.get(0).getId();
 
-        groups.group(groupId).remove();
+        keycloak.realm(REALM).groups().group(groupId).remove();
     }
 
     /**
@@ -213,15 +166,13 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to remove the user from.
      */
     public void removeUserFromGroup(String userId, String groupName) {
-        List<GroupRepresentation> groups = keycloak.realm(REALM)
-            .groups().groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(REALM).groups().groups(groupName, 0, Integer.MAX_VALUE);
 
-        if (groups.size() == 0) {
+        if (groups.isEmpty()) {
             // TODO: Maybe throw exception?
             return;
         }
         String groupId = groups.get(0).getId();
-
         keycloak.realm(REALM).users().get(userId).leaveGroup(groupId);
     }
 }

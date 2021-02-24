@@ -4,6 +4,9 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
+import de.uni_stuttgart.it_rex.course.service.written.RexAuthz;
+import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;
+import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.RexAuthzConstants;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -34,16 +37,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class CourseResource {
-
-    /**
-     * The role a course participant can have.
-     */
-    public enum CourseRole {
-        OWNER,
-        MANAGER,
-        PARTICIPANT
-    }
-
     /**
      * Logger.
      */
@@ -102,10 +95,9 @@ public class CourseResource {
 
         // Add keycloak roles and groups for the course.
         for (CourseRole role : CourseRole.values()) {
-            String roleName = keycloakAdminService.makeNameForCourse(
-                keycloakAdminService.ROLE_COURSE_TEMPLATE, result.getId(), role);
-            String groupName = keycloakAdminService.makeNameForCourse(
-                keycloakAdminService.GROUP_COURSE_TEMPLATE, result.getId(), role);
+            String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, result.getId(), role);
+            String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, result.getId(),
+                    role);
 
             // Create the role rep for the new role.
             keycloakAdminService.addRole(roleName,
@@ -180,10 +172,8 @@ public class CourseResource {
 
         // Remove the keycloak roles and groups.
         for (CourseRole role : CourseRole.values()) {
-            String roleName = keycloakAdminService.makeNameForCourse(
-                keycloakAdminService.ROLE_COURSE_TEMPLATE, id, role);
-            String groupName = keycloakAdminService.makeNameForCourse(
-                keycloakAdminService.GROUP_COURSE_TEMPLATE, id, role);
+            String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, id, role);
+            String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, role);
 
             keycloakAdminService.removeRole(roleName);
             keycloakAdminService.removeGroup(groupName);
