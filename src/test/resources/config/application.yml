@@ -82,6 +82,10 @@ spring:
         provider:
           oidc:
             issuer-uri: http://DO_NOT_CALL:9080/auth/realms/jhipster
+        registration:
+          oidc:
+            client-id: internal
+            client-secret: internal
 
 server:
   port: 10344
@@ -122,3 +126,8 @@ jhipster:
 # ===================================================================
 
 # application:
+
+it-rex:
+  keycloak-admin-service:
+    server-uri: http://keycloak:9080/auth/
+    realm: jhipster
