@@ -2,27 +2,30 @@ package de.uni_stuttgart.it_rex.course.service.written;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.admin.client.resource.GroupsResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.stereotype.Service;
-
-import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;
+import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class KeycloakAdminService {
-    // TODO: Extract those into a file.
-    private static final String URL = "http://keycloak:9080/auth";
-    private static final String REALM = "jhipster";
-    private static final String USER = "admin";
-    private static final String PASSWD = "admin";
-    private static final String CLIENT_ID = "admin-cli";
+    /**
+     * Logger.
+     */
+    private static final Logger log = LoggerFactory.getLogger(KeycloakAdminService.class);
+
+    final String serverUri;
+    final String realm;
+    final String clientId;
+    final String clientSecret;
+
 
     /**
      * The keycloak instance used by the communicator.
@@ -32,14 +35,33 @@ public class KeycloakAdminService {
     /**
      * Creates a new communicator with an initialized {@link Keycloak} instance.
      */
-    public KeycloakAdminService() {
+    public KeycloakAdminService(
+        @Value("${it-rex.keycloak-admin-service.server-uri}")
+        final String serverUriIn,
+        @Value("${it-rex.keycloak-admin-service.realm}")
+        final String realmIn,
+        @Value("${spring.security.oauth2.client.registration.oidc.client-id}")
+        final String clientIdIn,
+        @Value("${spring.security.oauth2.client.registration.oidc.client-secret}")
+        final String clientSecretIn
+    ) {
+        serverUri = serverUriIn;
+        realm = realmIn;
+        clientId = clientIdIn;
+        clientSecret = clientSecretIn;
+
+        log.debug("KeycloakAdminService ctor");
+        log.debug("serverUri: {}", serverUri);
+        log.debug("realm: {}", realm);
+        log.debug("clientId: {}", clientId);
+        log.debug("clientSecret: {}", clientSecret);
+
         keycloak = KeycloakBuilder.builder()
-            .serverUrl(URL)
-            .grantType(OAuth2Constants.PASSWORD)
-            .realm("master")
-            .clientId(CLIENT_ID)
-            .username(USER)
-            .password(PASSWD)
+            .serverUrl(serverUri)
+            .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+            .realm(realm)
+            .clientId(clientId)
+            .clientSecret(clientSecret)
             .build();
 
         // TODO: Resteasy client for pooling, for handling multiple requests at the same time.
@@ -67,7 +89,7 @@ public class KeycloakAdminService {
         RoleRepresentation newRoleRep = new RoleRepresentation();
         newRoleRep.setName(roleName);
         newRoleRep.setDescription(description);
-        keycloak.realm(REALM).roles().create(newRoleRep);
+        keycloak.realm(realm).roles().create(newRoleRep);
     }
 
     /**
@@ -78,7 +100,7 @@ public class KeycloakAdminService {
     public void addGroup(String groupName) {
         GroupRepresentation newGroupRep = new GroupRepresentation();
         newGroupRep.setName(groupName);
-        keycloak.realm(REALM).groups().add(newGroupRep);
+        keycloak.realm(realm).groups().add(newGroupRep);
     }
 
     /**
@@ -88,7 +110,7 @@ public class KeycloakAdminService {
      * @param roleNames the name(s) of the role(s) to add to the group.
      */
     public void addRolesToGroup(String groupName, String... roleNames) {
-        List<GroupRepresentation> groups = keycloak.realm(REALM)
+        List<GroupRepresentation> groups = keycloak.realm(realm)
             .groups().groups(groupName, 0, Integer.MAX_VALUE);
 
         if (groups.isEmpty()) {
@@ -97,13 +119,13 @@ public class KeycloakAdminService {
         }
         String groupId = groups.get(0).getId();
 
-        List<RoleRepresentation> roles = new ArrayList<RoleRepresentation>(roleNames.length);
+        List<RoleRepresentation> roles = new ArrayList<>(roleNames.length);
         for (String curRoleName : roleNames) {
-            roles.add(keycloak.realm(REALM)
+            roles.add(keycloak.realm(realm)
                 .roles().get(curRoleName).toRepresentation());
         }
 
-        keycloak.realm(REALM).groups().group(groupId).roles().realmLevel().add(roles);
+        keycloak.realm(realm).groups().group(groupId).roles().realmLevel().add(roles);
     }
 
     /**
@@ -113,7 +135,7 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to add the user to.
      */
     public void addUserToGroup(String userId, String groupName) {
-        List<GroupRepresentation> groups = keycloak.realm(REALM).groups().groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(realm).groups().groups(groupName, 0, Integer.MAX_VALUE);
 
         if (groups.isEmpty()) {
             // TODO: Maybe throw exception?
@@ -121,7 +143,7 @@ public class KeycloakAdminService {
         }
         String groupId = groups.get(0).getId();
 
-        keycloak.realm(REALM).users().get(userId).joinGroup(groupId);
+        keycloak.realm(realm).users().get(userId).joinGroup(groupId);
     }
 
     /**
@@ -130,7 +152,7 @@ public class KeycloakAdminService {
      * @return the users in Keycloak.
      */
     public UsersResource getUsers() {
-        return keycloak.realm(REALM).users();
+        return keycloak.realm(realm).users();
     }
 
     /**
@@ -139,7 +161,7 @@ public class KeycloakAdminService {
      * @param roleName the name of the role to remove.
      */
     public void removeRole(String roleName) {
-        keycloak.realm(REALM).roles().deleteRole(roleName);
+        keycloak.realm(realm).roles().deleteRole(roleName);
     }
 
     /**
@@ -148,7 +170,7 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to remove.
      */
     public void removeGroup(String groupName) {
-        List<GroupRepresentation> groups = keycloak.realm(REALM).groups().groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(realm).groups().groups(groupName, 0, Integer.MAX_VALUE);
 
         if (groups.isEmpty()) {
             // TODO: Maybe throw exception?
@@ -156,7 +178,7 @@ public class KeycloakAdminService {
         }
         String groupId = groups.get(0).getId();
 
-        keycloak.realm(REALM).groups().group(groupId).remove();
+        keycloak.realm(realm).groups().group(groupId).remove();
     }
 
     /**
@@ -166,13 +188,13 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to remove the user from.
      */
     public void removeUserFromGroup(String userId, String groupName) {
-        List<GroupRepresentation> groups = keycloak.realm(REALM).groups().groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(realm).groups().groups(groupName, 0, Integer.MAX_VALUE);
 
         if (groups.isEmpty()) {
             // TODO: Maybe throw exception?
             return;
         }
         String groupId = groups.get(0).getId();
-        keycloak.realm(REALM).users().get(userId).leaveGroup(groupId);
+        keycloak.realm(realm).users().get(userId).leaveGroup(groupId);
     }
 }
