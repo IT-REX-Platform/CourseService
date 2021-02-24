@@ -5,6 +5,7 @@ import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -79,6 +81,9 @@ public class CourseResourceIT {
 
     @Autowired
     private MockMvc restCourseMockMvc;
+
+    @MockBean
+    private KeycloakAdminService keycloakAdminService;
 
     private Course course;
 
@@ -180,7 +185,7 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
     }
-    
+
     @Test
     @Transactional
     public void getCourse() throws Exception {
