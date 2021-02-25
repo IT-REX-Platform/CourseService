@@ -5,16 +5,22 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -76,6 +82,16 @@ public class Course implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "publish_state")
     private PUBLISHSTATE publishState;
+
+    /**
+     * Chapter items.
+     */
+    @OneToMany(cascade = CascadeType.ALL,
+        fetch = FetchType.EAGER,
+        orphanRemoval = true)
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @OrderBy("index")
+    private List<ChapterIndex> chapters;
 
     /**
      * Getter.
@@ -201,6 +217,24 @@ public class Course implements Serializable {
      */
     public void setPublishState(final PUBLISHSTATE newPublishState) {
         this.publishState = newPublishState;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the chapters
+     */
+    public List<ChapterIndex> getChapters() {
+        return chapters;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newChapters the chapters
+     */
+    public void setChapters(final List<ChapterIndex> newChapters) {
+        this.chapters = newChapters;
     }
 
     /**
