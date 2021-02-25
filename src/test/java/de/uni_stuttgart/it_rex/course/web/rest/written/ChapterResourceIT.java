@@ -25,9 +25,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import static de.uni_stuttgart.it_rex.course.utils.written.ContentIndexUtil.createContentIndexList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +63,7 @@ public class ChapterResourceIT {
   private static final LocalDate SECOND_END_DATE = LocalDate.now(ZoneId.systemDefault());
   private static final LocalDate THIRD_END_DATE = LocalDate.now(ZoneId.systemDefault());
 
-  private static final List<ContentIndex> EXPECTED_CONTENTS = createContentList(34);
+  private static final List<ContentIndex> EXPECTED_CONTENTS = createContentIndexList(34);
 
   private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 
@@ -90,17 +89,6 @@ public class ChapterResourceIT {
   private static List<ContentIndex> firstContents;
   private static List<ContentIndex> secondContents;
   private static List<ContentIndex> thirdContents;
-
-  private static ContentIndex createContentIndex(final int index) {
-    ContentIndex contentIndex = new ContentIndex();
-    contentIndex.setIndex(index);
-    contentIndex.setContentId(UUID.randomUUID());
-    return contentIndex;
-  }
-
-  private static List<ContentIndex> createContentList(final int number) {
-    return IntStream.range(0, number).mapToObj(i -> createContentIndex(i)).collect(Collectors.toList());
-  }
 
   /**
    * Create an entity for this test.
@@ -167,9 +155,9 @@ public class ChapterResourceIT {
 
   @BeforeEach
   public void initTest() {
-    firstContents = createContentList(34);
-    secondContents = createContentList(69);
-    thirdContents = createContentList(42);
+    firstContents = createContentIndexList(34);
+    secondContents = createContentIndexList(69);
+    thirdContents = createContentIndexList(42);
     chapter1 = createFirstChapter(em);
     chapter2 = createSecondChapter(em);
     chapter3 = createThirdChapter(em);

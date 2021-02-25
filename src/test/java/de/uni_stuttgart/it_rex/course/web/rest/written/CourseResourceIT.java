@@ -2,10 +2,12 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
-import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.Course;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
+import de.uni_stuttgart.it_rex.course.utils.written.ChapterIndexUtil;
+import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +25,11 @@ import javax.persistence.EntityManager;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -70,6 +75,8 @@ public class CourseResourceIT {
     private static final String NEW_DESCRIPTION = "Really cool Course";
     private static final PUBLISHSTATE NEW_PUBLISHED_STATE = PUBLISHSTATE.PUBLISHED;
 
+    private static final int NUMBER_COURSES = 3;
+
     @Autowired
     private CourseRepository courseRepository;
 
@@ -101,6 +108,7 @@ public class CourseResourceIT {
         course.setMaxFoodSum(DEFAULT_MAX_FOOD_SUM);
         course.setCourseDescription(DEFAULT_COURSE_DESCRIPTION);
         course.setPublishState(DEFAULT_PUBLISH_STATE);
+        course.setChapters(new ArrayList<>());
         return course;
     }
     /**
@@ -117,12 +125,37 @@ public class CourseResourceIT {
         course.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
         course.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
         course.setPublishState(UPDATED_PUBLISH_STATE);
+        course.setChapters(new ArrayList<>());
         return course;
     }
 
     @BeforeEach
     public void initTest() {
         course = createEntity(em);
+    }
+
+    @Test
+    @Transactional
+    public void createCoursesWithChapters() throws Exception {
+        int databaseSizeBeforeCreate = courseRepository.findAll().size();
+
+        List<Course> createdCourses = IntStream.range(0, NUMBER_COURSES).mapToObj(i -> CourseUtil.createCourse()).collect(Collectors.toList());
+
+        // Create the Courses
+        for (Course createdCourse : createdCourses) {
+            restCourseMockMvc.perform(post("/api/courses").with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(createdCourse)))
+                .andExpect(status().isCreated());
+        }
+
+        // Validate the Courses in the database
+        List<Course> results = courseRepository.findAll();
+        assertThat(results).hasSize(databaseSizeBeforeCreate + 3);
+
+        for (int i = 0; i < results.size(); i++) {
+            CourseUtil.equals(createdCourses.get(i), results.get(i));
+        }
     }
 
     @Test
@@ -216,21 +249,20 @@ public class CourseResourceIT {
     @Transactional
     public void updateCourse() throws Exception {
         // Initialize the database
-        courseRepository.saveAndFlush(course);
+        UUID id = courseRepository.saveAndFlush(course).getId();
 
         int databaseSizeBeforeUpdate = courseRepository.findAll().size();
 
         // Update the course
-        Course updatedCourse = courseRepository.findById(course.getId()).get();
-        // Disconnect from session so that the updates on updatedCourse are not directly saved in db
-        em.detach(updatedCourse);
-
+        Course updatedCourse = new Course();
+        updatedCourse.setId(id);
         updatedCourse.setName(UPDATED_NAME);
         updatedCourse.setStartDate(UPDATED_START_DATE);
         updatedCourse.setEndDate(UPDATED_END_DATE);
         updatedCourse.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
         updatedCourse.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
         updatedCourse.setPublishState(UPDATED_PUBLISH_STATE);
+        updatedCourse.setChapters(ChapterIndexUtil.createChapterIndexList(id, 34));
 
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
