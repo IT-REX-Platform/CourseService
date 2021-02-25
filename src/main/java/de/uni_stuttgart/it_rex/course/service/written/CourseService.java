@@ -6,7 +6,6 @@ import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import de.uni_stuttgart.it_rex.course.service.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;
-import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.RexAuthzConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,9 +84,8 @@ public class CourseService {
 
         // Add keycloak roles and groups for the course.
         for (CourseRole role : CourseRole.values()) {
-            String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, newCourse.getId(), role);
-            String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(),
-                    role);
+            String roleName = RexAuthz.getCourseRoleString(newCourse.getId(), role);
+            String groupName = RexAuthz.getCourseGroupString(newCourse.getId(), role);
 
             // Create the role rep for the new role.
             keycloakAdminService.addRole(roleName,
@@ -101,7 +99,7 @@ public class CourseService {
         }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(), CourseRole.OWNER);
+        String groupName = RexAuthz.getCourseGroupString(newCourse.getId(), CourseRole.OWNER);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
         return course;
@@ -141,8 +139,8 @@ public class CourseService {
 
         // Remove the keycloak roles and groups.
         for (CourseRole role : CourseRole.values()) {
-            String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, id, role);
-            String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, role);
+            String roleName = RexAuthz.getCourseRoleString(id, role);
+            String groupName = RexAuthz.getCourseGroupString(id, role);
 
             keycloakAdminService.removeRole(roleName);
             keycloakAdminService.removeGroup(groupName);
@@ -204,13 +202,13 @@ public class CourseService {
 
     public void join(final UUID id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
+        String groupName = RexAuthz.getCourseGroupString(id, CourseRole.PARTICIPANT);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
     }
 
     public void leave(final UUID id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
+        String groupName = RexAuthz.getCourseGroupString(id, CourseRole.PARTICIPANT);
         keycloakAdminService.removeUserFromGroup(auth.getName(), groupName);
     }
 
