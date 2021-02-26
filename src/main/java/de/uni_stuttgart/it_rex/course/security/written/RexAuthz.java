@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.service.written;
+package de.uni_stuttgart.it_rex.course.security.written;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Service;
 
 /**
  * Provides functionality to check the roles of a user.
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Service;
  * <p>
  * Roles need to start with "ROLE_"
  */
-@Service
 public final class RexAuthz {
     private RexAuthz() {
     }

@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.service.written;
+package de.uni_stuttgart.it_rex.course.security.written;
 
 
 public class RexAuthzException extends RuntimeException {
