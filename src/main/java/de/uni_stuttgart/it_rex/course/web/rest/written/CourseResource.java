@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,7 +34,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class CourseResource {
-
     /**
      * Logger.
      */
@@ -81,11 +81,11 @@ public class CourseResource {
             throw new BadRequestAlertException("A new course cannot already "
                 + "have an ID", ENTITY_NAME, "idexists");
         }
-        Course result = courseService.save(course);
-        return ResponseEntity.created(new URI("/api/courses/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName,
-                true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        Course result = courseService.create(course);
+        return ResponseEntity
+                .created(new URI("/api/courses/" + result.getId())).headers(HeaderUtil
+                        .createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     /**
@@ -141,6 +141,36 @@ public class CourseResource {
         return ResponseEntity.noContent().headers(HeaderUtil
             .createEntityDeletionAlert(applicationName, true, ENTITY_NAME,
                 id.toString())).build();
+    }
+
+    /**
+     * Makes the currently logged in user join a course by id.
+     *
+     * @param id the id of the course to join.
+     * @return an OK request for now.
+     */
+    @PostMapping("/courses/{id}/join")
+    public ResponseEntity<Void> joinCourse(@PathVariable final UUID id) {
+        log.debug("REST request to join a course: {}", id);
+
+        courseService.join(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Makes the currently logged in user leave a course by id.
+     *
+     * @param id the id of the course to leave.
+     * @return an OK request for now.
+     */
+    @PostMapping("/courses/{id}/leave")
+    public ResponseEntity<Void> leaveCourse(@PathVariable final UUID id) {
+        log.debug("REST request to leave a course: {}", id);
+
+        courseService.leave(id);
+
+        return ResponseEntity.ok().build();
     }
 
     /**

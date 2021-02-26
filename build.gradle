@@ -305,6 +305,9 @@ dependencies {
     testImplementation "com.h2database:h2"
     liquibaseRuntime "com.h2database:h2"
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
+
+    // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
+    implementation "org.keycloak:keycloak-admin-client:10.0.0"
 }
 
 if (project.hasProperty("gae")) {
