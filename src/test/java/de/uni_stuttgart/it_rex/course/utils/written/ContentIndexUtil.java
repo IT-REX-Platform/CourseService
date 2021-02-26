@@ -10,6 +10,12 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ContentIndexUtil {
+
+  /**
+   * Creates a random entity.
+   *
+   * @return the entity
+   */
   public static ContentIndex createContentIndex(final int index) {
     ContentIndex contentIndex = new ContentIndex();
     contentIndex.setIndex(index);
@@ -17,10 +23,22 @@ public final class ContentIndexUtil {
     return contentIndex;
   }
 
+  /**
+   * Creates a random list of entities.
+   *
+   * @param number number of entities
+   * @return the list
+   */
   public static List<ContentIndex> createContentIndexList(final int number) {
     return IntStream.range(0, number).mapToObj(i -> createContentIndex(i)).collect(Collectors.toList());
   }
 
+  /**
+   * Tests if two entities are equal but ignores their id.
+   *
+   * @param first
+   * @param second
+   */
   public static void equals(final ContentIndex first, final ContentIndex second) {
     assertEquals(first.getIndex(), second.getIndex());
     assertEquals(first.getChapterId(), second.getChapterId());

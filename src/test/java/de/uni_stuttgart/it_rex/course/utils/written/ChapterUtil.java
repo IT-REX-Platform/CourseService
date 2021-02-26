@@ -8,6 +8,11 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ChapterUtil {
+
+  /**
+   * Creates a random entity.
+   * @return the entity
+   */
   public static Chapter createChapter() {
     Chapter chapter = new Chapter();
     chapter.setTitle(StringUtil.generateRandomString(10, 50));
@@ -17,6 +22,12 @@ public final class ChapterUtil {
     return chapter;
   }
 
+  /**
+   * Tests if two entities are equal but ignores their id.
+   *
+   * @param first
+   * @param second
+   */
   public static void equals(final Chapter first, final Chapter second) {
     assertEquals(first.getTitle(), second.getTitle());
     assertEquals(first.getCourseId(), second.getCourseId());
