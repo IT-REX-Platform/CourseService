@@ -26,7 +26,7 @@ class CourseMapperIT {
   @Test
   void updateCourseFromCourse() {
     Course toUpdate = CourseUtil.createCourse();
-    Course update = new Course();
+    CourseDTO update = new CourseDTO();
 
     update.setId(UPDATE_ID);
     update.setName(null);
@@ -42,7 +42,7 @@ class CourseMapperIT {
     expected.setStartDate(toUpdate.getStartDate());
     expected.setEndDate(toUpdate.getEndDate());
 
-    courseMapper.updateCourseFromCourse(update, toUpdate);
+    courseMapper.updateCourseFromCourseDTO(update, toUpdate);
 
     assertEquals(expected, toUpdate);
   }

@@ -25,8 +25,43 @@ public abstract class CourseMapper {
    */
   @BeanMapping(nullValuePropertyMappingStrategy =
       NullValuePropertyMappingStrategy.IGNORE)
-  public abstract void updateCourseFromCourse(final Course update,
+  public abstract void updateCourseFromCourse(Course update,
                                               @MappingTarget Course toUpdate);
+
+  /**
+   * Updates an entity from a DTO.
+   *
+   * @param update   the update
+   * @param toUpdate the updated entity.
+   */
+  public void updateCourseFromCourseDTO(final CourseDTO update,
+                                        final Course toUpdate) {
+    if (update.getId() != null) {
+      toUpdate.setId(update.getId());
+    }
+    if (update.getName() != null) {
+      toUpdate.setName(update.getName());
+    }
+    if (update.getCourseDescription() != null) {
+      toUpdate.setCourseDescription(update.getCourseDescription());
+    }
+    if (update.getMaxFoodSum() != null) {
+      toUpdate.setMaxFoodSum(update.getMaxFoodSum());
+    }
+    if (update.getStartDate() != null) {
+      toUpdate.setStartDate(update.getStartDate());
+    }
+    if (update.getEndDate() != null) {
+      toUpdate.setEndDate(update.getEndDate());
+    }
+    if (update.getPublishState() != null) {
+      toUpdate.setPublishState(update.getPublishState());
+    }
+    if (update.getChapters() != null) {
+      toUpdate.setChapters(uUIDsToChapterIndices(toUpdate.getId(),
+          update.getChapters()));
+    }
+  }
 
   /**
    * Converts an entity to a DTO.
@@ -50,7 +85,7 @@ public abstract class CourseMapper {
    * @param courses the entities
    * @return the DTOs
    */
-  public List<CourseDTO> toDTO(List<Course> courses) {
+  public List<CourseDTO> toDTO(final List<Course> courses) {
     return courses.stream().map(this::toDTO).collect(Collectors.toList());
   }
 
@@ -77,15 +112,8 @@ public abstract class CourseMapper {
     final Course course = setBasicProperties(courseDTO);
     if (courseDTO.getChapters() != null) {
       final List<UUID> chapterIds = courseDTO.getChapters();
-      final List<ChapterIndex> chapters =
-          IntStream.range(0, chapterIds.size()).mapToObj(i -> {
-            final UUID id = chapterIds.get(i);
-            ChapterIndex chapterIndex = new ChapterIndex();
-            chapterIndex.setIndex(i);
-            chapterIndex.setChapterId(id);
-            chapterIndex.setCourseId(course.getId());
-            return chapterIndex;
-          }).collect(Collectors.toList());
+      final List<ChapterIndex> chapters = uUIDsToChapterIndices(course.getId(),
+          chapterIds);
       course.setChapters(chapters);
     }
 
@@ -138,5 +166,25 @@ public abstract class CourseMapper {
     course.setStartDate(courseDTO.getStartDate());
     course.setEndDate(courseDTO.getEndDate());
     return course;
+  }
+
+  /**
+   * Calculates a list of ChapterIndices from a list of UUIDs.
+   *
+   * @param courseId   the course id
+   * @param chapterIds the list of UUIDs
+   * @return the list of ChapterIndices
+   */
+  private List<ChapterIndex> uUIDsToChapterIndices(
+      final UUID courseId,
+      final List<UUID> chapterIds) {
+    return IntStream.range(0, chapterIds.size()).mapToObj(i -> {
+      final UUID id = chapterIds.get(i);
+      ChapterIndex chapterIndex = new ChapterIndex();
+      chapterIndex.setIndex(i);
+      chapterIndex.setChapterId(id);
+      chapterIndex.setCourseId(courseId);
+      return chapterIndex;
+    }).collect(Collectors.toList());
   }
 }
