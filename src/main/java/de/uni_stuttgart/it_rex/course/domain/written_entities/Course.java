@@ -263,7 +263,7 @@ public class Course implements Serializable {
      *
      * @param chapterIndexes the chapterIndexes
      */
-    public void addChapterIndex(List<ChapterIndex> chapterIndexes) {
+    public void addChapterIndex(final List<ChapterIndex> chapterIndexes) {
         getChapters().addAll(chapterIndexes.stream().map(chapterIndex -> {
             chapterIndex.setCourseId(getId());
             return chapterIndex;
