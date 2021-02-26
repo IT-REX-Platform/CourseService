@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 
 /**
  * Provides functionality to check the roles of a user.
@@ -33,7 +34,11 @@ import org.springframework.security.core.GrantedAuthority;
  * <p>
  * Roles need to start with "ROLE_"
  */
+@Service
 public final class RexAuthz {
+    private RexAuthz() {
+    }
+
     /**
      * Logger.
      */
@@ -398,11 +403,5 @@ public final class RexAuthz {
      */
     private static boolean userHasAuthority(final String authority) {
         return getUserAuthorities().contains(authority);
-    }
-
-    /**
-     * Constructor.
-     */
-    private RexAuthz() {
     }
 }
