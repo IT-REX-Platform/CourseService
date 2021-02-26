@@ -7,7 +7,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
-public interface ChapterMapper {
+public abstract class ChapterMapper {
   /**
    * Updates an entity from another entity.
    *
@@ -16,5 +16,6 @@ public interface ChapterMapper {
    */
   @BeanMapping(nullValuePropertyMappingStrategy =
       NullValuePropertyMappingStrategy.IGNORE)
-  void updateCourseFromCourse(Chapter update, @MappingTarget Chapter toUpdate);
+  public abstract void updateCourseFromCourse
+  (Chapter update, @MappingTarget Chapter toUpdate);
 }
