@@ -18,6 +18,10 @@
       "fieldType": "LocalDate"
     },
     {
+      "fieldName": "remainActiveOffset",
+      "fieldType": "Integer"
+    },
+    {
       "fieldName": "maxFoodSum",
       "fieldType": "Integer"
     },

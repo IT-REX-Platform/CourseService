@@ -57,6 +57,12 @@ public class Course implements Serializable {
     private LocalDate endDate;
 
     /**
+     * End date.
+     */
+    @Column(name = "remain_active_offset")
+    private Integer remainActiveOffset;
+
+    /**
      * Max food sum for the course.
      */
     @Column(name = "max_food_sum")
@@ -152,6 +158,25 @@ public class Course implements Serializable {
     /**
      * Getter.
      *
+     * @return how long to remain active for after end date.
+     */
+    public Integer getRemainActiveOffset() {
+        return remainActiveOffset;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newRemainActiveOffset the new offset for remaining active after
+     *                              end date.
+     */
+    public void setRemainActiveOffset(final Integer newRemainActiveOffset) {
+        this.remainActiveOffset = newRemainActiveOffset;
+    }
+
+    /**
+     * Getter.
+     *
      * @return the maximum food sum.
      */
     public Integer getMaxFoodSum() {
@@ -222,6 +247,8 @@ public class Course implements Serializable {
             && Objects.equals(getName(), course.getName())
             && Objects.equals(getStartDate(), course.getStartDate())
             && Objects.equals(getEndDate(), course.getEndDate())
+            && Objects.equals(getRemainActiveOffset(),
+                                                course.getRemainActiveOffset())
             && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
             && Objects.equals(getCourseDescription(),
             course.getCourseDescription())
@@ -239,6 +266,7 @@ public class Course implements Serializable {
             getName(),
             getStartDate(),
             getEndDate(),
+            getRemainActiveOffset(),
             getMaxFoodSum(),
             getCourseDescription(),
             getPublishState());
@@ -256,6 +284,7 @@ public class Course implements Serializable {
             + ", name='" + name + '\''
             + ", startDate=" + startDate
             + ", endDate=" + endDate
+            + ", remainActiveOffset= " + remainActiveOffset
             + ", maxFoodSum=" + maxFoodSum
             + ", courseDescription='" + courseDescription + '\''
             + ", publishState=" + publishState
