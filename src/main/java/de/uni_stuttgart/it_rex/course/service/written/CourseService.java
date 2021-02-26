@@ -42,15 +42,15 @@ public class CourseService {
     private final CourseMapper courseMapper;
 
     /**
-     * KeycloakAdminService
+     * KeycloakAdminService.
      */
     private final KeycloakAdminService keycloakAdminService;
 
     /**
      * Constructor.
      *
-     * @param newCourseRepository the course repository.
-     * @param newCourseMapper the course mapper.
+     * @param newCourseRepository     the course repository.
+     * @param newCourseMapper         the course mapper.
      * @param newKeycloakAdminService the keycloakAdminService.
      */
     @Autowired
@@ -69,13 +69,19 @@ public class CourseService {
      * @param course the entity to save.
      * @return the persisted entity.
      */
-
     public Course save(final Course course) {
         LOGGER.debug("Request to save Course : {}", course);
         return courseRepository.save(course);
     }
 
     // TODO: transaction handling
+
+    /**
+     * Create a new course.
+     *
+     * @param course the entity representing the course that should be created
+     * @return the entity.
+     */
     public Course create(final Course course) {
         LOGGER.debug("Request to create Course : {}", course);
 
@@ -83,12 +89,16 @@ public class CourseService {
 
         // Add keycloak roles and groups for the course.
         for (COURSEROLE role : COURSEROLE.values()) {
-            String roleName = RexAuthz.getCourseRoleString(newCourse.getId(), role);
-            String groupName = RexAuthz.getCourseGroupString(newCourse.getId(), role);
+            String roleName =
+                RexAuthz.getCourseRoleString(newCourse.getId(), role);
+            String groupName =
+                RexAuthz.getCourseGroupString(newCourse.getId(), role);
 
             // Create the role rep for the new role.
             keycloakAdminService.addRole(roleName,
-                String.format("Role created automatically for course %s and role %s.", newCourse.getName(), role.toString()));
+                String.format(
+                    "Role created automatically for course %s and role %s.",
+                    newCourse.getName(), role.toString()));
 
             // Create the group rep for the new group.
             keycloakAdminService.addGroup(groupName);
@@ -97,8 +107,10 @@ public class CourseService {
             keycloakAdminService.addRolesToGroup(groupName, roleName);
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.getCourseGroupString(newCourse.getId(), COURSEROLE.OWNER);
+        Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+        String groupName =
+            RexAuthz.getCourseGroupString(newCourse.getId(), COURSEROLE.OWNER);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
         return course;
@@ -199,15 +211,29 @@ public class CourseService {
         return course;
     }
 
+    /**
+     * Join a course.
+     *
+     * @param id of the course to join.
+     */
     public void join(final UUID id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.getCourseGroupString(id, COURSEROLE.PARTICIPANT);
+        Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+        String groupName =
+            RexAuthz.getCourseGroupString(id, COURSEROLE.PARTICIPANT);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
     }
 
+    /**
+     * Leave a course.
+     *
+     * @param id of the course to leave.
+     */
     public void leave(final UUID id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.getCourseGroupString(id, COURSEROLE.PARTICIPANT);
+        Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+        String groupName =
+            RexAuthz.getCourseGroupString(id, COURSEROLE.PARTICIPANT);
         keycloakAdminService.removeUserFromGroup(auth.getName(), groupName);
     }
 
