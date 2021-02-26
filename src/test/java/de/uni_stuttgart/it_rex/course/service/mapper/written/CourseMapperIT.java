@@ -94,6 +94,6 @@ class CourseMapperIT {
     expected.setChapters(chapters);
 
     Course result = courseMapper.toEntity(courseDTO);
-    assertEquals(expected, result);
+    CourseUtil.equals(expected, result);
   }
 }
