@@ -25,8 +25,6 @@ import org.springframework.security.core.GrantedAuthority;
  * 
  * Roles need to start with "ROLE_"
  * 
- * further details tbd
- * 
  */
 
 public class RexAuthz {
@@ -36,17 +34,15 @@ public class RexAuthz {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(RexAuthz.class);
 
-    /**
-     * ----- PUBLIC API -----
-     */
-
+    // ----- PUBLIC API ENUMS -----
+    
     /**
      * The roles avaiable in ItRex.
      */
     public enum RexRole {
         ADMIN, LECTURER, STUDENT
     }
-
+    
     /**
      * The roles avaiable in a course.
      */
@@ -54,6 +50,8 @@ public class RexAuthz {
         OWNER, MANAGER, PARTICIPANT
     }
 
+    // ----- PUBLIC STRING API -----
+    
     /**
      * Returns the role string given a {@link RexRole}.
      *
@@ -114,8 +112,10 @@ public class RexAuthz {
      * @return the {@link RexRole}.
      */
     public static RexRole getRexRole() {
-        Set<String> rexRoles = getUserAuthorities().stream().filter(o -> o.startsWith(RexAuthzConstants.MATCHER_ROLE_REX)).collect(Collectors.toSet());
-        Set<RexRole> rexRolesStr = rexRoles.stream().map(RexAuthz::getRexRoleFromRoleString).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
+        Set<String> rexRoles = getUserAuthorities().stream()
+                .filter(o -> o.startsWith(RexAuthzConstants.MATCHER_ROLE_REX)).collect(Collectors.toSet());
+        Set<RexRole> rexRolesStr = rexRoles.stream().map(RexAuthz::getRexRoleFromRoleString).filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toSet());
         if (rexRolesStr.isEmpty()) {
             String msg = "User has no RexRole";
             LOGGER.error(msg);
@@ -166,6 +166,11 @@ public class RexAuthz {
         return userHasRexRole(RexRole.STUDENT);
     }
 
+    /**
+     * Returns the Set of course {@link UUID}s in which the current user participates.
+     * 
+     * @return Set of course {@link UUID}.
+     */
     public static Set<UUID> getCoursesOfUser() {
         Set<String> courseRoles = getUserAuthorities().stream()
                 .filter(o -> o.startsWith(RexAuthzConstants.MATCHER_ROLE_COURSE)).collect(Collectors.toSet());
@@ -173,6 +178,11 @@ public class RexAuthz {
                 .map(Optional::get).collect(Collectors.toSet());
     }
 
+    /**
+     * Returns the Map of course {@link UUID}s and the related {@link CourseRole}s in which the current user participates.
+     * 
+     * @return Map of course {@link UUID} and {@link CourseRole}.
+     */
     public static Map<UUID, CourseRole> getCoursesAndRolesOfUser() {
         Set<String> courseRoles = getUserAuthorities().stream()
                 .filter(o -> o.startsWith(RexAuthzConstants.MATCHER_ROLE_COURSE)).collect(Collectors.toSet());
@@ -180,6 +190,13 @@ public class RexAuthz {
                 .map(Optional::get).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
     }
 
+    /**
+     * Checks whether the current user has a specific {@link CourseRole} for a given course {@link UUID}.
+     * 
+     * @param courseId the {@link UUID} of the course.
+     * @param role the {@link CourseRole} to be checked.
+     * @return <code>true</code>/<code>false</code>.
+     */
     public static boolean userHasCourseRole(UUID courseId, CourseRole role) {
         return userHasAuthority(getCourseRoleString(courseId, role));
     }
@@ -233,9 +250,7 @@ public class RexAuthz {
         return userHasCourseRole(courseId, CourseRole.OWNER);
     }
 
-    /**
-     * ----- PRIVATE API -----
-     */
+    // ----- PRIVATE API -----
 
     /**
      * Contants for internal use
