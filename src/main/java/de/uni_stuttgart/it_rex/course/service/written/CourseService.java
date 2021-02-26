@@ -41,7 +41,7 @@ public class CourseService {
     /**
      * Course mapper.
      */
-    private CourseMapper courseMapper;
+    private final CourseMapper courseMapper;
 
     /**
      * Constructor.
@@ -135,9 +135,10 @@ public class CourseService {
         LOGGER.debug("Request to get filtered Courses");
         LOGGER.trace("Applying filters.");
 
-        List<Course> courses = null;
+        List<Course> courses;
 
-        Example courseExample = Example.of(applyFiltersToExample(publishState));
+        Example<Course> courseExample =
+            Example.of(applyFiltersToExample(publishState));
         Specification<Course> spec =
             getSpecFromActiveAndExample(activeOnly, courseExample);
         courses = courseRepository.findAll(spec);
@@ -172,7 +173,7 @@ public class CourseService {
      */
     private Specification<Course> getSpecFromActiveAndExample(
         final Optional<Boolean> activeOnly, final Example<Course> example) {
-        return (Specification<Course>) (root, query, builder) -> {
+        return (root, query, builder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
 

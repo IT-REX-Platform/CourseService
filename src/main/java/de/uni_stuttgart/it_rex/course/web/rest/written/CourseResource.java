@@ -1,6 +1,5 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
