@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A Chapter.
@@ -233,6 +234,29 @@ public class Chapter implements Serializable {
    * @param newContents the content ids.
    */
   public void setContents(final List<ContentIndex> newContents) {
-    this.contents = newContents;
+    getContents().clear();
+    addContentIndex(newContents);
+  }
+
+  /**
+   * Adds a ContentIndex.
+   *
+   * @param contentIndex the contentIndex
+   */
+  public void addContentIndex(final ContentIndex contentIndex) {
+    contentIndex.setChapterId(getId());
+    getContents().add(contentIndex);
+  }
+
+  /**
+   * Adds a list of ContentIndexes.
+   *
+   * @param contentIndexes the contentIndexes
+   */
+  public void addContentIndex(final List<ContentIndex> contentIndexes) {
+    getContents().addAll(contentIndexes.stream().map(contentIndex -> {
+      contentIndex.setChapterId(getId());
+      return contentIndex;
+    }).collect(Collectors.toList()));
   }
 }
