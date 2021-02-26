@@ -241,7 +241,7 @@ public class CourseDTO {
    */
   @Override
   public String toString() {
-    return "Course{"
+    return "CourseDTO{"
         + "id=" + id
         + ", name='" + name + '\''
         + ", startDate=" + startDate
