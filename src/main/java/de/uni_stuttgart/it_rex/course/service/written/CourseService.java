@@ -8,9 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.convert.QueryByExamplePredicateBuilder;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -128,27 +133,14 @@ public class CourseService {
         final Optional<PUBLISHSTATE> publishState,
         final Optional<Boolean> activeOnly) {
         LOGGER.debug("Request to get filtered Courses");
-
         LOGGER.trace("Applying filters.");
-        Course courseExample = applyFiltersToExample(publishState);
-
-        // man möge mir den umstand verzeihen, dass das oben in manchen fällen
-        // nicht verwendet wird und die folgenden zeilen das schönste
-        // sind, was ich in diesem projekt produziert habe </sarcasm>
-        // (konzeptcode ahead)
 
         List<Course> courses = null;
 
-        if (activeOnly.isPresent()) {
-            courses = (
-                publishState.isPresent()
-                    ? courseRepository.findAllActiveWithPublishState(
-                        publishState.orElse(PUBLISHSTATE.PUBLISHED)
-                    )
-                    : courseRepository.findAllActive());
-        } else {
-            courses = courseRepository.findAll(Example.of(courseExample));
-        }
+        Example courseExample = Example.of(applyFiltersToExample(publishState));
+        Specification<Course> spec =
+            getSpecFromActiveAndExample(activeOnly, courseExample);
+        courses = courseRepository.findAll(spec);
 
         return courses;
     }
@@ -167,5 +159,33 @@ public class CourseService {
         Course course = new Course();
         publishState.ifPresent(course::setPublishState);
         return course;
+    }
+
+    /**
+     * Method generates a specification that describes Course objects according
+     * to an example that also optionally have an endDate greater than or equal
+     * to the current date.
+     *
+     * @param activeOnly (Optional) set endDate >= LocalDate.now()
+     * @param example    Example course object
+     * @return A specification describing said Course object(s).
+     */
+    private Specification<Course> getSpecFromActiveAndExample(
+        final Optional<Boolean> activeOnly, final Example<Course> example) {
+        return (Specification<Course>) (root, query, builder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (activeOnly.isPresent() && activeOnly.get()) {
+                predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"),
+                    LocalDate.now()));
+            }
+
+            predicates.add(QueryByExamplePredicateBuilder
+                .getPredicate(root, builder, example));
+
+            return builder.and(predicates.toArray(
+                new Predicate[predicates.size()]));
+        };
     }
 }
