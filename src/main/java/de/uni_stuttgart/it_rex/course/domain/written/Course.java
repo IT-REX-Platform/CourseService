@@ -57,7 +57,7 @@ public class Course implements Serializable {
     private LocalDate endDate;
 
     /**
-     * End date.
+     * How long to remain active for after end date.
      */
     @Column(name = "remain_active_offset")
     private Integer remainActiveOffset;
