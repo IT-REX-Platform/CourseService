@@ -37,7 +37,7 @@ public class ChapterDTO {
   /**
    * Content items.
    */
-  private List<ContentIndex> contents;
+  private List<UUID> contents;
 
   /**
    * Equals method.
@@ -186,7 +186,7 @@ public class ChapterDTO {
    *
    * @return the content ids.
    */
-  public List<ContentIndex> getContents() {
+  public List<UUID> getContents() {
     return contents;
   }
 
@@ -195,7 +195,7 @@ public class ChapterDTO {
    *
    * @param newContents the content ids.
    */
-  public void setContents(final List<ContentIndex> newContents) {
+  public void setContents(final List<UUID> newContents) {
     this.contents = newContents;
   }
 }
