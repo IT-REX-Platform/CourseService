@@ -1,21 +1,8 @@
-package de.uni_stuttgart.it_rex.course.service.dto.written;
+package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ChapterIndex;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -193,7 +180,7 @@ public class CourseDTO {
    *
    * @return the chapters
    */
-  public List<ChapterIndex> getChapters() {
+  public List<UUID> getChapters() {
     return chapters;
   }
 
@@ -202,7 +189,7 @@ public class CourseDTO {
    *
    * @param newChapters the chapters
    */
-  public void setChapters(final List<ChapterIndex> newChapters) {
+  public void setChapters(final List<UUID> newChapters) {
     this.chapters = newChapters;
   }
 
@@ -220,7 +207,7 @@ public class CourseDTO {
     if (!(o instanceof CourseDTO)) {
       return false;
     }
-    Course course = (Course) o;
+    CourseDTO course = (CourseDTO) o;
     return Objects.equals(getId(), course.getId())
         && Objects.equals(getName(), course.getName())
         && Objects.equals(getStartDate(), course.getStartDate())
