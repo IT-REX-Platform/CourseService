@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -284,7 +283,7 @@ public class Course implements Serializable {
         if (!(o instanceof Course)) {
             return false;
         }
-        Course course = (Course) o;
+        final Course course = (Course) o;
         return Objects.equals(getId(), course.getId())
             && Objects.equals(getName(), course.getName())
             && Objects.equals(getStartDate(), course.getStartDate())
@@ -292,7 +291,8 @@ public class Course implements Serializable {
             && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
             && Objects.equals(getCourseDescription(),
             course.getCourseDescription())
-            && getPublishState() == course.getPublishState();
+            && getPublishState() == course.getPublishState()
+            && Objects.equals(getChapters(), course.getChapters());
     }
 
     /**
@@ -308,7 +308,8 @@ public class Course implements Serializable {
             getEndDate(),
             getMaxFoodSum(),
             getCourseDescription(),
-            getPublishState());
+            getPublishState(),
+            getChapters());
     }
 
     /**
