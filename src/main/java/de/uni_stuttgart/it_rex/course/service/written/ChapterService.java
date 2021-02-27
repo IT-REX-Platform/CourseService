@@ -114,7 +114,7 @@ public class ChapterService {
 
     if (oldChapter.isPresent()) {
       Chapter oldChapterEntity = oldChapter.get();
-      chapterMapper.updateCourseFromCourse(chapter, oldChapterEntity);
+      chapterMapper.updateChapterFromChapter(chapter, oldChapterEntity);
       return chapterRepository.save(oldChapterEntity);
     }
     return null;

@@ -1,7 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentIndex;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -50,16 +49,16 @@ public class ChapterDTO {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Chapter)) {
+    if (!(o instanceof ChapterDTO)) {
       return false;
     }
-    final Chapter chapter = (Chapter) o;
-    return Objects.equals(getId(), chapter.getId())
-        && Objects.equals(getTitle(), chapter.getTitle())
-        && Objects.equals(getCourseId(), chapter.getCourseId())
-        && Objects.equals(getStartDate(), chapter.getStartDate())
-        && Objects.equals(getEndDate(), chapter.getEndDate())
-        && Objects.equals(getContents(), chapter.getContents());
+    final ChapterDTO chapterDTO = (ChapterDTO) o;
+    return Objects.equals(getId(), chapterDTO.getId())
+        && Objects.equals(getTitle(), chapterDTO.getTitle())
+        && Objects.equals(getCourseId(), chapterDTO.getCourseId())
+        && Objects.equals(getStartDate(), chapterDTO.getStartDate())
+        && Objects.equals(getEndDate(), chapterDTO.getEndDate())
+        && Objects.equals(getContents(), chapterDTO.getContents());
   }
 
   /**
