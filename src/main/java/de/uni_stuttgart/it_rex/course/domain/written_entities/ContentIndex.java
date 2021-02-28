@@ -122,8 +122,12 @@ public class ContentIndex implements Serializable {
    */
   @Override
   public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ContentIndex)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ContentIndex)) {
+      return false;
+    }
     final ContentIndex that = (ContentIndex) o;
     return getIndex() == that.getIndex()
         && Objects.equals(getId(), that.getId())
@@ -148,11 +152,10 @@ public class ContentIndex implements Serializable {
    */
   @Override
   public String toString() {
-    return "ContentIndex{" +
-        "id=" + id +
-        ", index=" + index +
-        ", contentId=" + contentId +
-        ", chapterId=" + chapterId +
-        '}';
+    return "ContentIndex{"
+        + "id=" + id
+        + ", index=" + index
+        + ", contentId=" + contentId
+        + ", chapterId=" + chapterId + '}';
   }
 }
