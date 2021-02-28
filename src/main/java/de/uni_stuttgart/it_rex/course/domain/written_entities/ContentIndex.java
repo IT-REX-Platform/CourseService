@@ -122,16 +122,13 @@ public class ContentIndex implements Serializable {
    */
   @Override
   public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof ContentIndex)) {
-      return false;
-    }
+    if (this == o) return true;
+    if (!(o instanceof ContentIndex)) return false;
     final ContentIndex that = (ContentIndex) o;
     return getIndex() == that.getIndex()
         && Objects.equals(getId(), that.getId())
-        && Objects.equals(getContentId(), that.getContentId());
+        && Objects.equals(getContentId(), that.getContentId())
+        && Objects.equals(getChapterId(), that.getChapterId());
   }
 
   /**
@@ -141,7 +138,7 @@ public class ContentIndex implements Serializable {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getIndex(), getContentId());
+    return Objects.hash(getId(), getIndex(), getContentId(), getChapterId());
   }
 
   /**
@@ -151,9 +148,11 @@ public class ContentIndex implements Serializable {
    */
   @Override
   public String toString() {
-    return "ContentIndex{"
-        + "id=" + id
-        + ", index=" + index
-        + ", contentId=" + contentId + '}';
+    return "ContentIndex{" +
+        "id=" + id +
+        ", index=" + index +
+        ", contentId=" + contentId +
+        ", chapterId=" + chapterId +
+        '}';
   }
 }
