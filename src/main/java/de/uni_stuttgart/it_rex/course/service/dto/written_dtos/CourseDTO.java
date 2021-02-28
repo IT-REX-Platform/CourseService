@@ -1,7 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 
 import java.time.LocalDate;
 import java.util.List;

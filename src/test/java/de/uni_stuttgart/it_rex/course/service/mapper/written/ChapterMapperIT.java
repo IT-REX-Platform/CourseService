@@ -37,7 +37,7 @@ class ChapterMapperIT {
     expected.setStartDate(toUpdate.getStartDate());
     expected.setEndDate(toUpdate.getEndDate());
     expected.setContents(toUpdate.getContents());
-    chapterMapper.updateCourseFromCourseDTO(update, toUpdate);
+    chapterMapper.updateChapterFromChapterDTO(update, toUpdate);
 
     assertEquals(expected, toUpdate);
   }

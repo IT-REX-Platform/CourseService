@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.written.ChapterService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * REST controller for managing {@link Chapter}.
+ * REST controller for managing {@link ChapterDTO}.
  */
 @RestController
 @RequestMapping("/api")
@@ -65,22 +65,22 @@ public class ChapterResource {
   /**
    * {@code POST  /chapters} : Create a new chapter.
    *
-   * @param chapter the chapter to create.
+   * @param chapterDTO the chapter to create.
    * @return the {@link ResponseEntity} with status {@code 201 (Created)}
    * and with body the new chapter, or with status {@code 400 (Bad Request)}
    * if the chapter has already an ID.
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PostMapping("/chapters")
-  public ResponseEntity<Chapter> createChapter(
-      @RequestBody final Chapter chapter)
+  public ResponseEntity<ChapterDTO> createChapter(
+      @RequestBody final ChapterDTO chapterDTO)
       throws URISyntaxException {
-    log.debug("REST request to save Chapter : {}", chapter);
-    if (chapter.getId() != null) {
+    log.debug("REST request to save Chapter : {}", chapterDTO);
+    if (chapterDTO.getId() != null) {
       throw new BadRequestAlertException("A new chapter cannot already "
           + "have an ID", ENTITY_NAME, "idexists");
     }
-    Chapter result = chapterService.save(chapter);
+    ChapterDTO result = chapterService.save(chapterDTO);
     return ResponseEntity.created(new URI("/api/chapters/" + result.getId()))
         .headers(HeaderUtil.createEntityCreationAlert(applicationName,
             true, ENTITY_NAME, result.getId().toString()))
@@ -90,7 +90,7 @@ public class ChapterResource {
   /**
    * {@code PUT  /chapters} : Updates an existing chapter.
    *
-   * @param chapter the chapter to update.
+   * @param chapterDTO the chapter to update.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
    * body the updated chapter,
    * or with status {@code 400 (Bad Request)} if the chapter is not valid,
@@ -99,18 +99,18 @@ public class ChapterResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PutMapping("/chapters")
-  public ResponseEntity<Chapter> updateChapter(
-      @RequestBody final Chapter chapter)
+  public ResponseEntity<ChapterDTO> updateChapter(
+      @RequestBody final ChapterDTO chapterDTO)
       throws URISyntaxException {
-    log.debug("REST request to update Chapter : {}", chapter);
-    if (chapter.getId() == null) {
+    log.debug("REST request to update Chapter : {}", chapterDTO);
+    if (chapterDTO.getId() == null) {
       throw new BadRequestAlertException(
           "Invalid id", ENTITY_NAME, "idnull");
     }
-    Chapter result = chapterService.save(chapter);
+    ChapterDTO result = chapterService.save(chapterDTO);
     return ResponseEntity.ok()
         .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-            true, ENTITY_NAME, chapter.getId().toString()))
+            true, ENTITY_NAME, result.getId().toString()))
         .body(result);
   }
 
@@ -122,9 +122,9 @@ public class ChapterResource {
    * and with body the chapter, or with status {@code 404 (Not Found)}.
    */
   @GetMapping("/chapters/{id}")
-  public ResponseEntity<Chapter> getChapter(@PathVariable final UUID id) {
+  public ResponseEntity<ChapterDTO> getChapter(@PathVariable final UUID id) {
     log.debug("REST request to get Chapter : {}", id);
-    Optional<Chapter> chapter = chapterService.findOne(id);
+    Optional<ChapterDTO> chapter = chapterService.findOne(id);
     return ResponseUtil.wrapOrNotFound(chapter);
   }
 
@@ -134,7 +134,7 @@ public class ChapterResource {
    * @return A list of all chapters.
    */
   @GetMapping("/chapters")
-  public List<Chapter> getAllChapters() {
+  public List<ChapterDTO> getAllChapters() {
     log.debug("REST request to get filtered Courses");
     return chapterService.findAll();
   }
@@ -157,7 +157,7 @@ public class ChapterResource {
   /**
    * {@code PATCH  /chapters} : Patches an existing chapter.
    *
-   * @param chapter the chapter to patch.
+   * @param chapterDTO the chapter to patch.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
    * body the updated chapter,
    * or with status {@code 400 (Bad Request)} if the chapter is not valid,
@@ -165,14 +165,14 @@ public class ChapterResource {
    * couldn't be patched.
    */
   @PatchMapping("/chapters")
-  public ResponseEntity<Chapter> patchChapter(
-      @RequestBody final Chapter chapter) {
-    log.debug("REST request to patch Chapter : {}", chapter);
-    if (chapter.getId() == null) {
+  public ResponseEntity<ChapterDTO> patchChapter(
+      @RequestBody final ChapterDTO chapterDTO) {
+    log.debug("REST request to patch Chapter : {}", chapterDTO);
+    if (chapterDTO.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
           "idnull");
     }
-    Chapter result = chapterService.patch(chapter);
+    ChapterDTO result = chapterService.patch(chapterDTO);
     return ResponseEntity.ok()
         .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
             true, ENTITY_NAME, result.getId().toString()))

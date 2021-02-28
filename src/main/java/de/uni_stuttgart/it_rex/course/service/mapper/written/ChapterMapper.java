@@ -9,6 +9,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,8 +33,8 @@ public abstract class ChapterMapper {
    * @param update   the update
    * @param toUpdate the updated entity.
    */
-  public void updateCourseFromCourseDTO(final ChapterDTO update,
-                                        final Chapter toUpdate) {
+  public void updateChapterFromChapterDTO(final ChapterDTO update,
+                                          final Chapter toUpdate) {
     if (update.getId() != null) {
       toUpdate.setId(update.getId());
     }
@@ -69,6 +70,29 @@ public abstract class ChapterMapper {
       chapterDTO.setContents(chapters);
     }
     return chapterDTO;
+  }
+
+  /**
+   * Converts an optional entity to a optional DTO.
+   *
+   * @param chapter the entity
+   * @return the dto
+   */
+  public Optional<ChapterDTO> toDTO(final Optional<Chapter> chapter) {
+    if (chapter.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(toDTO(chapter.get()));
+  }
+
+  /**
+   * Converts a list of entities to a list of DTOs.
+   *
+   * @param chapters the entities
+   * @return the DTOs
+   */
+  public List<ChapterDTO> toDTO(final List<Chapter> chapters) {
+    return chapters.stream().map(this::toDTO).collect(Collectors.toList());
   }
 
   /**

@@ -6,6 +6,8 @@ import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentIndex;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentIndexRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.AfterEach;
@@ -72,6 +74,9 @@ public class ChapterResourceIT {
 
   @Autowired
   private ChapterResource chapterResource;
+
+  @Autowired
+  private ChapterMapper chapterMapper;
 
   @Autowired
   private ContentIndexRepository contentIndexRepository;
@@ -176,7 +181,8 @@ public class ChapterResourceIT {
     // Create the Chapter
     restChapterMockMvc.perform(post("/api/chapters").with(csrf())
         .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(chapter1)))
+        .content(TestUtil.convertObjectToJsonBytes(chapterMapper
+            .toDTO(chapter1))))
         .andExpect(status().isCreated());
 
     // Validate the Chapter in the database
@@ -269,7 +275,8 @@ public class ChapterResourceIT {
 
     restChapterMockMvc.perform(put("/api/chapters").with(csrf())
         .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(updatedChapter)))
+        .content(TestUtil.convertObjectToJsonBytes(chapterMapper
+            .toDTO(updatedChapter))))
         .andExpect(status().isOk());
 
     // Validate the chapter in the database
@@ -328,14 +335,14 @@ public class ChapterResourceIT {
     toUpdate.setEndDate(FIRST_END_DATE);
     toUpdate.setContents(EXPECTED_CONTENTS);
 
-    UUID id = chapterResource.createChapter(toUpdate).getBody().getId();
+    UUID id = chapterResource.createChapter(chapterMapper.toDTO(toUpdate)).getBody().getId();
     Chapter update = new Chapter();
     update.setId(id);
     update.setTitle(SECOND_TITLE);
     update.setCourseId(COURSE_ID);
     update.setEndDate(SECOND_END_DATE);
 
-    chapterResource.patchChapter(update).getBody();
+    chapterResource.patchChapter(chapterMapper.toDTO(update));
 
     Chapter expected = new Chapter();
     expected.setId(id);
@@ -345,15 +352,15 @@ public class ChapterResourceIT {
     expected.setEndDate(SECOND_END_DATE);
     expected.setContents(EXPECTED_CONTENTS);
 
-    Chapter updated = chapterResource.getChapter(id).getBody();
-    Chapter test = chapterRepository.getOne(id);
+    ChapterDTO updated = chapterResource.getChapter(id).getBody();
+
     expected.setId(id);
 
-    assertEquals(toUpdate.getId(), expected.getId());
-    assertEquals(toUpdate.getTitle(), expected.getTitle());
-    assertEquals(toUpdate.getCourseId(), expected.getCourseId());
-    assertEquals(toUpdate.getStartDate(), expected.getStartDate());
-    assertEquals(toUpdate.getEndDate(), expected.getEndDate());
+    assertEquals(updated.getId(), expected.getId());
+    assertEquals(updated.getTitle(), expected.getTitle());
+    assertEquals(updated.getCourseId(), expected.getCourseId());
+    assertEquals(updated.getStartDate(), expected.getStartDate());
+    assertEquals(updated.getEndDate(), expected.getEndDate());
   }
 
   @Test
@@ -363,7 +370,7 @@ public class ChapterResourceIT {
     toUpdate.setTitle(SECOND_TITLE);
     toUpdate.setCourseId(COURSE_ID);
 
-    Exception e = assertThrows(BadRequestAlertException.class, () -> chapterResource.patchChapter(toUpdate));
+    Exception e = assertThrows(BadRequestAlertException.class, () -> chapterResource.patchChapter(chapterMapper.toDTO(toUpdate)));
     assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
   }
 }

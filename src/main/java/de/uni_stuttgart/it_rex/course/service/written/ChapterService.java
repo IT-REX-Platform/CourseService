@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,43 +51,45 @@ public class ChapterService {
   }
 
   /**
-   * Save a chapter.
+   * Save a Chapter.
    *
-   * @param chapter the entity to save.
-   * @return the persisted entity.
+   * @param chapterDTO the Chapter to save.
+   * @return the persisted Chapter.
    */
-  public Chapter save(final Chapter chapter) {
-    LOGGER.debug("Request to save Chapter : {}", chapter);
-    return chapterRepository.save(chapter);
+  public ChapterDTO save(final ChapterDTO chapterDTO) {
+    LOGGER.debug("Request to save Chapter : {}", chapterDTO);
+    final Chapter chapter = chapterRepository
+        .save(chapterMapper.toEntity(chapterDTO));
+    return chapterMapper.toDTO(chapter);
   }
 
   /**
-   * Get all the chapters.
+   * Get all the Chapters.
    *
-   * @return the list of entities.
+   * @return the list of Chapters.
    */
   @Transactional(readOnly = true)
-  public List<Chapter> findAll() {
+  public List<ChapterDTO> findAll() {
     LOGGER.debug("Request to get all Chapters");
-    return chapterRepository.findAll();
+    return chapterMapper.toDTO(chapterRepository.findAll());
   }
 
   /**
-   * Get one chapter by id.
+   * Get one Chapter by id.
    *
-   * @param id the id of the entity.
-   * @return the entity.
+   * @param id the id of the Chapter.
+   * @return the chapter.
    */
   @Transactional(readOnly = true)
-  public Optional<Chapter> findOne(final UUID id) {
+  public Optional<ChapterDTO> findOne(final UUID id) {
     LOGGER.debug("Request to get Chapter : {}", id);
-    return chapterRepository.findById(id);
+    return chapterMapper.toDTO(chapterRepository.findById(id));
   }
 
   /**
-   * Delete the chapter by id.
+   * Delete the Chapter by id.
    *
-   * @param id the id of the entity.
+   * @param id the id of the Chapter.
    */
   @Transactional
   public void delete(final UUID id) {
@@ -101,21 +104,21 @@ public class ChapterService {
   }
 
   /**
-   * Update a chapter without overwriting it.
+   * Update a Chapter without overwriting it.
    *
-   * @param chapter the entity to use to update a created entity.
-   * @return the persisted entity.
+   * @param chapterDTO the Chapter that is used as an update.
+   * @return the persisted Chapter.
    */
   @Transactional
-  public Chapter patch(final Chapter chapter) {
-    LOGGER.debug("Request to update Chapter : {}", chapter);
+  public ChapterDTO patch(final ChapterDTO chapterDTO) {
+    LOGGER.debug("Request to update Chapter : {}", chapterDTO);
     Optional<Chapter> oldChapter =
-        chapterRepository.findById(chapter.getId());
+        chapterRepository.findById(chapterDTO.getId());
 
     if (oldChapter.isPresent()) {
       Chapter oldChapterEntity = oldChapter.get();
-      chapterMapper.updateChapterFromChapter(chapter, oldChapterEntity);
-      return chapterRepository.save(oldChapterEntity);
+      chapterMapper.updateChapterFromChapterDTO(chapterDTO, oldChapterEntity);
+      return chapterMapper.toDTO(chapterRepository.save(oldChapterEntity));
     }
     return null;
   }

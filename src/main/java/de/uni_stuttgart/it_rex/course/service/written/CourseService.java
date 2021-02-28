@@ -68,7 +68,7 @@ public class CourseService {
     /**
      * Save a course.
      *
-     * @param courseDTO the entity to save.
+     * @param courseDTO the DTO to save.
      * @return the persisted entity.
      */
     public CourseDTO save(final CourseDTO courseDTO) {
@@ -78,12 +78,18 @@ public class CourseService {
         return courseMapper.toDTO(course);
     }
 
-    // TODO: transaction handling
-    public CourseDTO create(CourseDTO courseDTO) {
+    /**
+     * Creates a Course.
+     * TODO: transaction handling
+     *
+     * @param courseDTO the Chapter
+     * @return the created Course
+     */
+    public CourseDTO create(final CourseDTO courseDTO) {
         LOGGER.debug("Request to create Course : {}", courseDTO);
         final Course course = courseMapper.toEntity(courseDTO);
         final Course storedCourse = courseRepository.save(course);
-        courseDTO = courseMapper.toDTO(storedCourse);
+        final CourseDTO storedCourseDTO = courseMapper.toDTO(storedCourse);
 
         // Add keycloak roles and groups for the course.
         // for (CourseRole role : CourseRole.values()) {
@@ -106,7 +112,7 @@ public class CourseService {
         //String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(), CourseRole.OWNER);
         //keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
-        return courseDTO;
+        return storedCourseDTO;
     }
 
     /**
@@ -206,6 +212,11 @@ public class CourseService {
         return course;
     }
 
+    /**
+     * Join a Course.
+     *
+     * @param id the course id.
+     */
     public void join(final UUID id) {
         Authentication auth = SecurityContextHolder.getContext()
             .getAuthentication();
@@ -215,6 +226,11 @@ public class CourseService {
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
     }
 
+    /**
+     * Leave a Course.
+     *
+     * @param id the course id.
+     */
     public void leave(final UUID id) {
         Authentication auth = SecurityContextHolder.getContext()
             .getAuthentication();
