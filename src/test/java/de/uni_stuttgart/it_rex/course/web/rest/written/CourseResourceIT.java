@@ -2,7 +2,7 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
-import de.uni_stuttgart.it_rex.course.domain.Course;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
@@ -162,36 +162,34 @@ public class CourseResourceIT {
     @Transactional
     public void createCourse() throws Exception {
         int databaseSizeBeforeCreate = courseRepository.findAll().size();
+        Course createdCourse = CourseUtil.createCourse();
         // Create the Course
         restCourseMockMvc.perform(post("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(course)))
+            .content(TestUtil.convertObjectToJsonBytes(createdCourse)))
             .andExpect(status().isCreated());
 
         // Validate the Course in the database
         List<Course> courseList = courseRepository.findAll();
         assertThat(courseList).hasSize(databaseSizeBeforeCreate + 1);
         Course testCourse = courseList.get(courseList.size() - 1);
-        assertThat(testCourse.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testCourse.getStartDate()).isEqualTo(DEFAULT_START_DATE);
-        assertThat(testCourse.getEndDate()).isEqualTo(DEFAULT_END_DATE);
-        assertThat(testCourse.getMaxFoodSum()).isEqualTo(DEFAULT_MAX_FOOD_SUM);
-        assertThat(testCourse.getCourseDescription()).isEqualTo(DEFAULT_COURSE_DESCRIPTION);
-        assertThat(testCourse.getPublishState()).isEqualTo(DEFAULT_PUBLISH_STATE);
+
+        CourseUtil.equals(createdCourse, testCourse);
     }
 
     @Test
     @Transactional
     public void createCourseWithExistingId() throws Exception {
         int databaseSizeBeforeCreate = courseRepository.findAll().size();
+        Course createdCourse = CourseUtil.createCourse();
 
         // Create the Course with an existing ID
-        course.setId(UUID.randomUUID());
+        createdCourse.setId(UUID.randomUUID());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCourseMockMvc.perform(post("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(course)))
+            .content(TestUtil.convertObjectToJsonBytes(createdCourse)))
             .andExpect(status().isBadRequest());
 
         // Validate the Course in the database

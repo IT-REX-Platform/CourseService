@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import de.uni_stuttgart.it_rex.course.domain.Course;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;

@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain;
+package de.uni_stuttgart.it_rex.course.domain.written_entities;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -13,9 +13,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "chapter_index")
+@Table(name = "content_index")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ChapterIndex implements Serializable {
+public class ContentIndex implements Serializable {
 
   /**
    * Identifier.
@@ -31,16 +31,16 @@ public class ChapterIndex implements Serializable {
   private int index;
 
   /**
+   * Content id.
+   */
+  @Column(name = "content_id")
+  private UUID contentId;
+
+  /**
    * Chapter id.
    */
   @Column(name = "chapter_id")
   private UUID chapterId;
-
-  /**
-   * Course id.
-   */
-  @Column(name = "course_id")
-  private UUID courseId;
 
   /**
    * Getter.
@@ -81,19 +81,19 @@ public class ChapterIndex implements Serializable {
   /**
    * Getter.
    *
-   * @return the course id
+   * @return the content id
    */
-  public UUID getCourseId() {
-    return courseId;
+  public UUID getContentId() {
+    return contentId;
   }
 
   /**
    * Setter.
    *
-   * @param newCourseId the course id
+   * @param newContentId the content id
    */
-  public void setCourseId(final UUID newCourseId) {
-    this.courseId = newCourseId;
+  public void setContentId(final UUID newContentId) {
+    this.contentId = newContentId;
   }
 
   /**
@@ -125,14 +125,13 @@ public class ChapterIndex implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ChapterIndex)) {
+    if (!(o instanceof ContentIndex)) {
       return false;
     }
-    final ChapterIndex that = (ChapterIndex) o;
+    final ContentIndex that = (ContentIndex) o;
     return getIndex() == that.getIndex()
         && Objects.equals(getId(), that.getId())
-        && Objects.equals(getChapterId(), that.getChapterId())
-        && Objects.equals(getCourseId(), that.getCourseId());
+        && Objects.equals(getContentId(), that.getContentId());
   }
 
   /**
@@ -142,11 +141,7 @@ public class ChapterIndex implements Serializable {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(
-        getId(),
-        getIndex(),
-        getChapterId(),
-        getCourseId());
+    return Objects.hash(getId(), getIndex(), getContentId());
   }
 
   /**
@@ -156,10 +151,9 @@ public class ChapterIndex implements Serializable {
    */
   @Override
   public String toString() {
-    return "ChapterIndex{"
+    return "ContentIndex{"
         + "id=" + id
         + ", index=" + index
-        + ", chapterId=" + chapterId
-        + ", courseId=" + courseId + '}';
+        + ", contentId=" + contentId + '}';
   }
 }

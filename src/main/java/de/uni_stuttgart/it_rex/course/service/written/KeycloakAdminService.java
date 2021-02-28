@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;

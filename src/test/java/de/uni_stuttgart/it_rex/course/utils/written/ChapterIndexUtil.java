@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
-import de.uni_stuttgart.it_rex.course.domain.ChapterIndex;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ChapterIndex;
 
 import java.util.List;
 import java.util.UUID;

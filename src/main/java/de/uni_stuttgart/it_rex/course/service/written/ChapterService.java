@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
-import de.uni_stuttgart.it_rex.course.domain.Chapter;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
 import org.slf4j.Logger;
@@ -67,7 +67,7 @@ public class ChapterService {
    */
   @Transactional(readOnly = true)
   public List<Chapter> findAll() {
-    LOGGER.debug("Request to get all Courses");
+    LOGGER.debug("Request to get all Chapters");
     return chapterRepository.findAll();
   }
 
@@ -108,7 +108,7 @@ public class ChapterService {
    */
   @Transactional
   public Chapter patch(final Chapter chapter) {
-    LOGGER.debug("Request to update Course : {}", chapter);
+    LOGGER.debug("Request to update Chapter : {}", chapter);
     Optional<Chapter> oldChapter =
         chapterRepository.findById(chapter.getId());
 

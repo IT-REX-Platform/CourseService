@@ -2,7 +2,7 @@ package de.uni_stuttgart.it_rex.course.repository.written;
 
 
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
-import de.uni_stuttgart.it_rex.course.domain.Lecturer;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Lecturer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
