@@ -138,14 +138,14 @@ public class CourseService {
     public void delete(final UUID id) {
         LOGGER.debug("Request to delete Course : {}", id);
 
-        // Remove the keycloak roles and groups.
-        for (CourseRole role : CourseRole.values()) {
-            String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, id, role);
-            String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, role);
+        // // Remove the keycloak roles and groups.
+        // for (CourseRole role : CourseRole.values()) {
+        //     String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, id, role);
+        //     String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, role);
 
-            keycloakAdminService.removeRole(roleName);
-            keycloakAdminService.removeGroup(groupName);
-        }
+        //     keycloakAdminService.removeRole(roleName);
+        //     keycloakAdminService.removeGroup(groupName);
+        // }
 
         courseRepository.deleteById(id);
     }
