@@ -308,6 +308,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
     implementation "org.keycloak:keycloak-admin-client:10.0.0"
+    implementation "org.jboss.resteasy:resteasy-client"
+    implementation "org.jboss.resteasy:resteasy-jackson2-provider"
 }
 
 if (project.hasProperty("gae")) {
