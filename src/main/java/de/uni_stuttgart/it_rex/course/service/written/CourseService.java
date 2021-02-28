@@ -99,9 +99,9 @@ public class CourseService {
         //     keycloakAdminService.addRolesToGroup(groupName, roleName);
         // }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(), CourseRole.OWNER);
-        keycloakAdminService.addUserToGroup(auth.getName(), groupName);
+        //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(), CourseRole.OWNER);
+        //keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
         return course;
     }
