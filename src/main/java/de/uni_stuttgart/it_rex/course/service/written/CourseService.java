@@ -3,6 +3,7 @@ package de.uni_stuttgart.it_rex.course.service.written;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;
 import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.RexAuthzConstants;
@@ -43,7 +44,7 @@ public class CourseService {
     private CourseMapper courseMapper;
 
     /**
-     * KeycloakAdminService
+     * KeycloakAdminService.
      */
     private KeycloakAdminService keycloakAdminService;
 
@@ -67,20 +68,22 @@ public class CourseService {
     /**
      * Save a course.
      *
-     * @param course the entity to save.
+     * @param courseDTO the entity to save.
      * @return the persisted entity.
      */
-    
-    public Course save(final Course course) {
-        LOGGER.debug("Request to save Course : {}", course);
-        return courseRepository.save(course);
+    public CourseDTO save(final CourseDTO courseDTO) {
+        LOGGER.debug("Request to save Course : {}", courseDTO);
+        final Course course
+            = courseRepository.save(courseMapper.toEntity(courseDTO));
+        return courseMapper.toDTO(course);
     }
 
     // TODO: transaction handling
-    public Course create(final Course course) {
-        LOGGER.debug("Request to create Course : {}", course);
-
-        Course newCourse = courseRepository.save(course);
+    public CourseDTO create(CourseDTO courseDTO) {
+        LOGGER.debug("Request to create Course : {}", courseDTO);
+        final Course course = courseMapper.toEntity(courseDTO);
+        final Course storedCourse = courseRepository.save(course);
+        courseDTO = courseMapper.toDTO(storedCourse);
 
         // Add keycloak roles and groups for the course.
         // for (CourseRole role : CourseRole.values()) {
@@ -103,7 +106,7 @@ public class CourseService {
         //String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(), CourseRole.OWNER);
         //keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
-        return course;
+        return courseDTO;
     }
 
     /**
@@ -112,9 +115,9 @@ public class CourseService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<Course> findAll() {
+    public List<CourseDTO> findAll() {
         LOGGER.debug("Request to get all Courses");
-        return courseRepository.findAll();
+        return courseMapper.toDTO(courseRepository.findAll());
     }
 
 
@@ -125,9 +128,9 @@ public class CourseService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Course> findOne(final UUID id) {
+    public Optional<CourseDTO> findOne(final UUID id) {
         LOGGER.debug("Request to get Course : {}", id);
-        return courseRepository.findById(id);
+        return courseMapper.toDTO(courseRepository.findById(id));
     }
 
     /**
@@ -153,20 +156,22 @@ public class CourseService {
     /**
      * Update a course without overwriting it.
      *
-     * @param course the entity to use to update a created entity.
+     * @param courseDTO the DTO to use to update a created entity.
      * @return the persisted entity.
      */
-    public Course patch(final Course course) {
-        LOGGER.debug("Request to update Course : {}", course);
+    public CourseDTO patch(final CourseDTO courseDTO) {
+        LOGGER.debug("Request to update Course : {}", courseDTO);
         Optional<Course> oldCourse =
-            courseRepository.findById(course.getId());
+            courseRepository.findById(courseDTO.getId());
 
-        if (oldCourse.isPresent()) {
-            Course oldCourseEntity = oldCourse.get();
-            courseMapper.updateCourseFromCourse(course, oldCourseEntity);
-            return courseRepository.save(oldCourseEntity);
+        if (!oldCourse.isPresent()) {
+            return null;
         }
-        return null;
+
+        Course oldCourseEntity = oldCourse.get();
+        courseMapper.updateCourseFromCourse(
+            courseMapper.toEntity(courseDTO), oldCourseEntity);
+        return courseMapper.toDTO(courseRepository.save(oldCourseEntity));
     }
 
     /**
@@ -175,14 +180,14 @@ public class CourseService {
      * @param publishState Publish state of course.
      * @return A list of courses that fit the given parameters.
      */
-    public List<Course> findAll(
+    public List<CourseDTO> findAll(
         final Optional<PUBLISHSTATE> publishState) {
         LOGGER.debug("Request to get filtered Courses");
 
         LOGGER.trace("Applying filters.");
         Course courseExample = applyFiltersToExample(publishState);
-
-        return courseRepository.findAll(Example.of(courseExample));
+        return courseMapper.toDTO(
+            courseRepository.findAll(Example.of(courseExample)));
     }
 
     /**
@@ -202,14 +207,20 @@ public class CourseService {
     }
 
     public void join(final UUID id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
+        Authentication auth = SecurityContextHolder.getContext()
+            .getAuthentication();
+        String groupName = RexAuthz
+            .makeNameForCourse(RexAuthzConstants
+                .TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
     }
 
     public void leave(final UUID id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
+        Authentication auth = SecurityContextHolder.getContext()
+            .getAuthentication();
+        String groupName = RexAuthz
+            .makeNameForCourse(RexAuthzConstants
+                .TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
         keycloakAdminService.removeUserFromGroup(auth.getName(), groupName);
     }
 

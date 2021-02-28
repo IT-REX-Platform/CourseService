@@ -20,9 +20,12 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A Course.
@@ -31,6 +34,13 @@ import java.util.UUID;
 @Table(name = "course")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Course implements Serializable {
+
+    /**
+     * Constructor.
+     */
+    public Course() {
+        this.chapters = new ArrayList<>();
+    }
 
     /**
      * Version.
@@ -234,7 +244,30 @@ public class Course implements Serializable {
      * @param newChapters the chapters
      */
     public void setChapters(final List<ChapterIndex> newChapters) {
-        this.chapters = newChapters;
+        getChapters().clear();
+        addChapterIndex(newChapters);
+    }
+
+    /**
+     * Adds a ChapterIndex.
+     *
+     * @param chapterIndex the chapterIndex
+     */
+    public void addChapterIndex(final ChapterIndex chapterIndex) {
+        chapterIndex.setCourseId(getId());
+        getChapters().add(chapterIndex);
+    }
+
+    /**
+     * Adds a list of ChapterIndexes.
+     *
+     * @param chapterIndexes the chapterIndexes
+     */
+    public void addChapterIndex(List<ChapterIndex> chapterIndexes) {
+        getChapters().addAll(chapterIndexes.stream().map(chapterIndex -> {
+            chapterIndex.setCourseId(getId());
+            return chapterIndex;
+        }).collect(Collectors.toList()));
     }
 
     /**

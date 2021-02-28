@@ -15,6 +15,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -26,6 +27,13 @@ import java.util.UUID;
 @Table(name = "chapter")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Chapter implements Serializable {
+
+  /**
+   * Constructor.
+   */
+  public Chapter() {
+    this.contents = new ArrayList<>();
+  }
 
   /**
    * Identifier.

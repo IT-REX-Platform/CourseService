@@ -25,7 +25,8 @@ public abstract class CourseMapper {
    */
   @BeanMapping(nullValuePropertyMappingStrategy =
       NullValuePropertyMappingStrategy.IGNORE)
-  public abstract void updateCourseFromCourse(final Course update, @MappingTarget Course toUpdate);
+  public abstract void updateCourseFromCourse(final Course update,
+                                              @MappingTarget Course toUpdate);
 
   /**
    * Converts an entity to a DTO.
@@ -80,7 +81,6 @@ public abstract class CourseMapper {
           IntStream.range(0, chapterIds.size()).mapToObj(i -> {
             final UUID id = chapterIds.get(i);
             ChapterIndex chapterIndex = new ChapterIndex();
-            chapterIndex.setId(UUID.randomUUID());
             chapterIndex.setIndex(i);
             chapterIndex.setChapterId(id);
             chapterIndex.setCourseId(course.getId());

@@ -2,9 +2,11 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
 import de.uni_stuttgart.it_rex.course.utils.written.ChapterIndexUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
@@ -89,6 +91,9 @@ public class CourseResourceIT {
     @Autowired
     private MockMvc restCourseMockMvc;
 
+    @Autowired
+    private CourseMapper courseMapper;
+
     @MockBean
     private KeycloakAdminService keycloakAdminService;
 
@@ -139,13 +144,13 @@ public class CourseResourceIT {
     public void createCoursesWithChapters() throws Exception {
         int databaseSizeBeforeCreate = courseRepository.findAll().size();
 
-        List<Course> createdCourses = IntStream.range(0, NUMBER_COURSES).mapToObj(i -> CourseUtil.createCourse()).collect(Collectors.toList());
+        List<CourseDTO> createdCourseDTOs = IntStream.range(0, NUMBER_COURSES).mapToObj(i -> CourseUtil.createCourseDTO()).collect(Collectors.toList());
 
         // Create the Courses
-        for (Course createdCourse : createdCourses) {
+        for (CourseDTO createdCourseDTO : createdCourseDTOs) {
             restCourseMockMvc.perform(post("/api/courses").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtil.convertObjectToJsonBytes(createdCourse)))
+                .content(TestUtil.convertObjectToJsonBytes(createdCourseDTO)))
                 .andExpect(status().isCreated());
         }
 
@@ -154,7 +159,7 @@ public class CourseResourceIT {
         assertThat(results).hasSize(databaseSizeBeforeCreate + 3);
 
         for (int i = 0; i < results.size(); i++) {
-            CourseUtil.equals(createdCourses.get(i), results.get(i));
+            CourseUtil.equals(courseMapper.toEntity(createdCourseDTOs.get(i)), results.get(i));
         }
     }
 
@@ -162,19 +167,19 @@ public class CourseResourceIT {
     @Transactional
     public void createCourse() throws Exception {
         int databaseSizeBeforeCreate = courseRepository.findAll().size();
-        Course createdCourse = CourseUtil.createCourse();
+        CourseDTO createdCourseDTO = CourseUtil.createCourseDTO();
         // Create the Course
         restCourseMockMvc.perform(post("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(createdCourse)))
+            .content(TestUtil.convertObjectToJsonBytes(createdCourseDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Course in the database
         List<Course> courseList = courseRepository.findAll();
         assertThat(courseList).hasSize(databaseSizeBeforeCreate + 1);
-        Course testCourse = courseList.get(courseList.size() - 1);
+        CourseDTO testCourseDTO = courseMapper.toDTO(courseList.get(courseList.size() - 1));
 
-        CourseUtil.equals(createdCourse, testCourse);
+        CourseUtil.equals(createdCourseDTO, testCourseDTO);
     }
 
     @Test
@@ -264,7 +269,7 @@ public class CourseResourceIT {
 
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(updatedCourse)))
+            .content(TestUtil.convertObjectToJsonBytes(courseMapper.toDTO(updatedCourse))))
             .andExpect(status().isOk());
 
         // Validate the Course in the database
@@ -344,13 +349,13 @@ public class CourseResourceIT {
         toUpdate.setCourseDescription(OLD_DESCRIPTION);
         toUpdate.setMaxFoodSum(OLD_MAX_FOOD_SUM);
 
-        UUID id = courseResource.createCourse(toUpdate).getBody().getId();
+        UUID id = courseResource.createCourse(courseMapper.toDTO(toUpdate)).getBody().getId();
         Course update = new Course();
         update.setId(id);
         update.setCourseDescription(NEW_DESCRIPTION);
         update.setPublishState(NEW_PUBLISHED_STATE);
 
-        Course result = courseResource.patchCourse(update).getBody();
+        Course result = courseMapper.toEntity(courseResource.patchCourse(courseMapper.toDTO(update)).getBody());
 
         Course expected = new Course();
         expected.setId(id);
@@ -359,7 +364,7 @@ public class CourseResourceIT {
         expected.setMaxFoodSum(OLD_MAX_FOOD_SUM);
         expected.setPublishState(NEW_PUBLISHED_STATE);
 
-        Course updated = courseResource.getCourse(id).getBody();
+        Course updated = courseMapper.toEntity(courseResource.getCourse(id).getBody());
 
         assertThat(updated).isEqualTo(expected);
     }
@@ -372,7 +377,7 @@ public class CourseResourceIT {
         toUpdate.setCourseDescription("Cool Course");
         toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
 
-        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResource.patchCourse(toUpdate));
+        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResource.patchCourse(courseMapper.toDTO(toUpdate)));
         assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
     }
 }
