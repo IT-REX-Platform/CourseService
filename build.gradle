@@ -264,7 +264,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     testImplementation "org.testcontainers:postgresql"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation ("org.springframework.boot:spring-boot-starter-web") {
+    implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
     implementation "org.springframework.boot:spring-boot-starter-undertow"
@@ -274,7 +274,9 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-hystrix"
     implementation "org.springframework.retry:spring-retry"
-    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client") {
+        exclude group: "javax.ws.rs", module: "jsr311-api"
+    }
     implementation "org.springframework.cloud:spring-cloud-starter-config"
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
     implementation "org.springframework.boot:spring-boot-starter-cloud-connectors"
@@ -283,7 +285,7 @@ dependencies {
     implementation "org.springframework.security:spring-security-web"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    implementation ("io.springfox:springfox-swagger2") {
+    implementation("io.springfox:springfox-swagger2") {
         exclude module: "mapstruct"
     }
     implementation "io.springfox:springfox-bean-validators"
@@ -308,6 +310,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
     implementation "org.keycloak:keycloak-admin-client:10.0.0"
+    implementation "org.jboss.resteasy:resteasy-client"
+    implementation "org.jboss.resteasy:resteasy-jackson2-provider"
 }
 
 if (project.hasProperty("gae")) {
