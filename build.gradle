@@ -212,6 +212,7 @@ configurations {
             // Inherited version from Spring Boot can't be used because of regressions:
             // To be removed as soon as spring-boot use the same version
             force 'org.liquibase:liquibase-core:3.9.0'
+            force 'org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.3.Final'
         }
     }
 }
@@ -308,9 +309,7 @@ dependencies {
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
-    implementation ("org.keycloak:keycloak-admin-client:10.0.0") {
-        exclude module: "org.jboss.spec.javax.ws.rs.core.UriBuilder"
-    }
+    implementation "org.keycloak:keycloak-admin-client:10.0.0"
 }
 
 if (project.hasProperty("gae")) {
