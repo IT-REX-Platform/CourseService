@@ -206,7 +206,7 @@ nohttp {
 configurations {
     providedRuntime
     implementation.exclude module: "spring-boot-starter-tomcat"
-    // implementation.exclude group: "javax.ws.rs" // :jsr311-api:1.1.1
+    implementation.exclude group: "javax.ws.rs" // :jsr311-api:1.1.1
     all {
         resolutionStrategy {
             // failOnVersionConflict()
