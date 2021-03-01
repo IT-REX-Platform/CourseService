@@ -1,22 +1,30 @@
-package de.uni_stuttgart.it_rex.course.domain.written;
+package de.uni_stuttgart.it_rex.course.domain.written_entities;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A Course.
@@ -25,6 +33,13 @@ import java.util.UUID;
 @Table(name = "course")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Course implements Serializable {
+
+    /**
+     * Constructor.
+     */
+    public Course() {
+        this.chapters = new ArrayList<>();
+    }
 
     /**
      * Version.
@@ -82,6 +97,16 @@ public class Course implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "publish_state")
     private PUBLISHSTATE publishState;
+
+    /**
+     * Chapter items.
+     */
+    @OneToMany(cascade = CascadeType.ALL,
+        fetch = FetchType.EAGER,
+        orphanRemoval = true)
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @OrderBy("index")
+    private List<ChapterIndex> chapters;
 
     /**
      * Getter.
@@ -229,6 +254,47 @@ public class Course implements Serializable {
     }
 
     /**
+     * Getter.
+     *
+     * @return the chapters
+     */
+    public List<ChapterIndex> getChapters() {
+        return chapters;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newChapters the chapters
+     */
+    public void setChapters(final List<ChapterIndex> newChapters) {
+        getChapters().clear();
+        addChapterIndex(newChapters);
+    }
+
+    /**
+     * Adds a ChapterIndex.
+     *
+     * @param chapterIndex the chapterIndex
+     */
+    public void addChapterIndex(final ChapterIndex chapterIndex) {
+        chapterIndex.setCourseId(getId());
+        getChapters().add(chapterIndex);
+    }
+
+    /**
+     * Adds a list of ChapterIndexes.
+     *
+     * @param chapterIndexes the chapterIndexes
+     */
+    public void addChapterIndex(final List<ChapterIndex> chapterIndexes) {
+        getChapters().addAll(chapterIndexes.stream().map(chapterIndex -> {
+            chapterIndex.setCourseId(getId());
+            return chapterIndex;
+        }).collect(Collectors.toList()));
+    }
+
+    /**
      * Equals method.
      *
      * @param o the other instance.
@@ -242,7 +308,7 @@ public class Course implements Serializable {
         if (!(o instanceof Course)) {
             return false;
         }
-        Course course = (Course) o;
+        final Course course = (Course) o;
         return Objects.equals(getId(), course.getId())
             && Objects.equals(getName(), course.getName())
             && Objects.equals(getStartDate(), course.getStartDate())
@@ -252,7 +318,8 @@ public class Course implements Serializable {
             && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
             && Objects.equals(getCourseDescription(),
             course.getCourseDescription())
-            && getPublishState() == course.getPublishState();
+            && getPublishState() == course.getPublishState()
+            && Objects.equals(getChapters(), course.getChapters());
     }
 
     /**
@@ -269,7 +336,8 @@ public class Course implements Serializable {
             getRemainActiveOffset(),
             getMaxFoodSum(),
             getCourseDescription(),
-            getPublishState());
+            getPublishState(),
+            getChapters());
     }
 
     /**

@@ -2,9 +2,10 @@ package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import de.uni_stuttgart.it_rex.course.domain.written.Course;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,40 +73,41 @@ public class CourseService {
     /**
      * Save a course.
      *
-     * @param course the entity to save.
+     * @param courseDTO the DTO to save.
      * @return the persisted entity.
      */
-    public Course save(final Course course) {
-        LOGGER.debug("Request to save Course : {}", course);
-        return courseRepository.save(course);
+    public CourseDTO save(final CourseDTO courseDTO) {
+        LOGGER.debug("Request to save Course : {}", courseDTO);
+        final Course course
+            = courseRepository.save(courseMapper.toEntity(courseDTO));
+        return courseMapper.toDTO(course);
     }
 
-    // TODO: transaction handling
-
     /**
-     * Create a new course.
+     * Creates a Course.
+     * TODO: transaction handling
      *
-     * @param course the entity representing the course that should be created
-     * @return the entity.
+     * @param courseDTO the Chapter
+     * @return the created Course
      */
-    public Course create(final Course course) {
-        LOGGER.debug("Request to create Course : {}", course);
-
-        Course newCourse = courseRepository.save(course);
+    public CourseDTO create(final CourseDTO courseDTO) {
+        LOGGER.debug("Request to create Course : {}", courseDTO);
+        final Course course = courseMapper.toEntity(courseDTO);
+        final Course storedCourse = courseRepository.save(course);
 
         // Add keycloak roles and groups for the course.
         for (COURSEROLE role : COURSEROLE.values()) {
             String roleName =
-                RexAuthz.getCourseRoleString(newCourse.getId(), role);
+                RexAuthz.getCourseRoleString(storedCourse.getId(), role);
             String groupName =
-                RexAuthz.getCourseGroupString(newCourse.getId(), role);
+                RexAuthz.getCourseGroupString(storedCourse.getId(), role);
 
 
             // Create the role rep for the new role.
             keycloakAdminService.addRole(roleName,
                 String.format(
                     "Role created automatically for course %s and role %s.",
-                    newCourse.getName(), role.toString()));
+                    storedCourse.getName(), role.toString()));
 
             // Create the group rep for the new group.
             keycloakAdminService.addGroup(groupName);
@@ -117,10 +119,10 @@ public class CourseService {
         Authentication auth =
             SecurityContextHolder.getContext().getAuthentication();
         String groupName =
-            RexAuthz.getCourseGroupString(newCourse.getId(), COURSEROLE.OWNER);
+            RexAuthz.getCourseGroupString(storedCourse.getId(), COURSEROLE.OWNER);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
-        return course;
+        return courseMapper.toDTO(storedCourse);
     }
 
     /**
@@ -129,9 +131,9 @@ public class CourseService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<Course> findAll() {
+    public List<CourseDTO> findAll() {
         LOGGER.debug("Request to get all Courses");
-        return courseRepository.findAll();
+        return courseMapper.toDTO(courseRepository.findAll());
     }
 
 
@@ -142,9 +144,9 @@ public class CourseService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Course> findOne(final UUID id) {
+    public Optional<CourseDTO> findOne(final UUID id) {
         LOGGER.debug("Request to get Course : {}", id);
-        return courseRepository.findById(id);
+        return courseMapper.toDTO(courseRepository.findById(id));
     }
 
     /**
@@ -170,20 +172,22 @@ public class CourseService {
     /**
      * Update a course without overwriting it.
      *
-     * @param course the entity to use to update a created entity.
+     * @param courseDTO the DTO to use to update a created entity.
      * @return the persisted entity.
      */
-    public Course patch(final Course course) {
-        LOGGER.debug("Request to update Course : {}", course);
+    public CourseDTO patch(final CourseDTO courseDTO) {
+        LOGGER.debug("Request to update Course : {}", courseDTO);
         Optional<Course> oldCourse =
-            courseRepository.findById(course.getId());
+            courseRepository.findById(courseDTO.getId());
 
-        if (oldCourse.isPresent()) {
-            Course oldCourseEntity = oldCourse.get();
-            courseMapper.updateCourseFromCourse(course, oldCourseEntity);
-            return courseRepository.save(oldCourseEntity);
+        if (!oldCourse.isPresent()) {
+            return null;
         }
-        return null;
+
+        Course oldCourseEntity = oldCourse.get();
+        courseMapper.updateCourseFromCourse(
+            courseMapper.toEntity(courseDTO), oldCourseEntity);
+        return courseMapper.toDTO(courseRepository.save(oldCourseEntity));
     }
 
     /**
@@ -194,7 +198,7 @@ public class CourseService {
      *                     between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
      */
-    public List<Course> findAll(
+    public List<CourseDTO> findAll(
         final Optional<PUBLISHSTATE> publishState,
         final Optional<Boolean> activeOnly) {
         LOGGER.debug("Request to get filtered Courses");
@@ -208,7 +212,7 @@ public class CourseService {
             getSpecFromActiveAndExample(activeOnly, courseExample);
         courses = courseRepository.findAll(spec);
 
-        return courses;
+        return courseMapper.toDTO(courses);
     }
 
     /**
@@ -256,10 +260,10 @@ public class CourseService {
     }
 
     /**
-    * Join a course.
-    *
-    * @param id of the course to join.
-    */
+     * Join a course.
+     *
+     * @param id of the course to join.
+     */
     public void join(final UUID id) {
         Authentication auth =
             SecurityContextHolder.getContext().getAuthentication();
@@ -280,5 +284,4 @@ public class CourseService {
             RexAuthz.getCourseGroupString(id, COURSEROLE.PARTICIPANT);
         keycloakAdminService.removeUserFromGroup(auth.getName(), groupName);
     }
-
 }

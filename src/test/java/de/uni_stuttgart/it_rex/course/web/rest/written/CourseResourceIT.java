@@ -3,9 +3,13 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import de.uni_stuttgart.it_rex.course.domain.written.Course;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
+import de.uni_stuttgart.it_rex.course.utils.written.ChapterIndexUtil;
+import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +27,11 @@ import javax.persistence.EntityManager;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -33,7 +40,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 /**
- * Integration tests for the {@link CourseResource} REST controller.
+ * Integration tests for the {@link ChapterResource} REST controller.
  */
 @SpringBootTest(classes = { CourseServiceApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
@@ -73,6 +80,7 @@ public class CourseResourceIT {
     private static final String NEW_DESCRIPTION = "Really cool Course";
     private static final PUBLISHSTATE NEW_PUBLISHED_STATE = PUBLISHSTATE.PUBLISHED;
 
+    private static final int NUMBER_COURSES = 3;
     private static final LocalDate NEW_END_DATE = LocalDate.ofEpochDay(LocalDate.now().toEpochDay() + 1);
 
     @Autowired
@@ -86,6 +94,9 @@ public class CourseResourceIT {
 
     @Autowired
     private MockMvc restCourseMockMvc;
+
+    @Autowired
+    private CourseMapper courseMapper;
 
     @MockBean
     private KeycloakAdminService keycloakAdminService;
@@ -107,6 +118,7 @@ public class CourseResourceIT {
         course.setMaxFoodSum(DEFAULT_MAX_FOOD_SUM);
         course.setCourseDescription(DEFAULT_COURSE_DESCRIPTION);
         course.setPublishState(DEFAULT_PUBLISH_STATE);
+        course.setChapters(new ArrayList<>());
         return course;
     }
     /**
@@ -124,6 +136,7 @@ public class CourseResourceIT {
         course.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
         course.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
         course.setPublishState(UPDATED_PUBLISH_STATE);
+        course.setChapters(new ArrayList<>());
         return course;
     }
 
@@ -134,39 +147,59 @@ public class CourseResourceIT {
 
     @Test
     @Transactional
+    public void createCoursesWithChapters() throws Exception {
+        int databaseSizeBeforeCreate = courseRepository.findAll().size();
+
+        List<CourseDTO> createdCourseDTOs = IntStream.range(0, NUMBER_COURSES).mapToObj(i -> CourseUtil.createCourseDTO()).collect(Collectors.toList());
+
+        // Create the Courses
+        for (CourseDTO createdCourseDTO : createdCourseDTOs) {
+            restCourseMockMvc.perform(post("/api/courses").with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(createdCourseDTO)))
+                .andExpect(status().isCreated());
+        }
+
+        // Validate the Courses in the database
+        List<Course> results = courseRepository.findAll();
+        assertThat(results).hasSize(databaseSizeBeforeCreate + 3);
+
+        for (int i = 0; i < results.size(); i++) {
+            CourseUtil.equals(courseMapper.toEntity(createdCourseDTOs.get(i)), results.get(i));
+        }
+    }
+
+    @Test
+    @Transactional
     public void createCourse() throws Exception {
         int databaseSizeBeforeCreate = courseRepository.findAll().size();
+        CourseDTO createdCourseDTO = CourseUtil.createCourseDTO();
         // Create the Course
         restCourseMockMvc.perform(post("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(course)))
+            .content(TestUtil.convertObjectToJsonBytes(createdCourseDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Course in the database
         List<Course> courseList = courseRepository.findAll();
         assertThat(courseList).hasSize(databaseSizeBeforeCreate + 1);
-        Course testCourse = courseList.get(courseList.size() - 1);
-        assertThat(testCourse.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testCourse.getStartDate()).isEqualTo(DEFAULT_START_DATE);
-        assertThat(testCourse.getEndDate()).isEqualTo(DEFAULT_END_DATE);
-        assertThat(testCourse.getRemainActiveOffset()).isEqualTo(DEFAULT_REMAIN_ACTIVE_OFFSET);
-        assertThat(testCourse.getMaxFoodSum()).isEqualTo(DEFAULT_MAX_FOOD_SUM);
-        assertThat(testCourse.getCourseDescription()).isEqualTo(DEFAULT_COURSE_DESCRIPTION);
-        assertThat(testCourse.getPublishState()).isEqualTo(DEFAULT_PUBLISH_STATE);
+        CourseDTO testCourseDTO = courseMapper.toDTO(courseList.get(courseList.size() - 1));
+        CourseUtil.equals(createdCourseDTO, testCourseDTO);
     }
 
     @Test
     @Transactional
     public void createCourseWithExistingId() throws Exception {
         int databaseSizeBeforeCreate = courseRepository.findAll().size();
+        Course createdCourse = CourseUtil.createCourse();
 
         // Create the Course with an existing ID
-        course.setId(UUID.randomUUID());
+        createdCourse.setId(UUID.randomUUID());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCourseMockMvc.perform(post("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(course)))
+            .content(TestUtil.convertObjectToJsonBytes(createdCourse)))
             .andExpect(status().isBadRequest());
 
         // Validate the Course in the database
@@ -226,15 +259,13 @@ public class CourseResourceIT {
     @Transactional
     public void updateCourse() throws Exception {
         // Initialize the database
-        courseRepository.saveAndFlush(course);
+        UUID id = courseRepository.saveAndFlush(course).getId();
 
         int databaseSizeBeforeUpdate = courseRepository.findAll().size();
 
         // Update the course
-        Course updatedCourse = courseRepository.findById(course.getId()).get();
-        // Disconnect from session so that the updates on updatedCourse are not directly saved in db
-        em.detach(updatedCourse);
-
+        Course updatedCourse = new Course();
+        updatedCourse.setId(id);
         updatedCourse.setName(UPDATED_NAME);
         updatedCourse.setStartDate(UPDATED_START_DATE);
         updatedCourse.setEndDate(UPDATED_END_DATE);
@@ -242,10 +273,11 @@ public class CourseResourceIT {
         updatedCourse.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
         updatedCourse.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
         updatedCourse.setPublishState(UPDATED_PUBLISH_STATE);
+        updatedCourse.setChapters(ChapterIndexUtil.createChapterIndexList(id, 34));
 
         restCourseMockMvc.perform(put("/api/courses").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(updatedCourse)))
+            .content(TestUtil.convertObjectToJsonBytes(courseMapper.toDTO(updatedCourse))))
             .andExpect(status().isOk());
 
         // Validate the Course in the database
@@ -360,13 +392,13 @@ public class CourseResourceIT {
         toUpdate.setCourseDescription(OLD_DESCRIPTION);
         toUpdate.setMaxFoodSum(OLD_MAX_FOOD_SUM);
 
-        UUID id = courseResource.createCourse(toUpdate).getBody().getId();
+        UUID id = courseResource.createCourse(courseMapper.toDTO(toUpdate)).getBody().getId();
         Course update = new Course();
         update.setId(id);
         update.setCourseDescription(NEW_DESCRIPTION);
         update.setPublishState(NEW_PUBLISHED_STATE);
 
-        Course result = courseResource.patchCourse(update).getBody();
+        Course result = courseMapper.toEntity(courseResource.patchCourse(courseMapper.toDTO(update)).getBody());
 
         Course expected = new Course();
         expected.setId(id);
@@ -375,7 +407,7 @@ public class CourseResourceIT {
         expected.setMaxFoodSum(OLD_MAX_FOOD_SUM);
         expected.setPublishState(NEW_PUBLISHED_STATE);
 
-        Course updated = courseResource.getCourse(id).getBody();
+        Course updated = courseMapper.toEntity(courseResource.getCourse(id).getBody());
 
         assertThat(updated).isEqualTo(expected);
     }
@@ -388,7 +420,7 @@ public class CourseResourceIT {
         toUpdate.setCourseDescription("Cool Course");
         toUpdate.setMaxFoodSum(Integer.MAX_VALUE);
 
-        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResource.patchCourse(toUpdate));
+        Exception e = assertThrows(BadRequestAlertException.class, () -> courseResource.patchCourse(courseMapper.toDTO(toUpdate)));
         assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
     }
 }
