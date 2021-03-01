@@ -10,11 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.convert.QueryByExamplePredicateBuilder;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,7 +47,7 @@ public class CourseService {
     /**
      * Course mapper.
      */
-    private CourseMapper courseMapper;
+    private final CourseMapper courseMapper;
 
     /**
      * KeycloakAdminService
@@ -173,16 +180,25 @@ public class CourseService {
      * Method finds all courses and filters them by given parameters.
      *
      * @param publishState Publish state of course.
+     * @param activeOnly   Set true to only include active courses (current time
+     *                     between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
      */
     public List<Course> findAll(
-        final Optional<PUBLISHSTATE> publishState) {
+        final Optional<PUBLISHSTATE> publishState,
+        final Optional<Boolean> activeOnly) {
         LOGGER.debug("Request to get filtered Courses");
-
         LOGGER.trace("Applying filters.");
-        Course courseExample = applyFiltersToExample(publishState);
 
-        return courseRepository.findAll(Example.of(courseExample));
+        List<Course> courses;
+
+        Example<Course> courseExample =
+            Example.of(applyFiltersToExample(publishState));
+        Specification<Course> spec =
+            getSpecFromActiveAndExample(activeOnly, courseExample);
+        courses = courseRepository.findAll(spec);
+
+        return courses;
     }
 
     /**
@@ -201,6 +217,34 @@ public class CourseService {
         return course;
     }
 
+    /**
+     * Method generates a specification that describes Course objects according
+     * to an example that also optionally have an endDate greater than or equal
+     * to the current date.
+     *
+     * @param activeOnly (Optional) set endDate >= LocalDate.now()
+     * @param example    Example course object
+     * @return A specification describing said Course object(s).
+     */
+    private Specification<Course> getSpecFromActiveAndExample(
+        final Optional<Boolean> activeOnly, final Example<Course> example) {
+        return (root, query, builder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (activeOnly.isPresent() && activeOnly.get()) {
+                predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"),
+                    LocalDate.now()));
+            }
+
+            predicates.add(QueryByExamplePredicateBuilder
+                .getPredicate(root, builder, example));
+
+            return builder.and(predicates.toArray(
+                new Predicate[predicates.size()]));
+        };
+    }
+    
     public void join(final UUID id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
