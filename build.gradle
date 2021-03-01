@@ -208,6 +208,7 @@ configurations {
     implementation.exclude module: "spring-boot-starter-tomcat"
     all {
         resolutionStrategy {
+            // failOnVersionConflict()
             // Inherited version from Spring Boot can't be used because of regressions:
             // To be removed as soon as spring-boot use the same version
             force 'org.liquibase:liquibase-core:3.9.0'
@@ -307,9 +308,9 @@ dependencies {
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
-    implementation "org.keycloak:keycloak-admin-client:10.0.0"
-    implementation "org.jboss.resteasy:resteasy-client"
-    implementation "org.jboss.resteasy:resteasy-jackson2-provider"
+    implementation ("org.keycloak:keycloak-admin-client:10.0.0") {
+        exclude module: "org.jboss.spec.javax.ws.rs.core.UriBuilder"
+    }
 }
 
 if (project.hasProperty("gae")) {
