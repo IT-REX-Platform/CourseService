@@ -206,8 +206,10 @@ nohttp {
 configurations {
     providedRuntime
     implementation.exclude module: "spring-boot-starter-tomcat"
+    implementation.exclude group: "javax.ws.rs" // :jsr311-api:1.1.1
     all {
         resolutionStrategy {
+            // failOnVersionConflict()
             // Inherited version from Spring Boot can't be used because of regressions:
             // To be removed as soon as spring-boot use the same version
             force 'org.liquibase:liquibase-core:3.9.0'
@@ -274,9 +276,7 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-hystrix"
     implementation "org.springframework.retry:spring-retry"
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client") {
-        exclude group: "javax.ws.rs", module: "jsr311-api"
-    }
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
     implementation "org.springframework.cloud:spring-cloud-starter-config"
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
     implementation "org.springframework.boot:spring-boot-starter-cloud-connectors"
@@ -310,8 +310,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
     implementation "org.keycloak:keycloak-admin-client:10.0.0"
-    implementation "org.jboss.resteasy:resteasy-client"
-    implementation "org.jboss.resteasy:resteasy-jackson2-provider"
+    implementation "org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.3.Final"
 }
 
 if (project.hasProperty("gae")) {

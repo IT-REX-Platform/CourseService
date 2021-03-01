@@ -23,6 +23,7 @@ public final class CourseUtil {
     course.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
     course.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
     course.setMaxFoodSum(NumbersUtil.generateRandomInteger(1000, 200000));
+    course.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
     course.setCourseDescription(StringUtil.generateRandomString(300, 600));
     course.setPublishState(PublishStateUtil.generateRandomPublishState());
     course.setChapters(ChapterIndexUtil.createChapterIndexList(course.getId(), NumbersUtil.generateRandomInteger(1, 22)));
@@ -40,6 +41,7 @@ public final class CourseUtil {
     courseDTO.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
     courseDTO.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
     courseDTO.setMaxFoodSum(NumbersUtil.generateRandomInteger(1000, 200000));
+    courseDTO.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
     courseDTO.setCourseDescription(StringUtil.generateRandomString(300, 600));
     courseDTO.setPublishState(PublishStateUtil.generateRandomPublishState());
     courseDTO.setChapters(IntStream.range(0, NumbersUtil.generateRandomInteger(1, 22)).mapToObj(i -> UUID.randomUUID()).collect(Collectors.toList()));
@@ -59,6 +61,7 @@ public final class CourseUtil {
     assertEquals(first.getMaxFoodSum(), second.getMaxFoodSum());
     assertEquals(first.getPublishState(), second.getPublishState());
     assertEquals(first.getCourseDescription(), second.getCourseDescription());
+    assertEquals(first.getRemainActiveOffset(), second.getRemainActiveOffset());
 
     assertEquals(first.getChapters().size(), second.getChapters().size());
     IntStream.range(0, first.getChapters().size()).forEach(i -> ChapterIndexUtil.equals(first.getChapters().get(i), second.getChapters().get(i)));
@@ -77,6 +80,7 @@ public final class CourseUtil {
     assertEquals(first.getMaxFoodSum(), second.getMaxFoodSum());
     assertEquals(first.getPublishState(), second.getPublishState());
     assertEquals(first.getCourseDescription(), second.getCourseDescription());
+    assertEquals(first.getRemainActiveOffset(), second.getRemainActiveOffset());
     assertEquals(first.getChapters(), second.getChapters());
   }
 }

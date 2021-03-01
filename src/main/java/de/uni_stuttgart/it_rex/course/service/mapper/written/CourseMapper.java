@@ -143,6 +143,7 @@ public abstract class CourseMapper {
     courseDTO.setName(course.getName());
     courseDTO.setMaxFoodSum(course.getMaxFoodSum());
     courseDTO.setCourseDescription(course.getCourseDescription());
+    courseDTO.setRemainActiveOffset(course.getRemainActiveOffset());
     courseDTO.setPublishState(course.getPublishState());
     courseDTO.setStartDate(course.getStartDate());
     courseDTO.setEndDate(course.getEndDate());
@@ -162,6 +163,7 @@ public abstract class CourseMapper {
     course.setName(courseDTO.getName());
     course.setMaxFoodSum(courseDTO.getMaxFoodSum());
     course.setCourseDescription(courseDTO.getCourseDescription());
+    course.setRemainActiveOffset(courseDTO.getRemainActiveOffset());
     course.setPublishState(courseDTO.getPublishState());
     course.setStartDate(courseDTO.getStartDate());
     course.setEndDate(courseDTO.getEndDate());

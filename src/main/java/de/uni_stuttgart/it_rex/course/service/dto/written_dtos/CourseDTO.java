@@ -34,6 +34,11 @@ public class CourseDTO {
   private Integer maxFoodSum;
 
   /**
+   * How long to remain active for after end date.
+   */
+  private Integer remainActiveOffset;
+
+  /**
    * The course description.
    */
   private String courseDescription;
@@ -249,5 +254,23 @@ public class CourseDTO {
         + ", courseDescription='" + courseDescription + '\''
         + ", publishState=" + publishState
         + '}';
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the active offset.
+   */
+  public Integer getRemainActiveOffset() {
+    return remainActiveOffset;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param remainActiveOffset the active offset.
+   */
+  public void setRemainActiveOffset(final Integer remainActiveOffset) {
+    this.remainActiveOffset = remainActiveOffset;
   }
 }

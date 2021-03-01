@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.course.repository.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -11,5 +12,6 @@ import java.util.UUID;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface CourseRepository extends JpaRepository<Course, UUID> {
+public interface CourseRepository extends JpaRepository<Course, UUID>,
+    JpaSpecificationExecutor<Course> {
 }

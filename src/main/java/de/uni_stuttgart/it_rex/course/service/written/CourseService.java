@@ -1,21 +1,26 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
-import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.CourseRole;
-import de.uni_stuttgart.it_rex.course.service.written.RexAuthz.RexAuthzConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.convert.QueryByExamplePredicateBuilder;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,18 +46,18 @@ public class CourseService {
     /**
      * Course mapper.
      */
-    private CourseMapper courseMapper;
+    private final CourseMapper courseMapper;
 
     /**
      * KeycloakAdminService.
      */
-    private KeycloakAdminService keycloakAdminService;
+    private final KeycloakAdminService keycloakAdminService;
 
     /**
      * Constructor.
      *
-     * @param newCourseRepository the course repository.
-     * @param newCourseMapper the course mapper.
+     * @param newCourseRepository     the course repository.
+     * @param newCourseMapper         the course mapper.
      * @param newKeycloakAdminService the keycloakAdminService.
      */
     @Autowired
@@ -89,30 +94,35 @@ public class CourseService {
         LOGGER.debug("Request to create Course : {}", courseDTO);
         final Course course = courseMapper.toEntity(courseDTO);
         final Course storedCourse = courseRepository.save(course);
-        final CourseDTO storedCourseDTO = courseMapper.toDTO(storedCourse);
 
         // Add keycloak roles and groups for the course.
-        // for (CourseRole role : CourseRole.values()) {
-        //     String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, newCourse.getId(), role);
-        //     String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(),
-        //         role);
+        for (COURSEROLE role : COURSEROLE.values()) {
+            String roleName =
+                RexAuthz.getCourseRoleString(storedCourse.getId(), role);
+            String groupName =
+                RexAuthz.getCourseGroupString(storedCourse.getId(), role);
 
-        //     // Create the role rep for the new role.
-        //     keycloakAdminService.addRole(roleName,
-        //         String.format("Role created automatically for course %s and role %s.", newCourse.getName(), role.toString()));
 
-        //     // Create the group rep for the new group.
-        //     keycloakAdminService.addGroup(groupName);
+            // Create the role rep for the new role.
+            keycloakAdminService.addRole(roleName,
+                String.format(
+                    "Role created automatically for course %s and role %s.",
+                    storedCourse.getName(), role.toString()));
 
-        //     // Connect the roles to the group.
-        //     keycloakAdminService.addRolesToGroup(groupName, roleName);
-        // }
+            // Create the group rep for the new group.
+            keycloakAdminService.addGroup(groupName);
 
-        //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        //String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, newCourse.getId(), CourseRole.OWNER);
-        //keycloakAdminService.addUserToGroup(auth.getName(), groupName);
+            // Connect the roles to the group.
+            keycloakAdminService.addRolesToGroup(groupName, roleName);
+        }
 
-        return storedCourseDTO;
+        Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+        String groupName =
+            RexAuthz.getCourseGroupString(storedCourse.getId(), COURSEROLE.OWNER);
+        keycloakAdminService.addUserToGroup(auth.getName(), groupName);
+
+        return courseMapper.toDTO(storedCourse);
     }
 
     /**
@@ -147,14 +157,14 @@ public class CourseService {
     public void delete(final UUID id) {
         LOGGER.debug("Request to delete Course : {}", id);
 
-        // // Remove the keycloak roles and groups.
-        // for (CourseRole role : CourseRole.values()) {
-        //     String roleName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_ROLE, id, role);
-        //     String groupName = RexAuthz.makeNameForCourse(RexAuthzConstants.TEMPLATE_COURSE_GROUP, id, role);
+        // Remove the keycloak roles and groups.
+        for (COURSEROLE role : COURSEROLE.values()) {
+            String roleName = RexAuthz.getCourseRoleString(id, role);
+            String groupName = RexAuthz.getCourseGroupString(id, role);
 
-        //     keycloakAdminService.removeRole(roleName);
-        //     keycloakAdminService.removeGroup(groupName);
-        // }
+            keycloakAdminService.removeRole(roleName);
+            keycloakAdminService.removeGroup(groupName);
+        }
 
         courseRepository.deleteById(id);
     }
@@ -184,16 +194,25 @@ public class CourseService {
      * Method finds all courses and filters them by given parameters.
      *
      * @param publishState Publish state of course.
+     * @param activeOnly   Set true to only include active courses (current time
+     *                     between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
      */
     public List<CourseDTO> findAll(
-        final Optional<PUBLISHSTATE> publishState) {
+        final Optional<PUBLISHSTATE> publishState,
+        final Optional<Boolean> activeOnly) {
         LOGGER.debug("Request to get filtered Courses");
-
         LOGGER.trace("Applying filters.");
-        Course courseExample = applyFiltersToExample(publishState);
-        return courseMapper.toDTO(
-            courseRepository.findAll(Example.of(courseExample)));
+
+        List<Course> courses;
+
+        Example<Course> courseExample =
+            Example.of(applyFiltersToExample(publishState));
+        Specification<Course> spec =
+            getSpecFromActiveAndExample(activeOnly, courseExample);
+        courses = courseRepository.findAll(spec);
+
+        return courseMapper.toDTO(courses);
     }
 
     /**
@@ -213,31 +232,56 @@ public class CourseService {
     }
 
     /**
-     * Join a Course.
+     * Method generates a specification that describes Course objects according
+     * to an example that also optionally have an endDate greater than or equal
+     * to the current date.
      *
-     * @param id the course id.
+     * @param activeOnly (Optional) set endDate >= LocalDate.now()
+     * @param example    Example course object
+     * @return A specification describing said Course object(s).
+     */
+    private Specification<Course> getSpecFromActiveAndExample(
+        final Optional<Boolean> activeOnly, final Example<Course> example) {
+        return (root, query, builder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (activeOnly.isPresent() && activeOnly.get()) {
+                predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"),
+                    LocalDate.now()));
+            }
+
+            predicates.add(QueryByExamplePredicateBuilder
+                .getPredicate(root, builder, example));
+
+            return builder.and(predicates.toArray(
+                new Predicate[predicates.size()]));
+        };
+    }
+
+    /**
+     * Join a course.
+     *
+     * @param id of the course to join.
      */
     public void join(final UUID id) {
-        Authentication auth = SecurityContextHolder.getContext()
-            .getAuthentication();
-        String groupName = RexAuthz
-            .makeNameForCourse(RexAuthzConstants
-                .TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
+        Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+        String groupName =
+            RexAuthz.getCourseGroupString(id, COURSEROLE.PARTICIPANT);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
     }
 
     /**
-     * Leave a Course.
+     * Leave a course.
      *
-     * @param id the course id.
+     * @param id of the course to leave.
      */
     public void leave(final UUID id) {
-        Authentication auth = SecurityContextHolder.getContext()
-            .getAuthentication();
-        String groupName = RexAuthz
-            .makeNameForCourse(RexAuthzConstants
-                .TEMPLATE_COURSE_GROUP, id, CourseRole.PARTICIPANT);
+        Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+        String groupName =
+            RexAuthz.getCourseGroupString(id, COURSEROLE.PARTICIPANT);
         keycloakAdminService.removeUserFromGroup(auth.getName(), groupName);
     }
-
 }

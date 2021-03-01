@@ -26,6 +26,9 @@ class CourseTest {
     private static final LocalDate FIRST_END_DATE = LocalDate.ofEpochDay(0L);
     private static final LocalDate SECOND_END_DATE = LocalDate.now(ZoneId.systemDefault());
 
+    private static final Integer FIRST_REMAIN_ACTIVE_OFFSET = 0;
+    private static final Integer SECOND_REMAIN_ACTIVE_OFFSET = 1;
+
     private static final Integer FIRST_MAX_FOOD_SUM = 1;
     private static final Integer SECOND_MAX_FOOD_SUM = 2;
 
@@ -43,6 +46,7 @@ class CourseTest {
         course1.setName(FIRST_NAME);
         course1.setStartDate(FIRST_START_DATE);
         course1.setEndDate(FIRST_END_DATE);
+        course1.setRemainActiveOffset(FIRST_REMAIN_ACTIVE_OFFSET);
         course1.setMaxFoodSum(FIRST_MAX_FOOD_SUM);
         course1.setCourseDescription(FIRST_COURSE_DESCRIPTION);
         course1.setPublishState(FIRST_PUBLISH_STATE);
@@ -52,6 +56,7 @@ class CourseTest {
         course2.setName(SECOND_NAME);
         course2.setStartDate(SECOND_START_DATE);
         course2.setEndDate(SECOND_END_DATE);
+        course2.setRemainActiveOffset(SECOND_REMAIN_ACTIVE_OFFSET);
         course2.setMaxFoodSum(SECOND_MAX_FOOD_SUM);
         course2.setCourseDescription(SECOND_COURSE_DESCRIPTION);
         course2.setPublishState(SECOND_PUBLISH_STATE);
@@ -61,6 +66,7 @@ class CourseTest {
         course3.setName(FIRST_NAME);
         course3.setStartDate(FIRST_START_DATE);
         course3.setEndDate(FIRST_END_DATE);
+        course3.setRemainActiveOffset(FIRST_REMAIN_ACTIVE_OFFSET);
         course3.setMaxFoodSum(FIRST_MAX_FOOD_SUM);
         course3.setCourseDescription(FIRST_COURSE_DESCRIPTION);
         course3.setPublishState(FIRST_PUBLISH_STATE);

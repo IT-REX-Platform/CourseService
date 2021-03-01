@@ -3,6 +3,7 @@
   "name": "Cooler Kurs",
   "startDate": "2019-09-20",
   "endDate": "2222-02-22",
+  "remainActiveOffset": 0,
   "maxFoodSum": 4242,
   "courseDescription": null,
   "publishState": "PUBLISHED"

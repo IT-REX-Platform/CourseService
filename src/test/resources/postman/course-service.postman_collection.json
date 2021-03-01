@@ -62,7 +62,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"Cooler Kurs\",\n  \"startDate\": \"2019-09-20\",\n  \"endDate\": \"2222-02-22\",\n  \"maxFoodSum\": 4242,\n  \"courseDescription\": null,\n  \"publishState\": \"PUBLISHED\"\n}\n",
+					"raw": "{\n  \"name\": \"Cooler Kurs\",\n  \"startDate\": \"2019-09-20\",\n  \"endDate\": \"2222-02-22\",\n  \"remainActiveOffset\": 0,\n  \"maxFoodSum\": 4242,\n  \"courseDescription\": null,\n  \"publishState\": \"PUBLISHED\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"

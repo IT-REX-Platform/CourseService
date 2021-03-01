@@ -37,6 +37,7 @@ class CourseMapperIT {
     expected.setName(toUpdate.getName());
     expected.setMaxFoodSum(update.getMaxFoodSum());
     expected.setCourseDescription(toUpdate.getCourseDescription());
+    expected.setRemainActiveOffset(toUpdate.getRemainActiveOffset());
     expected.setChapters(toUpdate.getChapters());
     expected.setPublishState(toUpdate.getPublishState());
     expected.setStartDate(toUpdate.getStartDate());
@@ -55,6 +56,7 @@ class CourseMapperIT {
     expected.setName(course.getName());
     expected.setMaxFoodSum(course.getMaxFoodSum());
     expected.setCourseDescription(course.getCourseDescription());
+    expected.setRemainActiveOffset(course.getRemainActiveOffset());
     expected.setPublishState(course.getPublishState());
     expected.setStartDate(course.getStartDate());
     expected.setEndDate(course.getEndDate());
@@ -75,6 +77,7 @@ class CourseMapperIT {
     expected.setName(courseDTO.getName());
     expected.setMaxFoodSum(courseDTO.getMaxFoodSum());
     expected.setCourseDescription(courseDTO.getCourseDescription());
+    expected.setRemainActiveOffset(courseDTO.getRemainActiveOffset());
     expected.setPublishState(courseDTO.getPublishState());
     expected.setStartDate(courseDTO.getStartDate());
     expected.setEndDate(courseDTO.getEndDate());

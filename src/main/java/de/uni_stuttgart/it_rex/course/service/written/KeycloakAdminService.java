@@ -2,7 +2,9 @@ package de.uni_stuttgart.it_rex.course.service.written;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
@@ -54,13 +56,13 @@ public class KeycloakAdminService {
         log.debug("clientId: {}", this.clientId);
         log.debug("clientSecret: {}", this.clientSecret);
 
-        //  keycloak = KeycloakBuilder.builder()
-        //      .serverUrl(this.serverUri)
-        //      .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-        //      .realm(this.realm)
-        //      .clientId(this.clientId)
-        //      .clientSecret(this.clientSecret)
-        //      .build();
+         keycloak = KeycloakBuilder.builder()
+             .serverUrl(this.serverUri)
+             .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+             .realm(this.realm)
+             .clientId(this.clientId)
+             .clientSecret(this.clientSecret)
+             .build();
 
         // TODO: Resteasy client for pooling, for handling multiple requests at the same time.
         // .resteasyClient(
