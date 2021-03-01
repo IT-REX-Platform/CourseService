@@ -33,8 +33,8 @@ version = "0.0.1-SNAPSHOT"
 
 description = ""
 
-sourceCompatibility=1.8
-targetCompatibility=1.8
+sourceCompatibility=11
+targetCompatibility=11
 assert System.properties["java.specification.version"] == "1.8" || "11" || "12" || "13" || "14"
 
 apply from: "gradle/docker.gradle"
@@ -206,8 +206,10 @@ nohttp {
 configurations {
     providedRuntime
     implementation.exclude module: "spring-boot-starter-tomcat"
+    implementation.exclude group: "javax.ws.rs" // :jsr311-api:1.1.1
     all {
         resolutionStrategy {
+            // failOnVersionConflict()
             // Inherited version from Spring Boot can't be used because of regressions:
             // To be removed as soon as spring-boot use the same version
             force 'org.liquibase:liquibase-core:3.9.0'
@@ -264,7 +266,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     testImplementation "org.testcontainers:postgresql"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation ("org.springframework.boot:spring-boot-starter-web") {
+    implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
     implementation "org.springframework.boot:spring-boot-starter-undertow"
@@ -283,7 +285,7 @@ dependencies {
     implementation "org.springframework.security:spring-security-web"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    implementation ("io.springfox:springfox-swagger2") {
+    implementation("io.springfox:springfox-swagger2") {
         exclude module: "mapstruct"
     }
     implementation "io.springfox:springfox-bean-validators"
@@ -308,6 +310,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
     implementation "org.keycloak:keycloak-admin-client:10.0.0"
+    implementation "org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.3.Final"
 }
 
 if (project.hasProperty("gae")) {

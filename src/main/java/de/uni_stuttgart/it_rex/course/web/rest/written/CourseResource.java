@@ -201,15 +201,19 @@ public class CourseResource {
     /**
      * {@code GET  /courses} : get all the courses.
      * Filters them by the publish state if it exists.
+     * Optionally only select active courses.
      *
      * @param publishState Publish state of course.
+     * @param activeOnly Set true to only include active courses (current time
+     *                   between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
      */
     @GetMapping("/courses")
     public List<Course> getAllCourses(
         @RequestParam("publishState") final Optional<PUBLISHSTATE>
-            publishState) {
+            publishState,
+        @RequestParam("activeOnly") final Optional<Boolean> activeOnly) {
         log.debug("REST request to get filtered Courses");
-        return courseService.findAll(publishState);
+        return courseService.findAll(publishState, activeOnly);
     }
 }

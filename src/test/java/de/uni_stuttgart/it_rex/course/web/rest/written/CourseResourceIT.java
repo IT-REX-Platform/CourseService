@@ -51,6 +51,9 @@ public class CourseResourceIT {
     private static final LocalDate DEFAULT_END_DATE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_END_DATE = LocalDate.now(ZoneId.systemDefault());
 
+    private static final Integer DEFAULT_REMAIN_ACTIVE_OFFSET = 0;
+    private static final Integer UPDATED_REMAIN_ACTIVE_OFFSET = 1;
+
     private static final Integer DEFAULT_MAX_FOOD_SUM = 1;
     private static final Integer UPDATED_MAX_FOOD_SUM = 2;
 
@@ -69,6 +72,8 @@ public class CourseResourceIT {
 
     private static final String NEW_DESCRIPTION = "Really cool Course";
     private static final PUBLISHSTATE NEW_PUBLISHED_STATE = PUBLISHSTATE.PUBLISHED;
+
+    private static final LocalDate NEW_END_DATE = LocalDate.ofEpochDay(LocalDate.now().toEpochDay() + 1);
 
     @Autowired
     private CourseRepository courseRepository;
@@ -98,6 +103,7 @@ public class CourseResourceIT {
         course.setName(DEFAULT_NAME);
         course.setStartDate(DEFAULT_START_DATE);
         course.setEndDate(DEFAULT_END_DATE);
+        course.setRemainActiveOffset(DEFAULT_REMAIN_ACTIVE_OFFSET);
         course.setMaxFoodSum(DEFAULT_MAX_FOOD_SUM);
         course.setCourseDescription(DEFAULT_COURSE_DESCRIPTION);
         course.setPublishState(DEFAULT_PUBLISH_STATE);
@@ -114,6 +120,7 @@ public class CourseResourceIT {
         course.setName(UPDATED_NAME);
         course.setStartDate(UPDATED_START_DATE);
         course.setEndDate(UPDATED_END_DATE);
+        course.setRemainActiveOffset(UPDATED_REMAIN_ACTIVE_OFFSET);
         course.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
         course.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
         course.setPublishState(UPDATED_PUBLISH_STATE);
@@ -142,6 +149,7 @@ public class CourseResourceIT {
         assertThat(testCourse.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testCourse.getStartDate()).isEqualTo(DEFAULT_START_DATE);
         assertThat(testCourse.getEndDate()).isEqualTo(DEFAULT_END_DATE);
+        assertThat(testCourse.getRemainActiveOffset()).isEqualTo(DEFAULT_REMAIN_ACTIVE_OFFSET);
         assertThat(testCourse.getMaxFoodSum()).isEqualTo(DEFAULT_MAX_FOOD_SUM);
         assertThat(testCourse.getCourseDescription()).isEqualTo(DEFAULT_COURSE_DESCRIPTION);
         assertThat(testCourse.getPublishState()).isEqualTo(DEFAULT_PUBLISH_STATE);
@@ -181,6 +189,7 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].remainActiveOffset").value(hasItem(DEFAULT_REMAIN_ACTIVE_OFFSET)))
             .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
             .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
@@ -200,6 +209,7 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
+            .andExpect(jsonPath("$.remainActiveOffset").value(DEFAULT_REMAIN_ACTIVE_OFFSET))
             .andExpect(jsonPath("$.maxFoodSum").value(DEFAULT_MAX_FOOD_SUM))
             .andExpect(jsonPath("$.courseDescription").value(DEFAULT_COURSE_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.publishState").value(DEFAULT_PUBLISH_STATE.toString()));
@@ -228,6 +238,7 @@ public class CourseResourceIT {
         updatedCourse.setName(UPDATED_NAME);
         updatedCourse.setStartDate(UPDATED_START_DATE);
         updatedCourse.setEndDate(UPDATED_END_DATE);
+        updatedCourse.setRemainActiveOffset(UPDATED_REMAIN_ACTIVE_OFFSET);
         updatedCourse.setMaxFoodSum(UPDATED_MAX_FOOD_SUM);
         updatedCourse.setCourseDescription(UPDATED_COURSE_DESCRIPTION);
         updatedCourse.setPublishState(UPDATED_PUBLISH_STATE);
@@ -244,6 +255,7 @@ public class CourseResourceIT {
         assertThat(testCourse.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testCourse.getStartDate()).isEqualTo(UPDATED_START_DATE);
         assertThat(testCourse.getEndDate()).isEqualTo(UPDATED_END_DATE);
+        assertThat(testCourse.getRemainActiveOffset()).isEqualTo(UPDATED_REMAIN_ACTIVE_OFFSET);
         assertThat(testCourse.getMaxFoodSum()).isEqualTo(UPDATED_MAX_FOOD_SUM);
         assertThat(testCourse.getCourseDescription()).isEqualTo(UPDATED_COURSE_DESCRIPTION);
         assertThat(testCourse.getPublishState()).isEqualTo(UPDATED_PUBLISH_STATE);
@@ -293,7 +305,7 @@ public class CourseResourceIT {
 
         // Get all the courseList
         restCourseMockMvc
-            .perform(get("/api/courses?publishState=PUBLISHED")
+            .perform(get("/api/courses?publishState=PUBLISHED&activeOnly=false")
                 .param("publishState", publishState))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -301,6 +313,40 @@ public class CourseResourceIT {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].remainActiveOffset").value(hasItem(DEFAULT_REMAIN_ACTIVE_OFFSET)))
+            .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
+            .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
+    }
+
+    @Test
+    @Transactional
+    void getFilteredActiveCourses() throws Exception {
+        String publishState = "PUBLISHED";
+
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList
+        restCourseMockMvc
+            .perform(get("/api/courses?publishState=PUBLISHED&activeOnly=true")
+                .param("publishState", publishState))
+            .andExpect(status().isOk())
+            .andExpect(content().string("[]"));
+
+        course.setEndDate(NEW_END_DATE);
+        courseRepository.saveAndFlush(course);
+
+        restCourseMockMvc
+            .perform(get("/api/courses?publishState=PUBLISHED&activeOnly=true")
+                .param("publishState", publishState))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(NEW_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].remainActiveOffset").value(hasItem(DEFAULT_REMAIN_ACTIVE_OFFSET)))
             .andExpect(jsonPath("$.[*].maxFoodSum").value(hasItem(DEFAULT_MAX_FOOD_SUM)))
             .andExpect(jsonPath("$.[*].courseDescription").value(hasItem(DEFAULT_COURSE_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].publishState").value(hasItem(DEFAULT_PUBLISH_STATE.toString())));
