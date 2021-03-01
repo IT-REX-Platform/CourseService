@@ -206,13 +206,13 @@ nohttp {
 configurations {
     providedRuntime
     implementation.exclude module: "spring-boot-starter-tomcat"
+    // implementation.exclude group: "javax.ws.rs" // :jsr311-api:1.1.1
     all {
         resolutionStrategy {
             // failOnVersionConflict()
             // Inherited version from Spring Boot can't be used because of regressions:
             // To be removed as soon as spring-boot use the same version
             force 'org.liquibase:liquibase-core:3.9.0'
-            force 'org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.3.Final'
         }
     }
 }
@@ -310,6 +310,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client
     implementation "org.keycloak:keycloak-admin-client:10.0.0"
+    implementation "org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.3.Final"
 }
 
 if (project.hasProperty("gae")) {
