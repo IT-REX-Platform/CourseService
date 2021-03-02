@@ -16,8 +16,10 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,7 @@ public class Chapter implements Serializable {
    * Constructor.
    */
   public Chapter() {
+    this.chapterIndices = new HashSet<>();
     this.contents = new ArrayList<>();
   }
 
@@ -68,10 +71,19 @@ public class Chapter implements Serializable {
   private LocalDate endDate;
 
   /**
+   * ChapterIndex items.
+   */
+  @OneToMany(cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      orphanRemoval = true,
+      mappedBy = "chapter")
+  protected Set<ChapterIndex> chapterIndices;
+
+  /**
    * Content items.
    */
   @OneToMany(cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
+      fetch = FetchType.LAZY,
       orphanRemoval = true)
   @JoinColumn(name = "chapter_id", referencedColumnName = "id")
   @OrderBy("index")
@@ -257,6 +269,27 @@ public class Chapter implements Serializable {
     getContents().addAll(contentIndexes.stream().map(contentIndex -> {
       contentIndex.setChapterId(getId());
       return contentIndex;
+    }).collect(Collectors.toList()));
+  }
+
+  public Set<ChapterIndex> getChapterIndices() {
+    return chapterIndices;
+  }
+
+  public void setChapterIndices(final Set<ChapterIndex> newChapterIndices) {
+    this.chapterIndices.clear();
+    addChapterIndices(newChapterIndices);
+  }
+
+  public void addChapterIndex(final ChapterIndex newChapterIndex) {
+    chapterIndices.add(newChapterIndex);
+    newChapterIndex.chapter = this;
+  }
+
+  public void addChapterIndices(final Set<ChapterIndex> newChapterIndices) {
+    chapterIndices.addAll(newChapterIndices.stream().map(chapterIndex -> {
+      chapterIndex.chapter = this;
+      return chapterIndex;
     }).collect(Collectors.toList()));
   }
 }

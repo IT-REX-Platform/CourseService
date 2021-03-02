@@ -26,7 +26,7 @@ public final class CourseUtil {
     course.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
     course.setCourseDescription(StringUtil.generateRandomString(300, 600));
     course.setPublishState(PublishStateUtil.generateRandomPublishState());
-    course.setChapters(ChapterIndexUtil.createChapterIndexList(course.getId(), NumbersUtil.generateRandomInteger(1, 22)));
+  //  course.setTimePeriods(ChapterIndexUtil.createChapterIndexList(course.getId(), NumbersUtil.generateRandomInteger(1, 22)));
     return course;
   }
 
@@ -44,7 +44,7 @@ public final class CourseUtil {
     courseDTO.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
     courseDTO.setCourseDescription(StringUtil.generateRandomString(300, 600));
     courseDTO.setPublishState(PublishStateUtil.generateRandomPublishState());
-    courseDTO.setChapters(IntStream.range(0, NumbersUtil.generateRandomInteger(1, 22)).mapToObj(i -> UUID.randomUUID()).collect(Collectors.toList()));
+  //  courseDTO.setTimePeriods(IntStream.range(0, NumbersUtil.generateRandomInteger(1, 22)).mapToObj(i -> UUID.randomUUID()).collect(Collectors.toList()));
     return courseDTO;
   }
 
@@ -63,8 +63,8 @@ public final class CourseUtil {
     assertEquals(first.getCourseDescription(), second.getCourseDescription());
     assertEquals(first.getRemainActiveOffset(), second.getRemainActiveOffset());
 
-    assertEquals(first.getChapters().size(), second.getChapters().size());
-    IntStream.range(0, first.getChapters().size()).forEach(i -> ChapterIndexUtil.equals(first.getChapters().get(i), second.getChapters().get(i)));
+    assertEquals(first.getTimePeriods().size(), second.getTimePeriods().size());
+   // IntStream.range(0, first.getTimePeriods().size()).forEach(i -> ChapterIndexUtil.equals(first.getTimePeriods().get(i), second.getTimePeriods().get(i)));
   }
 
   /**
@@ -81,6 +81,6 @@ public final class CourseUtil {
     assertEquals(first.getPublishState(), second.getPublishState());
     assertEquals(first.getCourseDescription(), second.getCourseDescription());
     assertEquals(first.getRemainActiveOffset(), second.getRemainActiveOffset());
-    assertEquals(first.getChapters(), second.getChapters());
+    assertEquals(first.getTimePeriods(), second.getTimePeriods());
   }
 }

@@ -1,21 +1,23 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ChapterIndex;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Mapper(componentModel = "spring")
 public abstract class CourseMapper {
+
+  @Autowired
+  private TimePeriodMapper timePeriodMapper;
 
   /**
    * Updates an entity from another entity.
@@ -57,9 +59,9 @@ public abstract class CourseMapper {
     if (update.getPublishState() != null) {
       toUpdate.setPublishState(update.getPublishState());
     }
-    if (update.getChapters() != null) {
-      toUpdate.setChapters(uUIDsToChapterIndices(toUpdate.getId(),
-          update.getChapters()));
+    if (update.getTimePeriods() != null) {
+      toUpdate.setTimePeriods(timePeriodMapper
+          .toEntity(update.getTimePeriods()));
     }
   }
 
@@ -71,10 +73,10 @@ public abstract class CourseMapper {
    */
   public CourseDTO toDTO(final Course course) {
     final CourseDTO courseDTO = setBasicProperties(course);
-    if (course.getChapters() != null) {
-      final List<UUID> chapters = course.getChapters().stream()
-          .map(ChapterIndex::getChapterId).collect(Collectors.toList());
-      courseDTO.setChapters(chapters);
+    if (course.getTimePeriods() != null) {
+      final List<TimePeriodDTO> timePeriods = timePeriodMapper
+          .toDto(course.getTimePeriods());
+      courseDTO.setTimePeriods(timePeriods);
     }
     return courseDTO;
   }
@@ -110,13 +112,10 @@ public abstract class CourseMapper {
    */
   public Course toEntity(final CourseDTO courseDTO) {
     final Course course = setBasicProperties(courseDTO);
-    if (courseDTO.getChapters() != null) {
-      final List<UUID> chapterIds = courseDTO.getChapters();
-      final List<ChapterIndex> chapters = uUIDsToChapterIndices(course.getId(),
-          chapterIds);
-      course.setChapters(chapters);
+    if (courseDTO.getTimePeriods() != null) {
+      course.setTimePeriods(timePeriodMapper
+          .toEntity(courseDTO.getTimePeriods()));
     }
-
     return course;
   }
 
@@ -168,25 +167,5 @@ public abstract class CourseMapper {
     course.setStartDate(courseDTO.getStartDate());
     course.setEndDate(courseDTO.getEndDate());
     return course;
-  }
-
-  /**
-   * Calculates a list of ChapterIndices from a list of UUIDs.
-   *
-   * @param courseId   the course id
-   * @param chapterIds the list of UUIDs
-   * @return the list of ChapterIndices
-   */
-  private List<ChapterIndex> uUIDsToChapterIndices(
-      final UUID courseId,
-      final List<UUID> chapterIds) {
-    return IntStream.range(0, chapterIds.size()).mapToObj(i -> {
-      final UUID id = chapterIds.get(i);
-      ChapterIndex chapterIndex = new ChapterIndex();
-      chapterIndex.setIndex(i);
-      chapterIndex.setChapterId(id);
-      chapterIndex.setCourseId(courseId);
-      return chapterIndex;
-    }).collect(Collectors.toList());
   }
 }

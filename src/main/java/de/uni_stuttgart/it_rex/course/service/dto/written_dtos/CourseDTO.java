@@ -51,7 +51,7 @@ public class CourseDTO {
   /**
    * Chapter items.
    */
-  private List<UUID> chapters;
+  private List<TimePeriodDTO> timePeriods;
 
   /**
    * Getter.
@@ -184,8 +184,8 @@ public class CourseDTO {
    *
    * @return the chapters
    */
-  public List<UUID> getChapters() {
-    return chapters;
+  public List<TimePeriodDTO> getTimePeriods() {
+    return timePeriods;
   }
 
   /**
@@ -193,8 +193,8 @@ public class CourseDTO {
    *
    * @param newChapters the chapters
    */
-  public void setChapters(final List<UUID> newChapters) {
-    this.chapters = newChapters;
+  public void setTimePeriods(final List<TimePeriodDTO> newChapters) {
+    this.timePeriods = newChapters;
   }
 
   /**
