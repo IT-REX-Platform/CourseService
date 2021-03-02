@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentIndex;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -51,7 +51,7 @@ public abstract class ChapterMapper {
       toUpdate.setEndDate(update.getEndDate());
     }
     if (update.getContents() != null) {
-      toUpdate.setContents(uUIDsToContentIndices(
+      toUpdate.setContents(uUIDsToContentReferences(
           toUpdate.getId(), update.getContents()));
     }
   }
@@ -66,7 +66,7 @@ public abstract class ChapterMapper {
     final ChapterDTO chapterDTO = setBasicProperties(chapter);
     if (chapter.getContents() != null) {
       final List<UUID> chapters = chapter.getContents().stream()
-          .map(ContentIndex::getContentId).collect(Collectors.toList());
+          .map(ContentReference::getContentId).collect(Collectors.toList());
       chapterDTO.setContents(chapters);
     }
     return chapterDTO;
@@ -105,7 +105,7 @@ public abstract class ChapterMapper {
     final Chapter chapter = setBasicProperties(chapterDTO);
     if (chapterDTO.getContents() != null) {
       final List<UUID> contentIds = chapterDTO.getContents();
-      final List<ContentIndex> chapters = uUIDsToContentIndices(
+      final List<ContentReference> chapters = uUIDsToContentReferences(
           chapter.getId(), contentIds);
       chapter.setContents(chapters);
     }
@@ -151,20 +151,20 @@ public abstract class ChapterMapper {
    * Calculates a list of ContentIndices from a list of UUIDs.
    *
    * @param chapterId  the chapter id
-   * @param contentIds the list of UUIDs
-   * @return the list of ContentIndices
+   * @param contentReferenceUuIds the list of UUIDs
+   * @return the list of ContentReferences
    */
-  private List<ContentIndex> uUIDsToContentIndices(
+  private List<ContentReference> uUIDsToContentReferences(
       final UUID chapterId,
-      final List<UUID> contentIds) {
-    final List<ContentIndex> chapters =
-        IntStream.range(0, contentIds.size()).mapToObj(i -> {
-          final UUID id = contentIds.get(i);
-          ContentIndex contentIndex = new ContentIndex();
-          contentIndex.setIndex(i);
-          contentIndex.setContentId(id);
-          contentIndex.setChapterId(chapterId);
-          return contentIndex;
+      final List<UUID> contentReferenceUuIds) {
+    final List<ContentReference> chapters =
+        IntStream.range(0, contentReferenceUuIds.size()).mapToObj(i -> {
+          final UUID id = contentReferenceUuIds.get(i);
+          ContentReference contentReference = new ContentReference();
+          contentReference.setIndex(i);
+          contentReference.setContentId(id);
+          contentReference.setChapterId(chapterId);
+          return contentReference;
         }).collect(Collectors.toList());
     return chapters;
   }

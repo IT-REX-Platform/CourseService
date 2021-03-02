@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 /**
- * Spring Data  repository for the Course entity.
+ * Spring Data repository for the Course entity.
  */
 @SuppressWarnings("unused")
 @Repository

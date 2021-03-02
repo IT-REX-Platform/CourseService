@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentIndex;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class ChapterMapperIT {
     expected.setEndDate(chapter.getEndDate());
 
     List<UUID> chapters = chapter.getContents().stream()
-        .map(ContentIndex::getContentId).collect(Collectors.toList());
+        .map(ContentReference::getContentId).collect(Collectors.toList());
     expected.setContents(chapters);
 
     ChapterDTO result = chapterMapper.toDTO(chapter);
@@ -71,14 +71,14 @@ class ChapterMapperIT {
     expected.setEndDate(chapterDTO.getEndDate());
 
     final List<UUID> contentIds = chapterDTO.getContents();
-    final List<ContentIndex> contents =
+    final List<ContentReference> contents =
         IntStream.range(0, contentIds.size()).mapToObj(i -> {
           final UUID id = contentIds.get(i);
-          ContentIndex contentIndex = new ContentIndex();
-          contentIndex.setIndex(i);
-          contentIndex.setContentId(id);
-          contentIndex.setChapterId(expected.getId());
-          return contentIndex;
+          ContentReference contentReference = new ContentReference();
+          contentReference.setIndex(i);
+          contentReference.setContentId(id);
+          contentReference.setChapterId(expected.getId());
+          return contentReference;
         }).collect(Collectors.toList());
 
     expected.setContents(contents);

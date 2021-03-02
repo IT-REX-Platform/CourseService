@@ -13,9 +13,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "content_index")
+@Table(name = "content_reference")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ContentIndex implements Serializable {
+public class ContentReference implements Serializable {
 
   /**
    * Identifier.
@@ -125,10 +125,10 @@ public class ContentIndex implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ContentIndex)) {
+    if (!(o instanceof ContentReference)) {
       return false;
     }
-    final ContentIndex that = (ContentIndex) o;
+    final ContentReference that = (ContentReference) o;
     return getIndex() == that.getIndex()
         && Objects.equals(getId(), that.getId())
         && Objects.equals(getContentId(), that.getContentId())
@@ -152,7 +152,7 @@ public class ContentIndex implements Serializable {
    */
   @Override
   public String toString() {
-    return "ContentIndex{"
+    return "ContentReference{"
         + "id=" + id
         + ", index=" + index
         + ", contentId=" + contentId
