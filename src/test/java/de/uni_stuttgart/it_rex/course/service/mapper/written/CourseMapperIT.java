@@ -1,17 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ChapterIndex;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
-import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
-import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

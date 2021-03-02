@@ -10,16 +10,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "chapter_index")
+@Table(name = "tp_chapter_relation")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ChapterIndex implements Serializable {
+public class TpChapterRelation implements Serializable {
 
   /**
    * Identifier.
@@ -100,10 +99,10 @@ public class ChapterIndex implements Serializable {
    */
   public void setTimePeriod(final TimePeriod newTimePeriod) {
     if (timePeriod != null) {
-      timePeriod.removeChapterIndex(this);
+      timePeriod.removeTPChapterRelation(this);
     }
     this.timePeriod = newTimePeriod;
-    newTimePeriod.getChapterIndices().add(this);
+    newTimePeriod.getTPChapterRelation().add(this);
   }
 
   /**
@@ -121,7 +120,7 @@ public class ChapterIndex implements Serializable {
    * @param newChapter the chapter
    */
   public void setChapter(final Chapter newChapter) {
-    newChapter.chapterIndices.add(this);
+    newChapter.tpChapterRelation.add(this);
     this.chapter = newChapter;
   }
 
@@ -136,10 +135,10 @@ public class ChapterIndex implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ChapterIndex)) {
+    if (!(o instanceof TpChapterRelation)) {
       return false;
     }
-    final ChapterIndex that = (ChapterIndex) o;
+    final TpChapterRelation that = (TpChapterRelation) o;
     return getIndex() == that.getIndex()
         && Objects.equals(getId(), that.getId())
         && Objects.equals(getChapter(), that.getChapter())

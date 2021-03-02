@@ -196,7 +196,7 @@ public class CourseResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
                 "idnull");
         }
-        CourseDTO result = courseService.patch(courseDTO);
+        final CourseDTO result = courseService.patch(courseDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
                 true, ENTITY_NAME, result.getId().toString()))
