@@ -18,7 +18,7 @@
     <include file="config/liquibase/changelog/20210212090204_added_entity_Lecturer.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210222220032_added_entity_Chapter.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210222220032_added_entity_ContentReference.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20210222220032_added_entity_ChapterIndex.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210222220032_added_entity_TpChapterRelation.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210222220032_added_entity_TimePeriod.xml" relativeToChangelogFile="false"/>
 
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class TimePeriod implements Serializable {
 
   public TimePeriod() {
-    this.chapterIndices = new ArrayList<>();
+    this.tPChapterRelation = new ArrayList<>();
   }
 
   @Id
@@ -50,14 +50,14 @@ public class TimePeriod implements Serializable {
   protected Course course;
 
   /**
-   * ChapterIndexes.
+   * TpChapterRelation.
    */
   @OneToMany(cascade = CascadeType.ALL,
       fetch = FetchType.LAZY,
       orphanRemoval = true,
       mappedBy = "timePeriod")
   @OrderBy("index")
-  private List<ChapterIndex> chapterIndices;
+  private List<TpChapterRelation> tPChapterRelation;
 
   public UUID getId() {
     return id;
@@ -95,29 +95,33 @@ public class TimePeriod implements Serializable {
     this.course = newCourse;
   }
 
-  public List<ChapterIndex> getChapterIndices() {
-    return chapterIndices;
+  public List<TpChapterRelation> getTPChapterRelation() {
+    return tPChapterRelation;
   }
 
-  public void setChapterIndices(final List<ChapterIndex> newChapterIndices) {
-    this.chapterIndices.clear();
-    addChapterIndices(newChapterIndices);
+  public void setTPChapterRelation(
+      final List<TpChapterRelation> newChapterIndices) {
+    this.tPChapterRelation.clear();
+    addTPChapterRelations(newChapterIndices);
   }
 
-  public void addChapterIndex(final ChapterIndex chapterIndex) {
-    chapterIndex.timePeriod = this;
-    this.chapterIndices.add(chapterIndex);
+  public void addTPChapterRelation(final TpChapterRelation tpChapterRelation) {
+    tpChapterRelation.timePeriod = this;
+    this.tPChapterRelation.add(tpChapterRelation);
   }
 
-  public void addChapterIndices(final List<ChapterIndex> newChapterIndices) {
-    this.chapterIndices.addAll(newChapterIndices.stream().map(chapterIndex -> {
-      chapterIndex.timePeriod = this;
-      return chapterIndex;
-    }).collect(Collectors.toList()));
+  public void addTPChapterRelations(
+      final List<TpChapterRelation> newTPChapterRelation) {
+    this.tPChapterRelation.addAll(newTPChapterRelation.stream()
+        .map(tPChapterRelation -> {
+          tPChapterRelation.timePeriod = this;
+          return tPChapterRelation;
+        }).collect(Collectors.toList()));
   }
 
-  public void removeChapterIndex(final ChapterIndex chapterIndex) {
-    chapterIndex.timePeriod = null;
-    getChapterIndices().remove(chapterIndex);
+  public void removeTPChapterRelation(
+      final TpChapterRelation tpChapterRelation) {
+    tpChapterRelation.timePeriod = null;
+    getTPChapterRelation().remove(tpChapterRelation);
   }
 }

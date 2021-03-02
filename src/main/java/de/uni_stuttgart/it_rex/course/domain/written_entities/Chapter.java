@@ -35,7 +35,7 @@ public class Chapter implements Serializable {
    * Constructor.
    */
   public Chapter() {
-    this.chapterIndices = new HashSet<>();
+    this.tpChapterRelation = new HashSet<>();
     this.contents = new ArrayList<>();
   }
 
@@ -77,7 +77,7 @@ public class Chapter implements Serializable {
       fetch = FetchType.LAZY,
       orphanRemoval = true,
       mappedBy = "chapter")
-  protected Set<ChapterIndex> chapterIndices;
+  protected Set<TpChapterRelation> tpChapterRelation;
 
   /**
    * Content items.
@@ -272,22 +272,25 @@ public class Chapter implements Serializable {
     }).collect(Collectors.toList()));
   }
 
-  public Set<ChapterIndex> getChapterIndices() {
-    return chapterIndices;
+  public Set<TpChapterRelation> getTpChapterRelation() {
+    return tpChapterRelation;
   }
 
-  public void setChapterIndices(final Set<ChapterIndex> newChapterIndices) {
-    this.chapterIndices.clear();
-    addChapterIndices(newChapterIndices);
+  public void setTpChapterRelation(
+      final Set<TpChapterRelation> newChapterIndices) {
+    this.tpChapterRelation.clear();
+    addTpChapterRelation(newChapterIndices);
   }
 
-  public void addChapterIndex(final ChapterIndex newChapterIndex) {
-    chapterIndices.add(newChapterIndex);
-    newChapterIndex.chapter = this;
+  public void addTpChapterRelation(
+      final TpChapterRelation newTpChapterRelation) {
+    tpChapterRelation.add(newTpChapterRelation);
+    newTpChapterRelation.chapter = this;
   }
 
-  public void addChapterIndices(final Set<ChapterIndex> newChapterIndices) {
-    chapterIndices.addAll(newChapterIndices.stream().map(chapterIndex -> {
+  public void addTpChapterRelation(
+      final Set<TpChapterRelation> newChapterIndices) {
+    tpChapterRelation.addAll(newChapterIndices.stream().map(chapterIndex -> {
       chapterIndex.chapter = this;
       return chapterIndex;
     }).collect(Collectors.toList()));

@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ChapterIndex;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.TpChapterRelation;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
@@ -35,7 +35,7 @@ public abstract class TimePeriodMapper {
     timePeriodDTO.setStartDate(timePeriod.getStartDate());
     timePeriodDTO.setEndDate(timePeriod.getEndDate());
 
-    List<ChapterDTO> chapterDTOs = timePeriod.getChapterIndices().stream()
+    List<ChapterDTO> chapterDTOs = timePeriod.getTPChapterRelation().stream()
         .map(chapterIndex -> chapterMapper.toDTO(chapterIndex.getChapter()))
         .collect(Collectors.toList());
 
@@ -61,9 +61,9 @@ public abstract class TimePeriodMapper {
     }
 
     if (timePeriodDTO.getChapters() != null) {
-      List<ChapterIndex> chapterIndices
+      List<TpChapterRelation> chapterIndices
           = toChapterIndices(timePeriodDTO.getChapters(), timePeriod);
-      timePeriod.setChapterIndices(chapterIndices);
+      timePeriod.setTPChapterRelation(chapterIndices);
     }
     return timePeriod;
   }
@@ -74,16 +74,16 @@ public abstract class TimePeriodMapper {
         .collect(Collectors.toList());
   }
 
-  private List<ChapterIndex> toChapterIndices(
+  private List<TpChapterRelation> toChapterIndices(
       final List<ChapterDTO> chapterDTOS,
       final TimePeriod timePeriod) {
     return IntStream.range(0, chapterDTOS.size()).mapToObj(i -> {
-      final ChapterIndex chapterIndex = new ChapterIndex();
+      final TpChapterRelation tpChapterRelation = new TpChapterRelation();
       final Chapter chapter = chapterMapper.toEntity(chapterDTOS.get(i));
-      chapterIndex.setIndex(i);
-      chapterIndex.setTimePeriod(timePeriod);
-      chapterIndex.setChapter(chapter);
-      return chapterIndex;
+      tpChapterRelation.setIndex(i);
+      tpChapterRelation.setTimePeriod(timePeriod);
+      tpChapterRelation.setChapter(chapter);
+      return tpChapterRelation;
     }).collect(Collectors.toList());
   }
 }

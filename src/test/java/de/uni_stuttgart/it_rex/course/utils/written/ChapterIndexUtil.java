@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ChapterIndex;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.TpChapterRelation;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,12 +18,12 @@ public final class ChapterIndexUtil {
    * @param index
    * @return the entity
    */
-  public static ChapterIndex createChapterIndex(final UUID courseId, final int index) {
-    ChapterIndex chapterIndex = new ChapterIndex();
-    chapterIndex.setIndex(index);
+  public static TpChapterRelation createChapterIndex(final UUID courseId, final int index) {
+    TpChapterRelation tpChapterRelation = new TpChapterRelation();
+    tpChapterRelation.setIndex(index);
   //  chapterIndex.setChapter(UUID.randomUUID());
   //  chapterIndex.setTimePeriod(courseId);
-    return chapterIndex;
+    return tpChapterRelation;
   }
 
   /**
@@ -32,7 +32,7 @@ public final class ChapterIndexUtil {
    * @param index
    * @return the entity
    */
-  public static ChapterIndex createChapterIndex(final int index) {
+  public static TpChapterRelation createChapterIndex(final int index) {
     return createChapterIndex(null, index);
   }
 
@@ -43,7 +43,7 @@ public final class ChapterIndexUtil {
    * @param number   number of entities
    * @return the list
    */
-  public static List<ChapterIndex> createChapterIndexList(final UUID courseId, final int number) {
+  public static List<TpChapterRelation> createChapterIndexList(final UUID courseId, final int number) {
     return IntStream.range(0, number).mapToObj(i -> createChapterIndex(courseId, i)).collect(Collectors.toList());
   }
 
@@ -53,7 +53,7 @@ public final class ChapterIndexUtil {
    * @param number number of entities
    * @return the list
    */
-  public static List<ChapterIndex> createChapterIndexList(final int number) {
+  public static List<TpChapterRelation> createChapterIndexList(final int number) {
     return createChapterIndexList(null, number);
   }
 
@@ -63,7 +63,7 @@ public final class ChapterIndexUtil {
    * @param first
    * @param second
    */
-  public static void equals(final ChapterIndex first, final ChapterIndex second) {
+  public static void equals(final TpChapterRelation first, final TpChapterRelation second) {
     assertEquals(first.getIndex(), second.getIndex());
     assertEquals(first.getChapter(), second.getChapter());
     assertEquals(first.getTimePeriod(), second.getTimePeriod());
