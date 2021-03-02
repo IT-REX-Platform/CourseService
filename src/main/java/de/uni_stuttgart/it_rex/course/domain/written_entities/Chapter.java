@@ -87,7 +87,7 @@ public class Chapter implements Serializable {
       orphanRemoval = true)
   @JoinColumn(name = "chapter_id", referencedColumnName = "id")
   @OrderBy("index")
-  private List<ContentIndex> contents;
+  private List<ContentReference> contents;
 
   /**
    * Equals method.
@@ -236,7 +236,7 @@ public class Chapter implements Serializable {
    *
    * @return the content ids.
    */
-  public List<ContentIndex> getContents() {
+  public List<ContentReference> getContents() {
     return contents;
   }
 
@@ -245,28 +245,28 @@ public class Chapter implements Serializable {
    *
    * @param newContents the content ids.
    */
-  public void setContents(final List<ContentIndex> newContents) {
+  public void setContents(final List<ContentReference> newContents) {
     getContents().clear();
     addContentIndex(newContents);
   }
 
   /**
-   * Adds a ContentIndex.
+   * Adds a ContentReference.
    *
-   * @param contentIndex the contentIndex
+   * @param contentReference the contentIndex
    */
-  public void addContentIndex(final ContentIndex contentIndex) {
-    contentIndex.setChapterId(getId());
-    getContents().add(contentIndex);
+  public void addContentIndex(final ContentReference contentReference) {
+    contentReference.setChapterId(getId());
+    getContents().add(contentReference);
   }
 
   /**
-   * Adds a list of ContentIndexes.
+   * Adds a list of ContentReferences.
    *
-   * @param contentIndexes the contentIndexes
+   * @param contentReferences the contentReferences
    */
-  public void addContentIndex(final List<ContentIndex> contentIndexes) {
-    getContents().addAll(contentIndexes.stream().map(contentIndex -> {
+  public void addContentIndex(final List<ContentReference> contentReferences) {
+    getContents().addAll(contentReferences.stream().map(contentIndex -> {
       contentIndex.setChapterId(getId());
       return contentIndex;
     }).collect(Collectors.toList()));

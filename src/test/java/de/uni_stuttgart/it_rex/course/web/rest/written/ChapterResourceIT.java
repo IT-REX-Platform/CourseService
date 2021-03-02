@@ -3,9 +3,9 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentIndex;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
-import de.uni_stuttgart.it_rex.course.repository.written.ContentIndexRepository;
+import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
@@ -65,7 +65,7 @@ public class ChapterResourceIT {
   private static final LocalDate SECOND_END_DATE = LocalDate.now(ZoneId.systemDefault());
   private static final LocalDate THIRD_END_DATE = LocalDate.now(ZoneId.systemDefault());
 
-  private static final List<ContentIndex> EXPECTED_CONTENTS = createContentIndexList(34);
+  private static final List<ContentReference> EXPECTED_CONTENTS = createContentIndexList(34);
 
   private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 
@@ -79,7 +79,7 @@ public class ChapterResourceIT {
   private ChapterMapper chapterMapper;
 
   @Autowired
-  private ContentIndexRepository contentIndexRepository;
+  private ContentReferenceRepository contentReferenceRepository;
 
   @Autowired
   private EntityManager em;
@@ -91,9 +91,9 @@ public class ChapterResourceIT {
   private Chapter chapter2;
   private Chapter chapter3;
 
-  private static List<ContentIndex> firstContents;
-  private static List<ContentIndex> secondContents;
-  private static List<ContentIndex> thirdContents;
+  private static List<ContentReference> firstContents;
+  private static List<ContentReference> secondContents;
+  private static List<ContentReference> thirdContents;
 
   /**
    * Create an entity for this test.
@@ -171,7 +171,7 @@ public class ChapterResourceIT {
   @AfterEach
   public void cleanup() {
     chapterRepository.deleteAll();
-    contentIndexRepository.deleteAll();
+    contentReferenceRepository.deleteAll();
   }
 
   @Test

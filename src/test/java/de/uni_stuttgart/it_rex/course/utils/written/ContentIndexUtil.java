@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentIndex;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,11 +16,11 @@ public final class ContentIndexUtil {
    *
    * @return the entity
    */
-  public static ContentIndex createContentIndex(final int index) {
-    ContentIndex contentIndex = new ContentIndex();
-    contentIndex.setIndex(index);
-    contentIndex.setContentId(UUID.randomUUID());
-    return contentIndex;
+  public static ContentReference createContentIndex(final int index) {
+    ContentReference contentReference = new ContentReference();
+    contentReference.setIndex(index);
+    contentReference.setContentId(UUID.randomUUID());
+    return contentReference;
   }
 
   /**
@@ -29,7 +29,7 @@ public final class ContentIndexUtil {
    * @param number number of entities
    * @return the list
    */
-  public static List<ContentIndex> createContentIndexList(final int number) {
+  public static List<ContentReference> createContentIndexList(final int number) {
     return IntStream.range(0, number).mapToObj(i -> createContentIndex(i)).collect(Collectors.toList());
   }
 
@@ -39,7 +39,7 @@ public final class ContentIndexUtil {
    * @param first
    * @param second
    */
-  public static void equals(final ContentIndex first, final ContentIndex second) {
+  public static void equals(final ContentReference first, final ContentReference second) {
     assertEquals(first.getIndex(), second.getIndex());
     assertEquals(first.getChapterId(), second.getChapterId());
     assertEquals(first.getContentId(), second.getContentId());
