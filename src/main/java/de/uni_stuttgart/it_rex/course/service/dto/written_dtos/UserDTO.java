@@ -210,11 +210,13 @@ public class UserDTO implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
         UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(getId(), userDTO.getId()) && Objects.equals(getUserName(), userDTO.getUserName())
+        return Objects.equals(getId(), userDTO.getId()) 
+                && Objects.equals(getUserName(), userDTO.getUserName())
                 && Objects.equals(getName(), userDTO.getName())
                 && Objects.equals(getGivenName(), userDTO.getGivenName())
                 && Objects.equals(getFamilyName(), userDTO.getFamilyName())
-                && Objects.equals(getEmail(), userDTO.getEmail()) && getRexRole() == userDTO.getRexRole()
+                && Objects.equals(getEmail(), userDTO.getEmail()) 
+                && getRexRole() == userDTO.getRexRole()
                 && Objects.equals(getCourses(), userDTO.getCourses());
     }
 
@@ -225,8 +227,15 @@ public class UserDTO implements Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUserName(), getName(), getGivenName(), getFamilyName(), getEmail(),
-                getRexRole(), getCourses());
+        return Objects.hash(
+                getId(),
+                getUserName(),
+                getName(),
+                getGivenName(),
+                getFamilyName(),
+                getEmail(),
+                getRexRole(),
+                getCourses());
     }
 
     /**
