@@ -30,7 +30,7 @@ public final class ChapterUtil {
     chapterDTO.setTitle(StringUtil.generateRandomString(10, 50));
     chapterDTO.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
     chapterDTO.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
-    chapterDTO.setContents(IntStream.range(0, NumbersUtil.generateRandomInteger(1, 22)).mapToObj(i -> UUID.randomUUID()).collect(Collectors.toList()));
+    chapterDTO.setContentReferenceIds(IntStream.range(0, NumbersUtil.generateRandomInteger(1, 22)).mapToObj(i -> UUID.randomUUID()).collect(Collectors.toList()));
     return chapterDTO;
   }
 

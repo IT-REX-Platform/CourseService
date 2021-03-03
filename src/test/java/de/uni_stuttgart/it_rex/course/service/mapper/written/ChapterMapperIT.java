@@ -54,7 +54,7 @@ class ChapterMapperIT {
 
     List<UUID> chapters = chapter.getContents().stream()
         .map(ContentReference::getContentId).collect(Collectors.toList());
-    expected.setContents(chapters);
+    expected.setContentReferenceIds(chapters);
 
     ChapterDTO result = chapterMapper.toDTO(chapter);
     assertEquals(expected, result);
@@ -70,7 +70,7 @@ class ChapterMapperIT {
     expected.setStartDate(chapterDTO.getStartDate());
     expected.setEndDate(chapterDTO.getEndDate());
 
-    final List<UUID> contentIds = chapterDTO.getContents();
+    final List<UUID> contentIds = chapterDTO.getContentReferenceIds();
     final List<ContentReference> contents =
         IntStream.range(0, contentIds.size()).mapToObj(i -> {
           final UUID id = contentIds.get(i);

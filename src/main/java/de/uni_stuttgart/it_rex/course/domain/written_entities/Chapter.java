@@ -10,12 +10,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -31,268 +35,206 @@ import java.util.stream.Collectors;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Chapter implements Serializable {
 
-  /**
-   * Constructor.
-   */
-  public Chapter() {
-    this.tpChapterRelation = new HashSet<>();
-    this.contents = new ArrayList<>();
-  }
-
-  /**
-   * Identifier.
-   */
-  @Id
-  @GeneratedValue
-  private UUID id;
-
-  /**
-   * Title of the chapter.
-   */
-  @Column(name = "title")
-  private String title;
-
-  /**
-   * Course id.
-   */
-  @Column(name = "course_id")
-  private UUID courseId;
-
-  /**
-   * Start date of the Chapter.
-   */
-  @Column(name = "start_date")
-  private LocalDate startDate;
-
-  /**
-   * End date of the Chapter.
-   */
-  @Column(name = "end_date")
-  private LocalDate endDate;
-
-  /**
-   * ChapterIndex items.
-   */
-  @OneToMany(cascade = CascadeType.ALL,
-      fetch = FetchType.LAZY,
-      orphanRemoval = true,
-      mappedBy = "chapter")
-  protected Set<TpChapterRelation> tpChapterRelation;
-
-  /**
-   * Content items.
-   */
-  @OneToMany(cascade = CascadeType.ALL,
-      fetch = FetchType.LAZY,
-      orphanRemoval = true)
-  @JoinColumn(name = "chapter_id", referencedColumnName = "id")
-  @OrderBy("index")
-  private List<ContentReference> contents;
-
-  /**
-   * Equals method.
-   *
-   * @param o the other object.
-   * @return if they are equal
-   */
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Constructor.
+     */
+    public Chapter() {
+        this.contentReferences = new HashSet<>();
     }
-    if (!(o instanceof Chapter)) {
-      return false;
+
+    /**
+     * Identifier.
+     */
+    @Id
+    @GeneratedValue
+    private UUID id;
+
+    /**
+     * Title of the chapter.
+     */
+    @Column(name = "title")
+    private String title;
+
+    /**
+     * Course id.
+     */
+    @Column(name = "course_id")
+    private UUID courseId;
+
+    /**
+     * Start date of the Chapter.
+     */
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    /**
+     * End date of the Chapter.
+     */
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    /**
+     * Content items.
+     */
+    @ManyToMany(cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "chapter_content",
+        joinColumns = {
+            @JoinColumn(name = "chapter_id", referencedColumnName = "id")},
+        inverseJoinColumns = {
+            @JoinColumn(name = "content_id", referencedColumnName = "id")}
+    )
+    @OrderBy("startDate")
+    protected final Set<ContentReference> contentReferences;
+
+    /**
+     * The Course.
+     */
+    @ManyToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    protected Course course;
+
+    /**
+     * Getter.
+     *
+     * @return the id
+     */
+    public UUID getId() {
+        return id;
     }
-    final Chapter chapter = (Chapter) o;
-    return Objects.equals(getId(), chapter.getId())
-        && Objects.equals(getTitle(), chapter.getTitle())
-        && Objects.equals(getCourseId(), chapter.getCourseId())
-        && Objects.equals(getStartDate(), chapter.getStartDate())
-        && Objects.equals(getEndDate(), chapter.getEndDate())
-        && Objects.equals(getContents(), chapter.getContents());
-  }
 
-  /**
-   * Hash code method.
-   *
-   * @return the hash code.
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId(),
-        getTitle(),
-        getCourseId(),
-        getStartDate(),
-        getEndDate(),
-        getContents());
-  }
+    /**
+     * Setter.
+     *
+     * @param newId
+     */
+    public void setId(final UUID newId) {
+        this.id = newId;
+    }
 
-  /**
-   * To string method.
-   *
-   * @return the string
-   */
-  @Override
-  public String toString() {
-    return "Chapter{" + "id=" + id
-        + ", title='" + title + '\''
-        + ", courseId=" + courseId
-        + ", startDate=" + startDate
-        + ", endDate=" + endDate + '}';
-  }
+    /**
+     * Getter.
+     *
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
 
-  /**
-   * Getter.
-   *
-   * @return the id
-   */
-  public UUID getId() {
-    return id;
-  }
+    /**
+     * Setter.
+     *
+     * @param newTitle the title
+     */
+    public void setTitle(final String newTitle) {
+        this.title = newTitle;
+    }
 
-  /**
-   * Setter.
-   *
-   * @param newId
-   */
-  public void setId(final UUID newId) {
-    this.id = newId;
-  }
+    /**
+     * Getter.
+     *
+     * @return the course id.
+     */
+    public UUID getCourseId() {
+        return courseId;
+    }
 
-  /**
-   * Getter.
-   *
-   * @return the title
-   */
-  public String getTitle() {
-    return title;
-  }
+    /**
+     * Setter.
+     *
+     * @param newCourseId the course id
+     */
+    public void setCourseId(final UUID newCourseId) {
+        this.courseId = newCourseId;
+    }
 
-  /**
-   * Setter.
-   *
-   * @param newTitle the title
-   */
-  public void setTitle(final String newTitle) {
-    this.title = newTitle;
-  }
+    /**
+     * Getter.
+     *
+     * @return the start date.
+     */
+    public LocalDate getStartDate() {
+        return startDate;
+    }
 
-  /**
-   * Getter.
-   *
-   * @return the course id.
-   */
-  public UUID getCourseId() {
-    return courseId;
-  }
+    /**
+     * Setter.
+     *
+     * @param newStartDate the start date.
+     */
+    public void setStartDate(final LocalDate newStartDate) {
+        this.startDate = newStartDate;
+    }
 
-  /**
-   * Setter.
-   *
-   * @param newCourseId the course id
-   */
-  public void setCourseId(final UUID newCourseId) {
-    this.courseId = newCourseId;
-  }
+    /**
+     * Getter.
+     *
+     * @return the end date.
+     */
+    public LocalDate getEndDate() {
+        return endDate;
+    }
 
-  /**
-   * Getter.
-   *
-   * @return the start date.
-   */
-  public LocalDate getStartDate() {
-    return startDate;
-  }
+    /**
+     * Setter.
+     *
+     * @param newEndDate the end date.
+     */
+    public void setEndDate(final LocalDate newEndDate) {
+        this.endDate = newEndDate;
+    }
 
-  /**
-   * Setter.
-   *
-   * @param newStartDate the start date.
-   */
-  public void setStartDate(final LocalDate newStartDate) {
-    this.startDate = newStartDate;
-  }
+    /**
+     * Getter.
+     *
+     * @return content references
+     */
+    public Collection<ContentReference> getContentReferences() {
+        return contentReferences;
+    }
 
-  /**
-   * Getter.
-   *
-   * @return the end date.
-   */
-  public LocalDate getEndDate() {
-    return endDate;
-  }
+    /**
+     * Setter.
+     *
+     * @param newContentReferences the content references
+     */
+    public void setContentReferences(
+        final Collection<ContentReference> newContentReferences) {
+        getContentReferences().clear();
+        addContentReferences(newContentReferences);
+    }
 
-  /**
-   * Setter.
-   *
-   * @param newEndDate the end date.
-   */
-  public void setEndDate(final LocalDate newEndDate) {
-    this.endDate = newEndDate;
-  }
+    public void addContentReference(
+        final ContentReference newContentReference) {
+        newContentReference.chapters.add(this);
+        this.contentReferences.add(newContentReference);
+    }
 
-  /**
-   * Getter.
-   *
-   * @return the content ids.
-   */
-  public List<ContentReference> getContents() {
-    return contents;
-  }
+    public void addContentReferences(
+        final Collection<ContentReference> newContentReferences) {
+        getContentReferences()
+            .addAll(newContentReferences.stream().map(newContentReference -> {
+                newContentReference.chapters.add(this);
+                return newContentReference;
+            }).collect(Collectors.toSet()));
+    }
 
-  /**
-   * Setter.
-   *
-   * @param newContents the content ids.
-   */
-  public void setContents(final List<ContentReference> newContents) {
-    getContents().clear();
-    addContentIndex(newContents);
-  }
+    public void removeContentReference(
+        final ContentReference newContentReference) {
+        newContentReference.chapters.remove(this);
+        this.contentReferences.remove(newContentReference);
+    }
 
-  /**
-   * Adds a ContentReference.
-   *
-   * @param contentReference the contentIndex
-   */
-  public void addContentIndex(final ContentReference contentReference) {
-    contentReference.setChapterId(getId());
-    getContents().add(contentReference);
-  }
+    public Course getCourse() {
+        return course;
+    }
 
-  /**
-   * Adds a list of ContentReferences.
-   *
-   * @param contentReferences the contentReferences
-   */
-  public void addContentIndex(final List<ContentReference> contentReferences) {
-    getContents().addAll(contentReferences.stream().map(contentIndex -> {
-      contentIndex.setChapterId(getId());
-      return contentIndex;
-    }).collect(Collectors.toList()));
-  }
-
-  public Set<TpChapterRelation> getTpChapterRelation() {
-    return tpChapterRelation;
-  }
-
-  public void setTpChapterRelation(
-      final Set<TpChapterRelation> newChapterIndices) {
-    this.tpChapterRelation.clear();
-    addTpChapterRelation(newChapterIndices);
-  }
-
-  public void addTpChapterRelation(
-      final TpChapterRelation newTpChapterRelation) {
-    tpChapterRelation.add(newTpChapterRelation);
-    newTpChapterRelation.chapter = this;
-  }
-
-  public void addTpChapterRelation(
-      final Set<TpChapterRelation> newChapterIndices) {
-    tpChapterRelation.addAll(newChapterIndices.stream().map(chapterIndex -> {
-      chapterIndex.chapter = this;
-      return chapterIndex;
-    }).collect(Collectors.toList()));
-  }
+    public void setCourse(final Course newCourse) {
+        if (course != null) {
+            course.removeChapter(this);
+        }
+        newCourse.getChapters().add(this);
+        this.course = newCourse;
+    }
 }

@@ -1,7 +1,5 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -34,9 +32,9 @@ public class ChapterDTO {
   private LocalDate endDate;
 
   /**
-   * Content items.
+   * Content Reference items.
    */
-  private List<UUID> contents;
+  private List<UUID> contentReferenceIds;
 
   /**
    * Equals method.
@@ -58,7 +56,8 @@ public class ChapterDTO {
         && Objects.equals(getCourseId(), chapterDTO.getCourseId())
         && Objects.equals(getStartDate(), chapterDTO.getStartDate())
         && Objects.equals(getEndDate(), chapterDTO.getEndDate())
-        && Objects.equals(getContents(), chapterDTO.getContents());
+        && Objects.equals(
+        getContentReferenceIds(), chapterDTO.getContentReferenceIds());
   }
 
   /**
@@ -73,7 +72,7 @@ public class ChapterDTO {
         getCourseId(),
         getStartDate(),
         getEndDate(),
-        getContents());
+        getContentReferenceIds());
   }
 
   /**
@@ -185,8 +184,8 @@ public class ChapterDTO {
    *
    * @return the content ids.
    */
-  public List<UUID> getContents() {
-    return contents;
+  public List<UUID> getContentReferenceIds() {
+    return contentReferenceIds;
   }
 
   /**
@@ -194,7 +193,7 @@ public class ChapterDTO {
    *
    * @param newContents the content ids.
    */
-  public void setContents(final List<UUID> newContents) {
-    this.contents = newContents;
+  public void setContentReferenceIds(final List<UUID> newContents) {
+    this.contentReferenceIds = newContents;
   }
 }
