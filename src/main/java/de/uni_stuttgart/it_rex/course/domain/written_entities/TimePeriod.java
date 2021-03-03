@@ -47,7 +47,11 @@ public class TimePeriod implements Serializable {
     /**
      * Content items.
      */
-    @ManyToMany(cascade = CascadeType.ALL,
+    @ManyToMany(cascade = {
+        CascadeType.PERSIST,
+        CascadeType.MERGE,
+        CascadeType.REFRESH,
+        CascadeType.DETACH},
         fetch = FetchType.LAZY)
     @JoinTable(
         name = "time_period_content",
@@ -60,7 +64,7 @@ public class TimePeriod implements Serializable {
     protected final Set<ContentReference> contentReferences;
 
     /**
-     * Course id
+     * The Course.
      */
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")

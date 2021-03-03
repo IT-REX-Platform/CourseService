@@ -1,6 +1,8 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 import org.mapstruct.BeanMapping;
@@ -66,18 +68,7 @@ public abstract class CourseMapper {
         if (update.getPublishState() != null) {
             toUpdate.setPublishState(update.getPublishState());
         }
-        if (update.getTimePeriods() != null) {
-            toUpdate.setTimePeriods(timePeriodMapper
-                .toEntity(update.getTimePeriods()));
-        }
-        if (update.getChapters() != null) {
-            toUpdate.setChapters(chapterMapper
-                .toEntity(update.getChapters()));
-        }
-        if (update.getContentReferences() != null) {
-            toUpdate.setContentReferences(contentReferenceMappper
-                .toEntity(update.getContentReferences()));
-        }
+        setMappingProperties(update, toUpdate);
     }
 
     /**
@@ -88,10 +79,23 @@ public abstract class CourseMapper {
      */
     public CourseDTO toDTO(final Course course) {
         final CourseDTO courseDTO = setBasicProperties(course);
+        if (course.getContentReferences() != null) {
+            final List<ContentReferenceDTO> contentReferenceDTOs =
+                contentReferenceMappper.toDTO(course.getContentReferences()).
+                    stream().collect(Collectors.toList());
+            courseDTO.setContentReferences(contentReferenceDTOs);
+        }
         if (course.getTimePeriods() != null) {
-            final Collection<TimePeriodDTO> timePeriods = timePeriodMapper
-                .toDto(course.getTimePeriods());
+            final List<TimePeriodDTO> timePeriods = timePeriodMapper
+                .toDTO(course.getTimePeriods()).
+                    stream().collect(Collectors.toList());
             courseDTO.setTimePeriods(timePeriods);
+        }
+        if (course.getChapters() != null) {
+            final List<ChapterDTO> chapters = chapterMapper
+                .toDTO(course.getChapters()).
+                    stream().collect(Collectors.toList());
+            courseDTO.setChapters(chapters);
         }
         return courseDTO;
     }
@@ -102,7 +106,7 @@ public abstract class CourseMapper {
      * @param courses the entities
      * @return the DTOs
      */
-    public List<CourseDTO> toDTO(final List<Course> courses) {
+    public List<CourseDTO> toDTO(final Collection<Course> courses) {
         return courses.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
@@ -127,10 +131,7 @@ public abstract class CourseMapper {
      */
     public Course toEntity(final CourseDTO courseDTO) {
         final Course course = setBasicProperties(courseDTO);
-        if (courseDTO.getTimePeriods() != null) {
-            course.setTimePeriods(timePeriodMapper
-                .toEntity(courseDTO.getTimePeriods()));
-        }
+        setMappingProperties(courseDTO, course);
         return course;
     }
 
@@ -183,5 +184,21 @@ public abstract class CourseMapper {
         course.setStartDate(courseDTO.getStartDate());
         course.setEndDate(courseDTO.getEndDate());
         return course;
+    }
+
+    private void setMappingProperties(final CourseDTO courseDTO,
+                                      final Course course) {
+        if (courseDTO.getContentReferences() != null) {
+            course.setContentReferences(contentReferenceMappper
+                .toEntity(courseDTO.getContentReferences()));
+        }
+        if (courseDTO.getChapters() != null) {
+            course.setChapters(chapterMapper
+                .toEntity(courseDTO.getChapters()));
+        }
+        if (courseDTO.getTimePeriods() != null) {
+            course.setTimePeriods(timePeriodMapper
+                .toEntity(courseDTO.getTimePeriods()));
+        }
     }
 }

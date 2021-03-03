@@ -13,16 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -56,12 +52,6 @@ public class Chapter implements Serializable {
     private String title;
 
     /**
-     * Course id.
-     */
-    @Column(name = "course_id")
-    private UUID courseId;
-
-    /**
      * Start date of the Chapter.
      */
     @Column(name = "start_date")
@@ -76,7 +66,11 @@ public class Chapter implements Serializable {
     /**
      * Content items.
      */
-    @ManyToMany(cascade = CascadeType.ALL,
+    @ManyToMany(cascade = {
+        CascadeType.PERSIST,
+        CascadeType.MERGE,
+        CascadeType.REFRESH,
+        CascadeType.DETACH},
         fetch = FetchType.LAZY)
     @JoinTable(
         name = "chapter_content",
@@ -129,24 +123,6 @@ public class Chapter implements Serializable {
      */
     public void setTitle(final String newTitle) {
         this.title = newTitle;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the course id.
-     */
-    public UUID getCourseId() {
-        return courseId;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newCourseId the course id
-     */
-    public void setCourseId(final UUID newCourseId) {
-        this.courseId = newCourseId;
     }
 
     /**
