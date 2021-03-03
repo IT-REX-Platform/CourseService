@@ -374,7 +374,7 @@ public class Course implements Serializable {
      */
     public void removeChapter(final Chapter newChapter) {
         newChapter.course = null;
-        getChapters().remove(newChapter);
+        this.chapters.remove(newChapter);
     }
 
     /**

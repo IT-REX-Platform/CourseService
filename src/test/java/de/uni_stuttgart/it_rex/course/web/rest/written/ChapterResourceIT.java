@@ -28,7 +28,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
-import static de.uni_stuttgart.it_rex.course.utils.written.ContentIndexUtil.createContentIndexList;
+import static de.uni_stuttgart.it_rex.course.utils.written.ContentReferenceUtil.createContentIndexList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -107,7 +107,7 @@ public class ChapterResourceIT {
     chapter.setCourseId(COURSE_ID);
     chapter.setStartDate(FIRST_START_DATE);
     chapter.setEndDate(FIRST_END_DATE);
-    chapter.setContents(firstContents);
+ //   chapter.setContents(firstContents);
     return chapter;
   }
 
@@ -123,7 +123,7 @@ public class ChapterResourceIT {
     chapter.setCourseId(COURSE_ID);
     chapter.setStartDate(SECOND_START_DATE);
     chapter.setEndDate(SECOND_END_DATE);
-    chapter.setContents(secondContents);
+  //  chapter.setContents(secondContents);
     return chapter;
   }
 
@@ -139,7 +139,7 @@ public class ChapterResourceIT {
     chapter.setCourseId(COURSE_ID);
     chapter.setStartDate(THIRD_START_DATE);
     chapter.setEndDate(THIRD_END_DATE);
-    chapter.setContents(thirdContents);
+  //  chapter.setContents(thirdContents);
     return chapter;
   }
 
@@ -333,7 +333,7 @@ public class ChapterResourceIT {
     toUpdate.setCourseId(COURSE_ID);
     toUpdate.setStartDate(FIRST_START_DATE);
     toUpdate.setEndDate(FIRST_END_DATE);
-    toUpdate.setContents(EXPECTED_CONTENTS);
+   // toUpdate.setContents(EXPECTED_CONTENTS);
 
     UUID id = chapterResource.createChapter(chapterMapper.toDTO(toUpdate)).getBody().getId();
     Chapter update = new Chapter();
@@ -350,7 +350,7 @@ public class ChapterResourceIT {
     expected.setCourseId(COURSE_ID);
     expected.setStartDate(FIRST_START_DATE);
     expected.setEndDate(SECOND_END_DATE);
-    expected.setContents(EXPECTED_CONTENTS);
+   // expected.setContents(EXPECTED_CONTENTS);
 
     ChapterDTO updated = chapterResource.getChapter(id).getBody();
 

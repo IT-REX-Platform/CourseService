@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class ContentIndexUtil {
+public final class ContentReferenceUtil {
 
   /**
    * Creates a random entity.
@@ -18,7 +18,6 @@ public final class ContentIndexUtil {
    */
   public static ContentReference createContentIndex(final int index) {
     ContentReference contentReference = new ContentReference();
-    contentReference.setIndex(index);
     contentReference.setContentId(UUID.randomUUID());
     return contentReference;
   }
@@ -40,8 +39,11 @@ public final class ContentIndexUtil {
    * @param second
    */
   public static void equals(final ContentReference first, final ContentReference second) {
-    assertEquals(first.getIndex(), second.getIndex());
-    assertEquals(first.getChapterId(), second.getChapterId());
+    assertEquals(first.getChapters(), second.getChapters());
     assertEquals(first.getContentId(), second.getContentId());
+    assertEquals(first.getStartDate(), second.getStartDate());
+    assertEquals(first.getEndDate(), second.getEndDate());
+    assertEquals(first.getChapters(), second.getChapters());
+    assertEquals(first.getCourse(), second.getCourse());
   }
 }

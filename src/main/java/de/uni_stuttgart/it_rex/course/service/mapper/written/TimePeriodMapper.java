@@ -23,12 +23,15 @@ public abstract class TimePeriodMapper {
     @Autowired
     private ContentReferenceRepository contentReferenceRepository;
 
-    public TimePeriodDTO toDto(final TimePeriod timePeriod) {
+    public TimePeriodDTO toDTO(final TimePeriod timePeriod) {
         final TimePeriodDTO timePeriodDTO = new TimePeriodDTO();
         timePeriodDTO.setId(timePeriod.getId());
-        timePeriodDTO.setCourseId(timePeriod.getCourse().getId());
         timePeriodDTO.setStartDate(timePeriod.getStartDate());
         timePeriodDTO.setEndDate(timePeriod.getEndDate());
+
+        if (timePeriod.getCourse() != null) {
+            timePeriodDTO.setCourseId(timePeriod.getCourse().getId());
+        }
 
         timePeriodDTO.setContentReferenceIds(
             timePeriod.getContentReferences().stream()
@@ -39,8 +42,9 @@ public abstract class TimePeriodMapper {
         return timePeriodDTO;
     }
 
-    public Collection<TimePeriodDTO> toDto(final Collection<TimePeriod> timePeriods) {
-        return timePeriods.stream().map(this::toDto)
+    public Collection<TimePeriodDTO> toDTO
+        (final Collection<TimePeriod> timePeriods) {
+        return timePeriods.stream().map(this::toDTO)
             .collect(Collectors.toList());
     }
 
@@ -58,8 +62,7 @@ public abstract class TimePeriodMapper {
         if (timePeriodDTO.getContentReferenceIds() != null) {
             timePeriod.setContentReferences(
                 contentReferenceRepository
-                    .findAllById(
-                        timePeriodDTO.getContentReferenceIds()));
+                    .findAllById(timePeriodDTO.getContentReferenceIds()));
         }
 
         return timePeriod;

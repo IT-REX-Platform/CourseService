@@ -36,7 +36,7 @@ class ChapterMapperIT {
     expected.setCourseId(toUpdate.getCourseId());
     expected.setStartDate(toUpdate.getStartDate());
     expected.setEndDate(toUpdate.getEndDate());
-    expected.setContents(toUpdate.getContents());
+   // expected.setContents(toUpdate.getContents());
     chapterMapper.updateChapterFromChapterDTO(update, toUpdate);
 
     assertEquals(expected, toUpdate);
@@ -52,9 +52,9 @@ class ChapterMapperIT {
     expected.setStartDate(chapter.getStartDate());
     expected.setEndDate(chapter.getEndDate());
 
-    List<UUID> chapters = chapter.getContents().stream()
-        .map(ContentReference::getContentId).collect(Collectors.toList());
-    expected.setContentReferenceIds(chapters);
+    //  List<UUID> chapters = chapter.getContents().stream()
+    //      .map(ContentReference::getContentId).collect(Collectors.toList());
+    // expected.setContentReferenceIds(chapters);
 
     ChapterDTO result = chapterMapper.toDTO(chapter);
     assertEquals(expected, result);
@@ -75,13 +75,13 @@ class ChapterMapperIT {
         IntStream.range(0, contentIds.size()).mapToObj(i -> {
           final UUID id = contentIds.get(i);
           ContentReference contentReference = new ContentReference();
-          contentReference.setIndex(i);
+          //     contentReference.setIndex(i);
           contentReference.setContentId(id);
-          contentReference.setChapterId(expected.getId());
+          //     contentReference.setChapterId(expected.getId());
           return contentReference;
         }).collect(Collectors.toList());
 
-    expected.setContents(contents);
+    // expected.setContents(contents);
 
     Chapter result = chapterMapper.toEntity(chapterDTO);
     ChapterUtil.equals(expected, result);

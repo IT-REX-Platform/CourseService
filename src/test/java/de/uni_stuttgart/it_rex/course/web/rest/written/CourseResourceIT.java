@@ -8,7 +8,6 @@ import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import de.uni_stuttgart.it_rex.course.service.written.KeycloakAdminService;
-import de.uni_stuttgart.it_rex.course.utils.written.ChapterIndexUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;

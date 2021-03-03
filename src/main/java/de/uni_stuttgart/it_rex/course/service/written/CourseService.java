@@ -233,13 +233,11 @@ public class CourseService {
         LOGGER.debug("Request to get filtered Courses");
         LOGGER.trace("Applying filters.");
 
-        List<Course> courses;
-
         Example<Course> courseExample =
             Example.of(applyFiltersToExample(publishState));
         Specification<Course> spec =
             getSpecFromActiveAndExample(activeOnly, courseExample);
-        courses = courseRepository.findAll(spec);
+        List<Course> courses = courseRepository.findAll(spec);
 
         List<CourseDTO> courseDtos = courseMapper.toDTO(courses);
         addRoleofUserToDto(courseDtos);

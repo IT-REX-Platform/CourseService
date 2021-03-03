@@ -3,6 +3,7 @@ package de.uni_stuttgart.it_rex.course.service.mapper.written;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
+import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -10,17 +11,20 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Mapper(componentModel = "spring")
 public abstract class ChapterMapper {
 
     @Autowired
-    ContentReferenceRepository contentReferenceRepository;
+    private ContentReferenceRepository contentReferenceRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     /**
      * Updates an entity from another entity.
@@ -47,14 +51,15 @@ public abstract class ChapterMapper {
         if (update.getTitle() != null) {
             toUpdate.setTitle(update.getTitle());
         }
-        if (update.getCourseId() != null) {
-            toUpdate.setCourseId(update.getCourseId());
-        }
         if (update.getStartDate() != null) {
             toUpdate.setStartDate(update.getStartDate());
         }
         if (update.getEndDate() != null) {
             toUpdate.setEndDate(update.getEndDate());
+        }
+        if (update.getCourseId() != null) {
+            courseRepository.findById(update.getCourseId())
+                .ifPresent(toUpdate::setCourse);
         }
         if (update.getContentReferenceIds() != null) {
             toUpdate.setContentReferences(
@@ -71,6 +76,9 @@ public abstract class ChapterMapper {
      */
     public ChapterDTO toDTO(final Chapter chapter) {
         final ChapterDTO chapterDTO = setBasicProperties(chapter);
+        if (chapter.getCourse() != null) {
+            chapterDTO.setCourseId(chapter.getCourse().getId());
+        }
         if (chapter.getContentReferences() != null) {
             final List<UUID> chapters = chapter.getContentReferences().stream()
                 .map(ContentReference::getContentId)
@@ -99,7 +107,7 @@ public abstract class ChapterMapper {
      * @param chapters the entities
      * @return the DTOs
      */
-    public List<ChapterDTO> toDTO(final List<Chapter> chapters) {
+    public List<ChapterDTO> toDTO(final Collection<Chapter> chapters) {
         return chapters.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
@@ -116,6 +124,10 @@ public abstract class ChapterMapper {
      */
     public Chapter toEntity(final ChapterDTO chapterDTO) {
         final Chapter chapter = setBasicProperties(chapterDTO);
+        if (chapterDTO.getCourseId() != null) {
+            courseRepository.findById(chapterDTO.getCourseId())
+                .ifPresent(chapter::setCourse);
+        }
         if (chapterDTO.getContentReferenceIds() != null) {
             final List<ContentReference> contentReferences =
                 contentReferenceRepository.findAllById(
@@ -136,7 +148,6 @@ public abstract class ChapterMapper {
         final ChapterDTO chapterDTO = new ChapterDTO();
         chapterDTO.setId(chapter.getId());
         chapterDTO.setTitle(chapter.getTitle());
-        chapterDTO.setCourseId(chapter.getCourseId());
         chapterDTO.setStartDate(chapter.getStartDate());
         chapterDTO.setEndDate(chapter.getEndDate());
         return chapterDTO;
@@ -153,7 +164,6 @@ public abstract class ChapterMapper {
         final Chapter chapter = new Chapter();
         chapter.setId(chapterDTO.getId());
         chapter.setTitle(chapterDTO.getTitle());
-        chapter.setCourseId(chapterDTO.getCourseId());
         chapter.setStartDate(chapterDTO.getStartDate());
         chapter.setEndDate(chapterDTO.getEndDate());
         return chapter;
