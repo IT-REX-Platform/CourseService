@@ -15,21 +15,19 @@ import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * Provides functionality to check the roles of a user.
- * This includes both system wide and course specific roles.
- * <p>
- * These are the classes currently used:
- * <p>
- * Authentication:
+ * Provides functionality to check the roles of a user. This includes both
+ * system wide and course specific roles. <p>
+ * These are the classes currently used: <p>
+ * Authentication: <p>
  * org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
- * Principal: o
- * rg.springframework.security.oauth2.jwt.Jwt
- * Details:
- * org.springframework.security.web.authentication.WebAuthenticationDetails
+ * Principal: <p>
+ * org.springframework.security.oauth2.jwt.Jwt <p>
+ * Details: <p>
+ * org.springframework.security.web.authentication.WebAuthenticationDetails <p>
  * <p>
  * Roles need to start with "ROLE_"
  */
@@ -102,6 +100,56 @@ public final class RexAuthz {
             throw new RexAuthzException(msg);
         }
         return uuid;
+    }
+
+    /**
+     * Returns the name of the user
+     *
+     * @return the name as string if extraction was successful,
+     * empty {@link Optional} otherwise.
+     */
+    public static Optional<String> getName() {
+        return getClaimFromToken("name");
+    }
+
+    /**
+     * Returns the user name of the user
+     *
+     * @return the user name as string if extraction was successful,
+     * empty {@link Optional} otherwise.
+     */
+    public static Optional<String> getUserName() {
+        return getClaimFromToken("preferred_username");
+    }
+
+    /**
+     * Returns the given name of the user
+     *
+     * @return the given name as string if extraction was successful,
+     * empty {@link Optional} otherwise.
+     */
+    public static Optional<String> getGivenName() {
+        return getClaimFromToken("given_name");
+    }
+
+    /**
+     * Returns the family name of the user
+     *
+     * @return the family name as string if extraction was successful,
+     * empty {@link Optional} otherwise.
+     */
+    public static Optional<String> getFamilyName() {
+        return getClaimFromToken("family_name");
+    }
+
+    /**
+     * Returns the email of the user
+     *
+     * @return the email as string if extraction was successful,
+     * empty {@link Optional} otherwise.
+     */
+    public static Optional<String> getEmail() {
+        return getClaimFromToken("email");
     }
 
     /**
@@ -401,5 +449,22 @@ public final class RexAuthz {
      */
     private static boolean userHasAuthority(final String authority) {
         return getUserAuthorities().contains(authority);
+    }
+
+    /**
+     * Extracts a claim string from the authz token
+     *
+     * @param claim the claim name
+     * @return the content of the claim as string if extraction was successful,
+     * empty {@link Optional} otherwise.
+     */
+    private static Optional<String> getClaimFromToken(String claim) {
+        Optional<String> rtn = Optional.empty();
+        Object principal = getUserAuthn().getPrincipal();
+        if (principal instanceof Jwt) {
+            Jwt jwt = (Jwt)principal;
+            rtn = Optional.ofNullable((String) jwt.getClaims().get(claim));
+        }
+        return rtn;
     }
 }
