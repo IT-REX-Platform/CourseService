@@ -228,6 +228,8 @@ public class CourseService {
 
     /**
      * Method finds all user courses and filters them by given parameters.
+     * additional filters: <p>
+     * - remove if {@link COURSEROLE#PARTICIPANT} && unpublished
      *
      * @param publishState Publish state of course.
      * @param activeOnly   Set true to only include active courses (current time
@@ -247,6 +249,9 @@ public class CourseService {
         List<CourseDTO> courseDtos = courseMapper.toDTO(courses);
         addRole(courseDtos);
         courseDtos = courseDtos.stream().filter(o -> o.getCourseRole() != null).collect(Collectors.toList());
+        courseDtos = courseDtos.stream().filter(
+                o -> !(o.getCourseRole() == COURSEROLE.PARTICIPANT && o.getPublishState() == PUBLISHSTATE.UNPUBLISHED))
+                .collect(Collectors.toList());
         return courseDtos;
     }
 
