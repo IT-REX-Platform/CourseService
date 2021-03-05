@@ -8,13 +8,11 @@ public class CourseProgressTrackerDTO {
     /**
      * Id of the tracker.
      */
-
     private UUID id;
 
     /**
      * Last accessed content ref.
      */
-
     private UUID lastContentRef;
 
     /**
