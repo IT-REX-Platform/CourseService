@@ -1,6 +1,7 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
+import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -34,33 +35,30 @@ public class ChapterTest {private static final UUID FIRST_ID = UUID.randomUUID()
   @Test
   void equalsVerifier() throws Exception {
 
-    Chapter course1 = new Chapter();
-    course1.setId(FIRST_ID);
-    course1.setTitle(FIRST_NAME);
-    course1.setStartDate(FIRST_START_DATE);
-    course1.setEndDate(FIRST_END_DATE);
-    course1.setCourseId(FIRST_COURSE_ID);
+    Chapter chapter1 = new Chapter();
+    chapter1.setId(FIRST_ID);
+    chapter1.setTitle(FIRST_NAME);
+    chapter1.setStartDate(FIRST_START_DATE);
+    chapter1.setEndDate(FIRST_END_DATE);
 
-    Chapter course2 = new Chapter();
-    course2.setId(SECOND_ID);
-    course2.setTitle(SECOND_NAME);
-    course2.setStartDate(SECOND_START_DATE);
-    course2.setEndDate(SECOND_END_DATE);
-    course2.setCourseId(SECOND_COURSE_ID);
+    Chapter chapter2 = new Chapter();
+    chapter2.setId(SECOND_ID);
+    chapter2.setTitle(SECOND_NAME);
+    chapter2.setStartDate(SECOND_START_DATE);
+    chapter2.setEndDate(SECOND_END_DATE);
 
-    Chapter course3 = new Chapter();
-    course3.setId(FIRST_ID);
-    course3.setTitle(FIRST_NAME);
-    course3.setStartDate(FIRST_START_DATE);
-    course3.setEndDate(FIRST_END_DATE);
-    course3.setCourseId(FIRST_COURSE_ID);
+    Chapter chapter3 = new Chapter();
+    chapter3.setId(FIRST_ID);
+    chapter3.setTitle(FIRST_NAME);
+    chapter3.setStartDate(FIRST_START_DATE);
+    chapter3.setEndDate(FIRST_END_DATE);
 
-    assertEquals(course1.hashCode(), course1.hashCode());
-    assertEquals(course1, course1);
-    assertEquals(course1, course3);
-    assertNotEquals(course1, course2);
-    assertNotEquals(course1.hashCode(), course2.hashCode());
+    assertEquals(chapter1.hashCode(), chapter1.hashCode());
+    assertEquals(chapter1, chapter1);
+    ChapterUtil.equalsChapter(chapter1, chapter3);
+    assertNotEquals(chapter1, chapter2);
+    assertNotEquals(chapter1.hashCode(), chapter2.hashCode());
 
-    assertNotEquals(SECOND_NEXT, course1);
+    assertNotEquals(SECOND_NEXT, chapter1);
   }
 }

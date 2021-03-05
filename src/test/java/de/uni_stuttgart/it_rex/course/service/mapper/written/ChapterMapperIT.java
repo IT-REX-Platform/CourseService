@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,10 +32,9 @@ class ChapterMapperIT {
     Chapter expected = new Chapter();
     expected.setId(update.getId());
     expected.setTitle(toUpdate.getTitle());
-    expected.setCourseId(toUpdate.getCourseId());
     expected.setStartDate(toUpdate.getStartDate());
     expected.setEndDate(toUpdate.getEndDate());
-   // expected.setContents(toUpdate.getContents());
+
     chapterMapper.updateChapterFromChapterDTO(update, toUpdate);
 
     assertEquals(expected, toUpdate);
@@ -48,13 +46,8 @@ class ChapterMapperIT {
     ChapterDTO expected = new ChapterDTO();
     expected.setId(chapter.getId());
     expected.setTitle(chapter.getTitle());
-    expected.setCourseId(chapter.getCourseId());
     expected.setStartDate(chapter.getStartDate());
     expected.setEndDate(chapter.getEndDate());
-
-    //  List<UUID> chapters = chapter.getContents().stream()
-    //      .map(ContentReference::getContentId).collect(Collectors.toList());
-    // expected.setContentReferenceIds(chapters);
 
     ChapterDTO result = chapterMapper.toDTO(chapter);
     assertEquals(expected, result);
@@ -66,24 +59,23 @@ class ChapterMapperIT {
     Chapter expected = new Chapter();
     expected.setId(chapterDTO.getId());
     expected.setTitle(chapterDTO.getTitle());
-    expected.setCourseId(chapterDTO.getCourseId());
     expected.setStartDate(chapterDTO.getStartDate());
     expected.setEndDate(chapterDTO.getEndDate());
 
     final List<UUID> contentIds = chapterDTO.getContentReferenceIds();
     final List<ContentReference> contents =
-        IntStream.range(0, contentIds.size()).mapToObj(i -> {
-          final UUID id = contentIds.get(i);
-          ContentReference contentReference = new ContentReference();
-          //     contentReference.setIndex(i);
-          contentReference.setContentId(id);
-          //     contentReference.setChapterId(expected.getId());
-          return contentReference;
+        contentIds.stream().map(contentId -> {
+            final UUID id = contentId;
+            ContentReference contentReference = new ContentReference();
+            //     contentReference.setIndex(i);
+            contentReference.setContentId(id);
+            //     contentReference.setChapterId(expected.getId());
+            return contentReference;
         }).collect(Collectors.toList());
 
     // expected.setContents(contents);
 
     Chapter result = chapterMapper.toEntity(chapterDTO);
-    ChapterUtil.equals(expected, result);
+    ChapterUtil.equalsChapter(expected, result);
   }
 }
