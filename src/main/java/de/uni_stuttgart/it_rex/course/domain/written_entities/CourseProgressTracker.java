@@ -9,8 +9,13 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Models the progress of one user in one course.
+ *
+ * The CourseProgressTracker stores the last content a user accessed and accumulates the progress of a user's {@link ContentProgressTracker}s of a course.
+ */
 @Entity
-@Table(name = "courseprogresstracker")
+@Table(name = "course_progress_tracker")
 public class CourseProgressTracker implements Serializable {
 
     /**
