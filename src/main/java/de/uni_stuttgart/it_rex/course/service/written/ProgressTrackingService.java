@@ -1,14 +1,10 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker;
-import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseProgressTrackerRepository;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
-import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseProgressTrackerMapper;
-import de.uni_stuttgart.it_rex.course.web.rest.written.ProgressResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +17,13 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class ProgressService {
+public class ProgressTrackingService {
 
     /**
      * Logger.
      */
     private static final Logger LOGGER
-        = LoggerFactory.getLogger(ProgressService.class);
+        = LoggerFactory.getLogger(ProgressTrackingService.class);
 
     /**
      * Tracker Repository.
@@ -46,7 +42,7 @@ public class ProgressService {
      * @param newTrackerMapper
      */
     @Autowired
-    public ProgressService(
+    public ProgressTrackingService(
         final CourseProgressTrackerRepository newTrackerRepository,
         final CourseProgressTrackerMapper newTrackerMapper) {
         this.trackerRepository = newTrackerRepository;

@@ -2,7 +2,7 @@ package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
-import de.uni_stuttgart.it_rex.course.service.written.ProgressService;
+import de.uni_stuttgart.it_rex.course.service.written.ProgressTrackingService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,15 +42,15 @@ public class ProgressResource {
     /**
      * Used progress service.
      */
-    private final ProgressService progressService;
+    private final ProgressTrackingService progressTrackingService;
 
     /**
      * Constructor.
      *
-     * @param newProgressService the progress service.
+     * @param newProgressTrackingService the progress service.
      */
-    public ProgressResource(final ProgressService newProgressService) {
-        this.progressService = newProgressService;
+    public ProgressResource(final ProgressTrackingService newProgressTrackingService) {
+        this.progressTrackingService = newProgressTrackingService;
     }
 
     /**
@@ -65,7 +65,7 @@ public class ProgressResource {
         @PathVariable final UUID id) {
         log.debug("REST request to get Course Progress for Course : {}", id);
         CourseProgressTrackerDTO progress =
-            progressService.findCourseProgress(id);
+            progressTrackingService.findCourseProgress(id);
         return ResponseUtil.wrapOrNotFound(Optional.of(progress));
     }
 }
