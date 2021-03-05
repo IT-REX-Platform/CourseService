@@ -6,8 +6,12 @@ import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -27,6 +31,18 @@ public abstract class TimePeriodMapper {
     @Autowired
     private TimePeriodRepository timePeriodRepository;
 
+    /**
+     * Updates an entity from another entity.
+     *
+     * @param update   the update
+     * @param toUpdate the updated entity.
+     */
+    @BeanMapping(nullValuePropertyMappingStrategy =
+        NullValuePropertyMappingStrategy.IGNORE)
+    public abstract void updateTimePeriodFromTimePeriodDTO(
+        final TimePeriodDTO update,
+        @MappingTarget final TimePeriod toUpdate);
+
     public TimePeriod updateOrCreateFromDTO(final TimePeriodDTO update) {
         final Optional<TimePeriod> contentReferenceOptional
             = timePeriodRepository.findById(update.getId());
@@ -37,19 +53,6 @@ public abstract class TimePeriodMapper {
         }
         updateTimePeriodFromTimePeriodDTO(update, toUpdate);
         return toUpdate;
-    }
-
-    public void updateTimePeriodFromTimePeriodDTO(final TimePeriodDTO update,
-                                                  final TimePeriod toUpdate) {
-        if (update.getId() != null) {
-            toUpdate.setId(update.getId());
-        }
-        if (update.getStartDate() != null) {
-            toUpdate.setStartDate(update.getStartDate());
-        }
-        if (update.getEndDate() != null) {
-            toUpdate.setEndDate(update.getEndDate());
-        }
     }
 
     public TimePeriodDTO toDTO(final TimePeriod timePeriod) {

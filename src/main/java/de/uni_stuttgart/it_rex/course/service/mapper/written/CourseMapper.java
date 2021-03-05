@@ -29,17 +29,6 @@ public abstract class CourseMapper {
     private ContentReferenceMappper contentReferenceMappper;
 
     /**
-     * Updates an entity from another entity.
-     *
-     * @param update   the update
-     * @param toUpdate the updated entity.
-     */
-    @BeanMapping(nullValuePropertyMappingStrategy =
-        NullValuePropertyMappingStrategy.IGNORE)
-    public abstract void updateCourseFromCourse(Course update,
-                                                @MappingTarget Course toUpdate);
-
-    /**
      * Updates an entity from a DTO.
      *
      * @param update   the update

@@ -30,6 +30,17 @@ public abstract class ChapterMapper {
     @Autowired
     private ChapterRepository chapterRepository;
 
+    /**
+     * Updates an entity from a DTO.
+     *
+     * @param update   the update
+     * @param toUpdate the updated entity.
+     */
+    @BeanMapping(nullValuePropertyMappingStrategy =
+        NullValuePropertyMappingStrategy.IGNORE)
+    public abstract void updateChapterFromChapterDTO
+    (ChapterDTO update, @MappingTarget Chapter toUpdate);
+
     public Chapter updateOrCreateFromDTO(final ChapterDTO update) {
         final Optional<Chapter> chapterOptional
             = chapterRepository.findById(update.getId());
@@ -40,39 +51,6 @@ public abstract class ChapterMapper {
         }
         updateChapterFromChapterDTO(update, toUpdate);
         return toUpdate;
-    }
-
-    /**
-     * Updates an entity from another entity.
-     *
-     * @param update   the update
-     * @param toUpdate the updated entity.
-     */
-    @BeanMapping(nullValuePropertyMappingStrategy =
-        NullValuePropertyMappingStrategy.IGNORE)
-    public abstract void updateChapterFromChapter
-    (Chapter update, @MappingTarget Chapter toUpdate);
-
-    /**
-     * Updates an entity from a DTO.
-     *
-     * @param update   the update
-     * @param toUpdate the updated entity.
-     */
-    public void updateChapterFromChapterDTO(final ChapterDTO update,
-                                            final Chapter toUpdate) {
-        if (update.getId() != null) {
-            toUpdate.setId(update.getId());
-        }
-        if (update.getTitle() != null) {
-            toUpdate.setTitle(update.getTitle());
-        }
-        if (update.getStartDate() != null) {
-            toUpdate.setStartDate(update.getStartDate());
-        }
-        if (update.getEndDate() != null) {
-            toUpdate.setEndDate(update.getEndDate());
-        }
     }
 
     /**
