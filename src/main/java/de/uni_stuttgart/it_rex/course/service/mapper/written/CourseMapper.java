@@ -68,7 +68,6 @@ public abstract class CourseMapper {
         if (update.getPublishState() != null) {
             toUpdate.setPublishState(update.getPublishState());
         }
-        setMappingProperties(update, toUpdate);
     }
 
     /**
