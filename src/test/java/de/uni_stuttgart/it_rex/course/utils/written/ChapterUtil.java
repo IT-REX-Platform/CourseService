@@ -3,6 +3,10 @@ package de.uni_stuttgart.it_rex.course.utils.written;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ChapterUtil {
@@ -16,6 +20,16 @@ public final class ChapterUtil {
         Chapter chapter = new Chapter();
         chapter.setTitle(StringUtil.generateRandomString(10, 50));
         return chapter;
+    }
+
+    /**
+     * Creates a List of random entities.
+     *
+     * @param number the length of the list
+     * @return the entities
+     */
+    public static List<Chapter> createChapters(final int number) {
+        return IntStream.range(0, number).mapToObj(i -> createChapter()).collect(Collectors.toList());
     }
 
     /**
@@ -44,6 +58,16 @@ public final class ChapterUtil {
         ChapterDTO chapterDTO = new ChapterDTO();
         chapterDTO.setTitle(StringUtil.generateRandomString(10, 50));
         return chapterDTO;
+    }
+
+    /**
+     * Creates a List of random DTO.
+     *
+     * @param number the length of the list
+     * @return the DTOs
+     */
+    public static List<ChapterDTO> createChapterDTOs(final int number) {
+        return IntStream.range(0, number).mapToObj(i -> createChapterDTO()).collect(Collectors.toList());
     }
 
     /**
