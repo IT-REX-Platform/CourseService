@@ -5,10 +5,7 @@ import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -26,7 +23,7 @@ public abstract class CourseMapper {
     private ChapterMapper chapterMapper;
 
     @Autowired
-    private ContentReferenceMappper contentReferenceMappper;
+    private ContentReferenceMapper contentReferenceMapper;
 
     /**
      * Updates an entity from a DTO.
@@ -69,7 +66,7 @@ public abstract class CourseMapper {
         final CourseDTO courseDTO = setBasicProperties(course);
         if (course.getContentReferences() != null) {
             final List<ContentReferenceDTO> contentReferenceDTOs =
-                contentReferenceMappper.toDTO(course.getContentReferences()).
+                contentReferenceMapper.toDTO(course.getContentReferences()).
                     stream().collect(Collectors.toList());
             courseDTO.setContentReferences(contentReferenceDTOs);
         }
@@ -177,7 +174,7 @@ public abstract class CourseMapper {
     private void setMappingProperties(final CourseDTO courseDTO,
                                       final Course course) {
         if (courseDTO.getContentReferences() != null) {
-            course.setContentReferences(contentReferenceMappper
+            course.setContentReferences(contentReferenceMapper
                 .toEntity(courseDTO.getContentReferences()));
         }
         if (courseDTO.getChapters() != null) {
