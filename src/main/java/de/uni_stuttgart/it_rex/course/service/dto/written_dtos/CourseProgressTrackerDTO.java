@@ -1,28 +1,20 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-@Table
 public class CourseProgressTrackerDTO {
 
     /**
      * Id of the tracker.
      */
-    @Id
-    @GeneratedValue
+
     private UUID id;
 
     /**
      * Last accessed content ref.
      */
-    @Column
+
     private UUID lastContentRef;
 
     /**
