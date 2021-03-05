@@ -18,6 +18,10 @@
     <include file="config/liquibase/changelog/20210222220032_added_entity_Chapter.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210222220032_added_entity_ContentReference.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210222220032_added_entity_TimePeriod.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210222220032_added_entity_Chapter_Content.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210222220032_added_entity_Time_Period_Content.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210305041400_added_entity_CourseProgressTracker.xml" relativeToChangelogFile="false"/>
+
 
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
