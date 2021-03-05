@@ -42,7 +42,7 @@ public class CourseProgressTracker implements Serializable {
     /**
      * Last accessed content ref.
      */
-    @Column(name = "last_content_ref")
+    @Column(name = "last_content_ref_id")
     private UUID lastContentRef;
 
     /**
