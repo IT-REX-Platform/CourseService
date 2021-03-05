@@ -34,7 +34,7 @@ public class UserInfoResource {
     private String applicationName;
 
 
-    @GetMapping("/user-info/")
+    @GetMapping("/user-info")
     public UserDTO getUserInfo() {
 
         UserDTO userDto = new UserDTO();
