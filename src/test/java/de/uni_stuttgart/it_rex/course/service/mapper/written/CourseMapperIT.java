@@ -1,5 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
+import de.uni_stuttgart.it_rex.course.CourseServiceApp;
+import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
@@ -11,7 +13,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = {CourseMapperImpl.class})
+@SpringBootTest(classes = { CourseServiceApp.class, TestSecurityConfiguration.class })
 class CourseMapperIT {
     private static final UUID UPDATE_ID = UUID.randomUUID();
     private static final int MAX_FOOD_SUM = 42;
@@ -20,7 +22,7 @@ class CourseMapperIT {
     private CourseMapper courseMapper;
 
     @Test
-    void updateCourseFromCourse() {
+    void updateCourseFromCourseDTO() {
         Course toUpdate = CourseUtil.createCourse();
         CourseDTO update = new CourseDTO();
 
@@ -72,7 +74,6 @@ class CourseMapperIT {
         expected.setPublishState(courseDTO.getPublishState());
         expected.setStartDate(courseDTO.getStartDate());
         expected.setEndDate(courseDTO.getEndDate());
-
 
         Course result = courseMapper.toEntity(courseDTO);
         CourseUtil.equals(expected, result);
