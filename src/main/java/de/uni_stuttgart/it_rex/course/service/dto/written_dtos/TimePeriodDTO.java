@@ -73,4 +73,29 @@ public class TimePeriodDTO {
         this.contentReferenceIds = contentReferenceIds;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TimePeriodDTO)) {
+            return false;
+        }
+        final TimePeriodDTO that = (TimePeriodDTO) o;
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(getStartDate(), that.getStartDate())
+            && Objects.equals(getEndDate(), that.getEndDate())
+            && Objects.equals(getCourseId(), that.getCourseId())
+            && Objects.equals(getContentReferenceIds(),
+            that.getContentReferenceIds());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(),
+            getStartDate(),
+            getEndDate(),
+            getCourseId(),
+            getContentReferenceIds());
+    }
 }

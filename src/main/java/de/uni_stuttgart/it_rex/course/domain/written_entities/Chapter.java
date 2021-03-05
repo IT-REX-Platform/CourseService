@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -212,5 +213,34 @@ public class Chapter implements Serializable {
         }
         newCourse.getChapters().add(this);
         this.course = newCourse;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Chapter)) {
+            return false;
+        }
+        final Chapter chapter = (Chapter) o;
+        return
+            Objects.equals(getId(), chapter.getId())
+                && Objects.equals(getTitle(), chapter.getTitle())
+                && Objects.equals(getStartDate(), chapter.getStartDate())
+                && Objects.equals(getEndDate(), chapter.getEndDate())
+                && Objects.equals(getContentReferences(),
+                chapter.getContentReferences())
+                && Objects.equals(getCourse(), chapter.getCourse());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(),
+            getTitle(),
+            getStartDate(),
+            getEndDate(),
+            getContentReferences(),
+            getCourse());
     }
 }

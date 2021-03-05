@@ -233,4 +233,32 @@ public class ContentReference implements Serializable {
         this.course = newCourse;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ContentReference)) {
+            return false;
+        }
+        final ContentReference that = (ContentReference) o;
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(getStartDate(), that.getStartDate())
+            && Objects.equals(getEndDate(), that.getEndDate())
+            && Objects.equals(getContentId(), that.getContentId())
+            && Objects.equals(getChapters(), that.getChapters())
+            && Objects.equals(getTimePeriods(), that.getTimePeriods())
+            && Objects.equals(getCourse(), that.getCourse());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(),
+            getStartDate(),
+            getEndDate(),
+            getContentId(),
+            getChapters(),
+            getTimePeriods(),
+            getCourse());
+    }
 }

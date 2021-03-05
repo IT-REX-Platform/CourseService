@@ -1,6 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -94,5 +95,30 @@ public class ContentReferenceDTO {
 
     public void setCourseId(UUID courseId) {
         this.courseId = courseId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {return true;}
+        if (!(o instanceof ContentReferenceDTO)) {return false;}
+        final ContentReferenceDTO that = (ContentReferenceDTO) o;
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(getStartDate(), that.getStartDate())
+            && Objects.equals(getEndDate(), that.getEndDate())
+            && Objects.equals(getContentId(), that.getContentId())
+            && Objects.equals(getChapterIds(), that.getChapterIds())
+            && Objects.equals(getTimePeriodIds(), that.getTimePeriodIds())
+            && Objects.equals(getCourseId(), that.getCourseId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(),
+            getStartDate(),
+            getEndDate(),
+            getContentId(),
+            getChapterIds(),
+            getTimePeriodIds(),
+            getCourseId());
     }
 }
