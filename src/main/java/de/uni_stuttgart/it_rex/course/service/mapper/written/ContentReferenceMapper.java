@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public abstract class ContentReferenceMappper {
+public abstract class ContentReferenceMapper {
 
     @Autowired
     private ChapterRepository chapterRepository;
