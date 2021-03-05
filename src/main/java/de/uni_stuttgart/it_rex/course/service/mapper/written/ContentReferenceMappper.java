@@ -8,7 +8,10 @@ import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceReposit
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -31,6 +34,18 @@ public abstract class ContentReferenceMappper {
     @Autowired
     private TimePeriodRepository timePeriodRepository;
 
+    /**
+     * Updates an entity from another entity.
+     *
+     * @param update   the update
+     * @param toUpdate the updated entity.
+     */
+    @BeanMapping(nullValuePropertyMappingStrategy =
+        NullValuePropertyMappingStrategy.IGNORE)
+    public abstract void updateContentReferenceFromContentReferenceDTO(
+        final ContentReferenceDTO update,
+        @MappingTarget final ContentReference toUpdate);
+
     public ContentReference updateOrCreateFromDTO(
         final ContentReferenceDTO update) {
         final Optional<ContentReference> contentReferenceOptional
@@ -42,24 +57,6 @@ public abstract class ContentReferenceMappper {
         }
         updateContentReferenceFromContentReferenceDTO(update, toUpdate);
         return toUpdate;
-    }
-
-    public void updateContentReferenceFromContentReferenceDTO(
-        final ContentReferenceDTO update,
-        final ContentReference toUpdate) {
-
-        if (update.getId() != null) {
-            toUpdate.setId(update.getId());
-        }
-        if (update.getStartDate() != null) {
-            toUpdate.setStartDate(update.getStartDate());
-        }
-        if (update.getEndDate() != null) {
-            toUpdate.setEndDate(update.getEndDate());
-        }
-        if (update.getContentId() != null) {
-            toUpdate.setContentId(update.getContentId());
-        }
     }
 
     public List<ContentReference> toEntity(
