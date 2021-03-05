@@ -4,6 +4,7 @@ import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
+import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -24,7 +26,41 @@ public abstract class ContentReferenceMappper {
     private CourseRepository courseRepository;
 
     @Autowired
+    private ContentReferenceRepository contentReferenceRepository;
+
+    @Autowired
     private TimePeriodRepository timePeriodRepository;
+
+    public ContentReference updateOrCreateFromDTO(
+        final ContentReferenceDTO update) {
+        final Optional<ContentReference> contentReferenceOptional
+            = contentReferenceRepository.findById(update.getId());
+
+        ContentReference toUpdate = new ContentReference();
+        if (contentReferenceOptional.isPresent()) {
+            toUpdate = contentReferenceOptional.get();
+        }
+        updateContentReferenceFromContentReferenceDTO(update, toUpdate);
+        return toUpdate;
+    }
+
+    public void updateContentReferenceFromContentReferenceDTO(
+        final ContentReferenceDTO update,
+        final ContentReference toUpdate) {
+
+        if (update.getId() != null) {
+            toUpdate.setId(update.getId());
+        }
+        if (update.getStartDate() != null) {
+            toUpdate.setStartDate(update.getStartDate());
+        }
+        if (update.getEndDate() != null) {
+            toUpdate.setEndDate(update.getEndDate());
+        }
+        if (update.getContentId() != null) {
+            toUpdate.setContentId(update.getContentId());
+        }
+    }
 
     public List<ContentReference> toEntity(
         final Collection<ContentReferenceDTO> contentReferenceDTOS) {

@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
+import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
@@ -25,6 +26,21 @@ public abstract class ChapterMapper {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private ChapterRepository chapterRepository;
+
+    public Chapter updateOrCreateFromDTO(final ChapterDTO update) {
+        final Optional<Chapter> chapterOptional
+            = chapterRepository.findById(update.getId());
+
+        Chapter toUpdate = new Chapter();
+        if (chapterOptional.isPresent()) {
+            toUpdate = chapterOptional.get();
+        }
+        updateChapterFromChapterDTO(update, toUpdate);
+        return toUpdate;
+    }
 
     /**
      * Updates an entity from another entity.
@@ -56,15 +72,6 @@ public abstract class ChapterMapper {
         }
         if (update.getEndDate() != null) {
             toUpdate.setEndDate(update.getEndDate());
-        }
-        if (update.getCourseId() != null) {
-            courseRepository.findById(update.getCourseId())
-                .ifPresent(toUpdate::setCourse);
-        }
-        if (update.getContentReferenceIds() != null) {
-            toUpdate.setContentReferences(
-                contentReferenceRepository.findAllById(
-                    update.getContentReferenceIds()));
         }
     }
 

@@ -5,6 +5,7 @@ import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,34 @@ public abstract class TimePeriodMapper {
 
     @Autowired
     private ContentReferenceRepository contentReferenceRepository;
+
+    @Autowired
+    private TimePeriodRepository timePeriodRepository;
+
+    public TimePeriod updateOrCreateFromDTO(final TimePeriodDTO update) {
+        final Optional<TimePeriod> contentReferenceOptional
+            = timePeriodRepository.findById(update.getId());
+
+        TimePeriod toUpdate = new TimePeriod();
+        if (contentReferenceOptional.isPresent()) {
+            toUpdate = contentReferenceOptional.get();
+        }
+        updateTimePeriodFromTimePeriodDTO(update, toUpdate);
+        return toUpdate;
+    }
+
+    public void updateTimePeriodFromTimePeriodDTO(final TimePeriodDTO update,
+                                                  final TimePeriod toUpdate) {
+        if (update.getId() != null) {
+            toUpdate.setId(update.getId());
+        }
+        if (update.getStartDate() != null) {
+            toUpdate.setStartDate(update.getStartDate());
+        }
+        if (update.getEndDate() != null) {
+            toUpdate.setEndDate(update.getEndDate());
+        }
+    }
 
     public TimePeriodDTO toDTO(final TimePeriod timePeriod) {
         final TimePeriodDTO timePeriodDTO = new TimePeriodDTO();
