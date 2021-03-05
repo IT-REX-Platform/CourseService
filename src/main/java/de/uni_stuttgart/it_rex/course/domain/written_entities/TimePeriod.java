@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -148,5 +149,26 @@ public class TimePeriod implements Serializable {
         this.course = newCourse;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TimePeriod)) return false;
+        final TimePeriod that = (TimePeriod) o;
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(getStartDate(), that.getStartDate())
+            && Objects.equals(getEndDate(), that.getEndDate())
+            && Objects.equals(getContentReferences(),
+            that.getContentReferences())
+            && Objects.equals(getCourse(), that.getCourse());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            getId(),
+            getStartDate(),
+            getEndDate(),
+            getContentReferences(),
+            getCourse());
+    }
 }
