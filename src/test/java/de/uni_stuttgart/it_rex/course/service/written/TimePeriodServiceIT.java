@@ -60,7 +60,7 @@ class TimePeriodServiceIT {
     timePeriodDTO.setCourseId(THE_COURSE.getId());
     timePeriodService.save(timePeriodDTO);
     final TimePeriodDTO result = timePeriodService.findAll().get(0);
-
+    timePeriodDTO.setId(result.getId());
     TimePeriodUtil.equalsTimePeriodDTO(timePeriodDTO, result);
   }
 

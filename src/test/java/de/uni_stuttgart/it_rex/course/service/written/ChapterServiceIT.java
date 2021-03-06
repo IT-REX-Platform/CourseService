@@ -60,7 +60,7 @@ class ChapterServiceIT {
     chapterDTO.setCourseId(THE_COURSE.getId());
     chapterService.save(chapterDTO);
     final ChapterDTO result = chapterService.findAll().get(0);
-
+    chapterDTO.setId(result.getId());
     ChapterUtil.equalsChapterDTO(chapterDTO, result);
   }
 

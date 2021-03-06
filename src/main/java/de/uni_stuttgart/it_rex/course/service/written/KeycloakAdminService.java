@@ -4,7 +4,6 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
@@ -170,7 +169,8 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to remove.
      */
     public void removeGroup(String groupName) {
-        List<GroupRepresentation> groups = keycloak.realm(this.realm).groups().groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(this.realm).groups()
+            .groups(groupName, 0, Integer.MAX_VALUE);
 
         if (groups.isEmpty()) {
             // TODO: Maybe throw exception?

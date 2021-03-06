@@ -58,9 +58,9 @@ public class TimePeriodService {
    */
   public TimePeriodDTO save(final TimePeriodDTO timePeriodDTO) {
     LOGGER.debug("Request to save TimePeriod : {}", timePeriodDTO);
-    final TimePeriod TimePeriod = timePeriodRepository
+    final TimePeriod timePeriod = timePeriodRepository
         .save(timePeriodMapper.toEntity(timePeriodDTO));
-    return timePeriodMapper.toDTO(TimePeriod);
+    return timePeriodMapper.toDTO(timePeriod);
   }
 
   /**

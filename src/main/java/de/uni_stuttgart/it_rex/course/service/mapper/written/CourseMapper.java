@@ -1,7 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
@@ -43,8 +42,8 @@ public abstract class CourseMapper {
     @BeanMapping(nullValuePropertyMappingStrategy =
         NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateCourseFromCourseDTO(
-        final CourseDTO update,
-        @MappingTarget final Course toUpdate);
+        CourseDTO update,
+        @MappingTarget Course toUpdate);
 
     /**
      * Converts an entity to a DTO.

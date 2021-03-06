@@ -4,11 +4,9 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
-import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
-import de.uni_stuttgart.it_rex.course.service.mapper.written.TimePeriodMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,19 +46,9 @@ public class CourseService {
     private final CourseRepository courseRepository;
 
     /**
-     * TimePeriodRepository.
-     */
-    private final TimePeriodRepository timePeriodRepository;
-
-    /**
      * Course mapper.
      */
     private final CourseMapper courseMapper;
-
-    /**
-     * TimePeriod mapper.
-     */
-    private final TimePeriodMapper timePeriodMapper;
 
     /**
      * KeycloakAdminService.
@@ -76,15 +64,11 @@ public class CourseService {
      */
     @Autowired
     public CourseService(final CourseRepository newCourseRepository,
-                         final TimePeriodRepository newTimePeriodRepository,
                          final CourseMapper newCourseMapper,
-                         final KeycloakAdminService newKeycloakAdminService,
-                         final TimePeriodMapper newTimePeriodMapper) {
+                         final KeycloakAdminService newKeycloakAdminService) {
         this.courseRepository = newCourseRepository;
-        this.timePeriodRepository = newTimePeriodRepository;
         this.courseMapper = newCourseMapper;
         this.keycloakAdminService = newKeycloakAdminService;
-        this.timePeriodMapper = newTimePeriodMapper;
     }
 
 
