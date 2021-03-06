@@ -1,5 +1,8 @@
 package de.uni_stuttgart.it_rex.course.domain.written_entities;
 
+import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
+import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +19,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -149,26 +151,34 @@ public class TimePeriod implements Serializable {
         this.course = newCourse;
     }
 
+    /**
+     * Equals method.
+     *
+     * @param o the other instance.
+     * @return if they are equal.
+     */
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TimePeriod)) return false;
-        final TimePeriod that = (TimePeriod) o;
-        return Objects.equals(getId(), that.getId())
-            && Objects.equals(getStartDate(), that.getStartDate())
-            && Objects.equals(getEndDate(), that.getEndDate())
-            && Objects.equals(getContentReferences(),
-            that.getContentReferences())
-            && Objects.equals(getCourse(), that.getCourse());
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TimePeriod)) {
+            return false;
+        }
+        final TimePeriod timePeriod = (TimePeriod) o;
+        return new EqualsBuilder()
+            .append(id, timePeriod.id)
+            .append(course, timePeriod.course)
+            .isEquals();
     }
 
+    /**
+     * Hash code.
+     *
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(
-            getId(),
-            getStartDate(),
-            getEndDate(),
-            getContentReferences(),
-            getCourse());
+        return new HashCodeBuilder().append(id).append(course).toHashCode();
     }
 }

@@ -8,6 +8,7 @@ import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {CourseServiceApp.class, TestSecurityConfiguration.class})
-class ChapterServiceTestIT {
+class ChapterServiceIT {
   private static final int NUMBER_OF_CHAPTERS = 20;
   private static final int THE_CHOSEN_INDEX = 13;
   private static final LocalDate NEW_DATE = LocalDate.now().plusDays(200);
@@ -44,6 +45,12 @@ class ChapterServiceTestIT {
   void init() {
     THE_COURSE = CourseUtil.createCourse();
     courseRepository.save(THE_COURSE);
+  }
+
+  @AfterEach
+  void cleanUp() {
+    courseRepository.deleteAll();
+    chapterRepository.deleteAll();
   }
 
   @Test
