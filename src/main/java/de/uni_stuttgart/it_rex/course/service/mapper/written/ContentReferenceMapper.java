@@ -125,4 +125,17 @@ public abstract class ContentReferenceMapper {
     public List<ContentReferenceDTO> toDTO(final Collection<ContentReference> contentReferences) {
         return contentReferences.stream().map(this::toDTO).collect(Collectors.toList());
     }
+
+    /**
+     * Converts an optional entity to a optional DTO.
+     *
+     * @param contentReference the optional
+     * @return the dto
+     */
+    public Optional<ContentReferenceDTO> toDTO(final Optional<ContentReference> contentReference) {
+        if (contentReference.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(toDTO(contentReference.get()));
+    }
 }

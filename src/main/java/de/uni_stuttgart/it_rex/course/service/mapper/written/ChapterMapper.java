@@ -79,7 +79,7 @@ public abstract class ChapterMapper {
     /**
      * Converts an optional entity to a optional DTO.
      *
-     * @param chapter the entity
+     * @param chapter the optional
      * @return the dto
      */
     public Optional<ChapterDTO> toDTO(final Optional<Chapter> chapter) {
