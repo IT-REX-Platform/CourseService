@@ -1,6 +1,8 @@
 package de.uni_stuttgart.it_rex.course.domain.written_entities;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
+import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
+import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -19,11 +21,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -443,17 +442,7 @@ public class Course implements Serializable {
             return false;
         }
         final Course course = (Course) o;
-        return Objects.equals(getId(), course.getId())
-            && Objects.equals(getName(), course.getName())
-            && Objects.equals(getStartDate(), course.getStartDate())
-            && Objects.equals(getEndDate(), course.getEndDate())
-            && Objects.equals(getRemainActiveOffset(),
-            course.getRemainActiveOffset())
-            && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
-            && Objects.equals(getCourseDescription(),
-            course.getCourseDescription())
-            && getPublishState() == course.getPublishState()
-            && Objects.equals(getTimePeriods(), course.getTimePeriods());
+        return new EqualsBuilder().append(id, course.id).isEquals();
     }
 
     /**
@@ -463,15 +452,7 @@ public class Course implements Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(),
-            getName(),
-            getStartDate(),
-            getEndDate(),
-            getRemainActiveOffset(),
-            getMaxFoodSum(),
-            getCourseDescription(),
-            getPublishState(),
-            getTimePeriods());
+        return new HashCodeBuilder().append(id).toHashCode();
     }
 
     /**

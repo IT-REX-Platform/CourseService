@@ -1,5 +1,7 @@
 package de.uni_stuttgart.it_rex.course.domain.written_entities;
 
+import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
+import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -19,7 +21,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -215,6 +216,12 @@ public class Chapter implements Serializable {
         this.course = newCourse;
     }
 
+    /**
+     * Equals method.
+     *
+     * @param o the other instance.
+     * @return if they are equal.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -224,23 +231,19 @@ public class Chapter implements Serializable {
             return false;
         }
         final Chapter chapter = (Chapter) o;
-        return
-            Objects.equals(getId(), chapter.getId())
-                && Objects.equals(getTitle(), chapter.getTitle())
-                && Objects.equals(getStartDate(), chapter.getStartDate())
-                && Objects.equals(getEndDate(), chapter.getEndDate())
-                && Objects.equals(getContentReferences(),
-                chapter.getContentReferences())
-                && Objects.equals(getCourse(), chapter.getCourse());
+        return new EqualsBuilder()
+            .append(id, chapter.id)
+            .append(course, chapter.course)
+            .isEquals();
     }
 
+    /**
+     * Hash code.
+     *
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(),
-            getTitle(),
-            getStartDate(),
-            getEndDate(),
-            getContentReferences(),
-            getCourse());
+        return new HashCodeBuilder().append(id).append(course).toHashCode();
     }
 }
