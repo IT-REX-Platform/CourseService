@@ -84,7 +84,7 @@ public abstract class TimePeriodMapper {
     /**
      * Converts an optional entity to a optional DTO.
      *
-     * @param timePeriod the entity
+     * @param timePeriod the optional
      * @return the dto
      */
     public Optional<TimePeriodDTO> toDTO(final Optional<TimePeriod> timePeriod) {
