@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,13 +128,13 @@ class ChapterServiceIT {
 
     expected.setId(theId);
     expected.setTitle(chapterDTO.getTitle());
-    expected.setCourseId(THE_COURSE.getId());
+    expected.setCourseId(chapterDTO.getCourseId());
     expected.setStartDate(chapterDTO.getStartDate());
+    expected.setContentReferenceIds(Collections.emptyList());
     expected.setEndDate(NEW_DATE);
-
 
     final ChapterDTO result = chapterService.findAll().get(0);
 
-    ChapterUtil.equalsChapterDTO(expected, result);
+    assertEquals(expected, result);
   }
 }
