@@ -4,25 +4,45 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
  * Models the progress of one user in one course.
- *
+ * <p>
  * The CourseProgressTracker stores the last content a user accessed and accumulates the progress of a user's {@link ContentProgressTracker}s of a course.
+ * There is only one instance of this class per courseId-userId combination.
  */
 @Entity
 @Table(name = "course_progress_tracker")
 public class CourseProgressTracker implements Serializable {
 
     /**
-     * Constructor.
+     * Intialize a CourseProgressTracker for a user in a course, specified by their respective Ids.
+     *
+     * @param courseId
+     * @param userId
      */
-    public CourseProgressTracker() {
-        /*this.contents = new ArrayList<>();*/
+    public CourseProgressTracker(final UUID courseId, final UUID userId) {
+        this.courseId = courseId;
+        this.userId = userId;
+        this.contentProgressTrackers = new HashSet<>();
+
+    }
+
+    /**
+     * Non-arg constructor for hibernate.
+     */
+    public CourseProgressTracker(){
+        this.contentProgressTrackers = new HashSet<>();
     }
 
     /**
@@ -47,8 +67,15 @@ public class CourseProgressTracker implements Serializable {
     /**
      * Last accessed content ref.
      */
-    @Column(name = "last_content_ref_id")
-    private UUID lastContentRef;
+    @ManyToOne
+    @JoinColumn(name = "last_content_ref_id", referencedColumnName = "id", nullable = true)
+    private ContentReference lastContentReference;
+
+    /**
+     * A reference to the content-level progress tracking objects for faster accumulation of data.
+     */
+    @OneToMany(mappedBy = "courseProgressTracker")
+    private Set<ContentProgressTracker> contentProgressTrackers;
 
     /**
      * Getter.
@@ -82,8 +109,8 @@ public class CourseProgressTracker implements Serializable {
      *
      * @return the name.
      */
-    public UUID getLastContentRef() {
-        return lastContentRef;
+    public Optional<ContentReference> getLastContentReference() {
+        return Optional.ofNullable(this.lastContentReference);
     }
 
     /**
@@ -93,6 +120,15 @@ public class CourseProgressTracker implements Serializable {
      */
     public void setId(final UUID newId) {
         this.id = newId;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param lastContentReference the content ref id
+     */
+    public void setLastContentReference(final ContentReference lastContentReference) {
+        this.lastContentReference = lastContentReference;
     }
 
     /**
@@ -114,15 +150,6 @@ public class CourseProgressTracker implements Serializable {
     }
 
     /**
-     * Setter.
-     *
-     * @param newContentRef the content ref id
-     */
-    public void setLastContentRef(final UUID newContentRef) {
-        this.lastContentRef = newContentRef;
-    }
-
-    /**
      * Equals method.
      *
      * @param o the other object.
@@ -140,7 +167,8 @@ public class CourseProgressTracker implements Serializable {
         return Objects.equals(getId(), tracker.getId())
             && Objects.equals(getCourseId(), tracker.getCourseId())
             && Objects.equals(getUserId(), tracker.getUserId())
-            && Objects.equals(getLastContentRef(), tracker.getLastContentRef());
+            && Objects.equals(
+            getLastContentReference(), tracker.getLastContentReference());
     }
 
     /**
@@ -151,7 +179,7 @@ public class CourseProgressTracker implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getCourseId(), getUserId(),
-            getLastContentRef());
+            getLastContentReference());
     }
 
     /**
@@ -165,7 +193,7 @@ public class CourseProgressTracker implements Serializable {
             + "id=" + id
             + ", courseId='" + courseId + '\''
             + ", userId='" + userId + '\''
-            + ", lastContentRef='" + lastContentRef + '\''
+            + ", lastContentRef='" + lastContentReference + '\''
             + '}';
     }
 }

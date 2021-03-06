@@ -38,6 +38,13 @@ public class ContentProgressTracker implements Serializable {
     @Column(name="progress_state")
     private ContentProgressState progressState;
 
+    /**
+     * A reference to the course-level progress tracking object for faster accumulation of data.
+     */
+    @ManyToOne
+    @JoinColumn(name="course_progress_tracker_id", referencedColumnName = "id")
+    private CourseProgressTracker courseProgressTracker;
+
     public UUID getId() {
         return id;
     }
@@ -52,6 +59,10 @@ public class ContentProgressTracker implements Serializable {
 
     public ContentProgressState getProgressState() {
         return progressState;
+    }
+
+    public CourseProgressTracker getCourseProgressTracker() {
+        return courseProgressTracker;
     }
 
     /**
