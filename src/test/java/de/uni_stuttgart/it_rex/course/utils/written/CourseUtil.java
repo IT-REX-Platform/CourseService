@@ -1,9 +1,11 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -53,6 +55,16 @@ public final class CourseUtil {
         courseDTO
             .setPublishState(PublishStateUtil.generateRandomPublishState());
         return courseDTO;
+    }
+
+    /**
+     * Creates a List of random DTOs.
+     *
+     * @param number the length of the list
+     * @return the DTOs
+     */
+    public static List<CourseDTO> createCourseDTOs(final int number) {
+        return IntStream.range(0, number).mapToObj(i -> createCourseDTO()).collect(Collectors.toList());
     }
 
     /**
