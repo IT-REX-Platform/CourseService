@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {CourseServiceApp.class, TestSecurityConfiguration.class})
 class TimePeriodServiceIT {
-  private static final int NUMBER_OF_TimePeriodS = 20;
+  private static final int NUMBER_OF_TIME_PERIODS = 20;
   private static final int THE_CHOSEN_INDEX = 13;
   private static final LocalDate NEW_DATE = LocalDate.now().plusDays(200);
 
@@ -68,7 +68,7 @@ class TimePeriodServiceIT {
   @Transactional
   void findAll() {
     final int numberOfEntitiesBefore = timePeriodRepository.findAll().size();
-    final List<TimePeriodDTO> timePeriodDTOs = TimePeriodUtil.createTimePeriodDTOs(NUMBER_OF_TimePeriodS);
+    final List<TimePeriodDTO> timePeriodDTOs = TimePeriodUtil.createTimePeriodDTOs(NUMBER_OF_TIME_PERIODS);
 
     timePeriodDTOs.forEach(timePeriodDTO -> {
       timePeriodDTO.setCourseId(THE_COURSE.getId());
@@ -81,7 +81,7 @@ class TimePeriodServiceIT {
 
   @Test
   void findOne() {
-    final List<TimePeriodDTO> timePeriodDTOs = TimePeriodUtil.createTimePeriodDTOs(NUMBER_OF_TimePeriodS);
+    final List<TimePeriodDTO> timePeriodDTOs = TimePeriodUtil.createTimePeriodDTOs(NUMBER_OF_TIME_PERIODS);
 
     timePeriodDTOs.forEach(timePeriodDTO -> {
       timePeriodDTO.setCourseId(THE_COURSE.getId());
@@ -97,7 +97,7 @@ class TimePeriodServiceIT {
   @Test
   void delete() {
     final int numberOfEntitiesBefore = timePeriodRepository.findAll().size();
-    final List<TimePeriodDTO> timePeriodDTOs = TimePeriodUtil.createTimePeriodDTOs(NUMBER_OF_TimePeriodS);
+    final List<TimePeriodDTO> timePeriodDTOs = TimePeriodUtil.createTimePeriodDTOs(NUMBER_OF_TIME_PERIODS);
 
     timePeriodDTOs.forEach(timePeriodDTO -> {
       timePeriodDTO.setCourseId(THE_COURSE.getId());
