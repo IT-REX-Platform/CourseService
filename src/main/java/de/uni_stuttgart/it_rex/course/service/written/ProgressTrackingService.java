@@ -1,8 +1,8 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker;
+import de.uni_stuttgart.it_rex.course.repository.written.ContentProgressTrackerRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseProgressTrackerRepository;
-import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseProgressTrackerMapper;
 import org.slf4j.Logger;
@@ -28,25 +28,36 @@ public class ProgressTrackingService {
     /**
      * Tracker Repository.
      */
-    private final CourseProgressTrackerRepository trackerRepository;
+    private final CourseProgressTrackerRepository
+        courseProgressTrackerRepository;
 
     /**
      * Tracker mapper.
      */
-    private final CourseProgressTrackerMapper trackerMapper;
+    private final CourseProgressTrackerMapper courseProgressTrackerMapper;
+
+    /**
+     * Content tracker repository.
+     */
+    private final ContentProgressTrackerRepository
+        contentProgressTrackerRepository;
 
     /**
      * Constructor.
      *
-     * @param newTrackerRepository
-     * @param newTrackerMapper
+     * @param courseProgressTrackerRepository
+     * @param courseProgressTrackerMapper
+     * @param contentProgressTrackerRepository
      */
     @Autowired
     public ProgressTrackingService(
-        final CourseProgressTrackerRepository newTrackerRepository,
-        final CourseProgressTrackerMapper newTrackerMapper) {
-        this.trackerRepository = newTrackerRepository;
-        this.trackerMapper = newTrackerMapper;
+        final CourseProgressTrackerRepository courseProgressTrackerRepository,
+        final CourseProgressTrackerMapper courseProgressTrackerMapper,
+        final ContentProgressTrackerRepository contentProgressTrackerRepository) {
+        this.courseProgressTrackerRepository = courseProgressTrackerRepository;
+        this.courseProgressTrackerMapper = courseProgressTrackerMapper;
+        this.contentProgressTrackerRepository =
+            contentProgressTrackerRepository;
     }
 
     /**
@@ -56,26 +67,52 @@ public class ProgressTrackingService {
      * @return Progress DTO for the course
      */
     public CourseProgressTrackerDTO findCourseProgress(
-        final UUID courseId) {
-
-        CourseProgressTracker example = new CourseProgressTracker();
-        example.setId(null);
-        example.setCourseId(courseId);
-        example.setUserId(RexAuthz.getUserId());
+        final UUID courseId, final UUID userId) {
 
         Optional<CourseProgressTracker> optTracker =
-            trackerRepository.findOne(Example.of(example));
+            findCourseProgressInRepository(courseId, userId);
 
-        if (!optTracker.isPresent()) {
+        return courseProgressTrackerMapper.toDTO(optTracker.get());
+    }
+
+    /**
+     * Initialize the progress tracking for a user in a course.
+     * <p>
+     * To be used only once when a user joins a course.
+     * If there is already an entry for the given courseId and userId combination, no action will be taken.
+     *
+     * @param courseId
+     * @param userId
+     */
+
+    public void startCourseProgressTracking(final UUID courseId, final UUID userId) {
+        LOGGER.debug("Start course progress tracking for user {} in course {}.", userId, courseId);
+        Optional<CourseProgressTracker> optTracker =
+            findCourseProgressInRepository(courseId, userId);
+        if (optTracker.isEmpty()) {
             // create a new one
-            CourseProgressTracker newTracker = new CourseProgressTracker();
-            newTracker.setCourseId(courseId);
-            newTracker.setUserId(RexAuthz.getUserId());
-            trackerRepository.saveAndFlush(newTracker);
-
-            return trackerMapper.toDTO(newTracker);
+            CourseProgressTracker newTracker = new CourseProgressTracker(
+                courseId, userId);
+            courseProgressTrackerRepository.saveAndFlush(newTracker);
+            LOGGER.debug("Created new CourseProgressTracker: {}.", newTracker);
         }
+    }
 
-        return trackerMapper.toDTO(optTracker.get());
+    /**
+     * Retrieve a CourseProgressTracker based on the attributes courseId and userId.
+     *
+     * @param courseId
+     * @param userId
+     * @return Optional.empty() if no progress is tracked yet, else an Optional containing the Tracker
+     */
+    private Optional<CourseProgressTracker> findCourseProgressInRepository(
+        final UUID courseId, final UUID userId) {
+        CourseProgressTracker example = new CourseProgressTracker(courseId,
+            userId);
+        LOGGER.debug("Find course prog in repo with example: {}.", example);
+        LOGGER.debug("Find course prog in repo with example: {}.", Example.of(example));
+        Optional<CourseProgressTracker> result = courseProgressTrackerRepository.findOne(Example.of(example));
+        LOGGER.debug("Result: {}", result);
+        return result;
     }
 }

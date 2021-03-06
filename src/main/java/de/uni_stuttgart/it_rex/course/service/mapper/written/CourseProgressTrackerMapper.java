@@ -1,38 +1,36 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ChapterIndex;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker;
-import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
-import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
-import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Mapper(componentModel = "spring")
 public abstract class CourseProgressTrackerMapper {
 
-    /**
-     * Updates an entity from another entity.
-     *
-     * @param update   the update
-     * @param toUpdate the updated entity.
-     */
-    @BeanMapping(nullValuePropertyMappingStrategy =
-        NullValuePropertyMappingStrategy.IGNORE)
-    public abstract void updateCourseProgressTrackerFromCourseProgressTracker(
-        CourseProgressTracker update,
-        @MappingTarget CourseProgressTracker toUpdate);
+    @Autowired
+    private ContentReferenceMapper contentReferenceMapper;
+
+//    /**
+//     * Updates an entity from another entity.
+//     *
+//     * @param update   the update
+//     * @param toUpdate the updated entity.
+//     */
+//    @BeanMapping(nullValuePropertyMappingStrategy =
+//        NullValuePropertyMappingStrategy.IGNORE)
+//    public abstract void updateCourseProgressTrackerFromCourseProgressTracker(
+//        CourseProgressTracker update,
+//        @MappingTarget CourseProgressTracker toUpdate);
 
 
     /**
@@ -87,7 +85,14 @@ public abstract class CourseProgressTrackerMapper {
         final CourseProgressTracker tracker) {
         final CourseProgressTrackerDTO trackerDTO =
             new CourseProgressTrackerDTO();
-        trackerDTO.setLastContentRef(tracker.getLastContentRef());
+        Optional<ContentReference> optionalContentReference = tracker.getLastContentReference();
+        ContentReferenceDTO lastContentReference;
+        if (optionalContentReference.isPresent()){
+            lastContentReference = contentReferenceMapper.toDTO(optionalContentReference.get());
+        } else {
+            lastContentReference = null;
+        }
+        trackerDTO.setLastContentReference(lastContentReference);
         return trackerDTO;
     }
 }

@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
+import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
 import de.uni_stuttgart.it_rex.course.service.written.ProgressTrackingService;
@@ -20,7 +21,7 @@ import java.util.UUID;
  * REST controller for managing {@link ChapterDTO}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/progress")
 public class ProgressResource {
 
     /**
@@ -54,18 +55,20 @@ public class ProgressResource {
     }
 
     /**
-     * {@code GET  /progress/course/:id} : get the progress for course "id".
+     * {@code GET  /courses/:courseId} : get the progress for course "courseId" for the requesting user.
      *
-     * @param id the id of the course to retrieve progress for.
+     * @param courseId the id of the course to retrieve progress for.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)}
      * and with body the chapter, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/progress/course/{id}")
+    @GetMapping("/courses/{courseId}")
     public ResponseEntity<CourseProgressTrackerDTO> getCourseProgress(
-        @PathVariable final UUID id) {
-        log.debug("REST request to get Course Progress for Course : {}", id);
+        @PathVariable final UUID courseId) {
+        log.debug("REST request to get Course Progress for Course : {}",
+            courseId);
+        UUID userId = RexAuthz.getUserId();
         CourseProgressTrackerDTO progress =
-            progressTrackingService.findCourseProgress(id);
+            progressTrackingService.findCourseProgress(courseId, userId);
         return ResponseUtil.wrapOrNotFound(Optional.of(progress));
     }
 }

@@ -1,6 +1,9 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
+
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class CourseProgressTrackerDTO {
@@ -13,7 +16,7 @@ public class CourseProgressTrackerDTO {
     /**
      * Last accessed content ref.
      */
-    private UUID lastContentRef;
+    private Optional<ContentReferenceDTO> lastContentReference;
 
     /**
      * Getter.
@@ -29,17 +32,17 @@ public class CourseProgressTrackerDTO {
      *
      * @return the name.
      */
-    public UUID getLastContentRef() {
-        return lastContentRef;
+    public Optional<ContentReferenceDTO> getLastContentReference() {
+        return lastContentReference;
     }
 
     /**
      * Setter.
      *
-     * @param newContentRef the content ref id
+     * @param lastContentReference the content ref id
      */
-    public void setLastContentRef(final UUID newContentRef) {
-        this.lastContentRef = newContentRef;
+    public void setLastContentReference(final ContentReferenceDTO lastContentReference) {
+        this.lastContentReference = Optional.ofNullable(lastContentReference);
     }
 
     /**
@@ -58,7 +61,8 @@ public class CourseProgressTrackerDTO {
         }
         CourseProgressTrackerDTO tracker = (CourseProgressTrackerDTO) o;
         return Objects.equals(getId(), tracker.getId())
-            && Objects.equals(getLastContentRef(), tracker.getLastContentRef());
+            && Objects.equals(
+            getLastContentReference(), tracker.getLastContentReference());
     }
 
     /**
@@ -68,7 +72,7 @@ public class CourseProgressTrackerDTO {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLastContentRef());
+        return Objects.hash(getId(), getLastContentReference());
     }
 
     /**
@@ -80,7 +84,7 @@ public class CourseProgressTrackerDTO {
     public String toString() {
         return "CourseProgressTrackerDTO{"
             + "id=" + id
-            + ", lastContentRef='" + lastContentRef + '\''
+            + ", lastContentRef='" + lastContentReference + '\''
             + '}';
     }
 }
