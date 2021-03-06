@@ -10,6 +10,7 @@ import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,14 @@ public abstract class ContentReferenceMapper {
     private TimePeriodRepository timePeriodRepository;
 
     /**
-     * Updates an entity from another entity.
+     * Updates an entity from a DTO.
      *
      * @param update   the update
      * @param toUpdate the updated entity.
      */
+    @Mapping(target = "course", ignore = true)
+    @Mapping(target = "chapters", ignore = true)
+    @Mapping(target = "timePeriods", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy =
         NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateContentReferenceFromContentReferenceDTO(

@@ -1,11 +1,16 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -25,36 +30,21 @@ public abstract class CourseMapper {
     @Autowired
     private ContentReferenceMapper contentReferenceMapper;
 
+
     /**
      * Updates an entity from a DTO.
      *
      * @param update   the update
      * @param toUpdate the updated entity.
      */
-    public void updateCourseFromCourseDTO(final CourseDTO update,
-                                          final Course toUpdate) {
-        if (update.getId() != null) {
-            toUpdate.setId(update.getId());
-        }
-        if (update.getName() != null) {
-            toUpdate.setName(update.getName());
-        }
-        if (update.getCourseDescription() != null) {
-            toUpdate.setCourseDescription(update.getCourseDescription());
-        }
-        if (update.getMaxFoodSum() != null) {
-            toUpdate.setMaxFoodSum(update.getMaxFoodSum());
-        }
-        if (update.getStartDate() != null) {
-            toUpdate.setStartDate(update.getStartDate());
-        }
-        if (update.getEndDate() != null) {
-            toUpdate.setEndDate(update.getEndDate());
-        }
-        if (update.getPublishState() != null) {
-            toUpdate.setPublishState(update.getPublishState());
-        }
-    }
+    @Mapping(target = "timePeriods", ignore = true)
+    @Mapping(target = "chapters", ignore = true)
+    @Mapping(target = "contentReferences", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy =
+        NullValuePropertyMappingStrategy.IGNORE)
+    public abstract void updateCourseFromCourseDTO(
+        final CourseDTO update,
+        @MappingTarget final Course toUpdate);
 
     /**
      * Converts an entity to a DTO.
