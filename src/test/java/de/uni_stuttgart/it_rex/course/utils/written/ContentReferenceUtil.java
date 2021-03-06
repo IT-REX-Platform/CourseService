@@ -1,6 +1,7 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 
 import java.time.LocalDate;
@@ -72,6 +73,16 @@ public final class ContentReferenceUtil {
         contentReferenceDTO.setEndDate(LocalDate.now()
             .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
         return contentReferenceDTO;
+    }
+
+    /**
+     * Creates a List of random DTOs.
+     *
+     * @param number the length of the list
+     * @return the DTOs
+     */
+    public static List<ContentReferenceDTO> createContentReferenceDTOs(final int number) {
+        return IntStream.range(0, number).mapToObj(i -> createContentReferenceDTO()).collect(Collectors.toList());
     }
 
     /**
