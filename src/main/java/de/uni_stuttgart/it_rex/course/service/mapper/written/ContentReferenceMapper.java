@@ -122,8 +122,10 @@ public abstract class ContentReferenceMapper {
         return contentReferenceDTO;
     }
 
-    public List<ContentReferenceDTO> toDTO(final Collection<ContentReference> contentReferences) {
-        return contentReferences.stream().map(this::toDTO).collect(Collectors.toList());
+    public List<ContentReferenceDTO> toDTO(
+        final Collection<ContentReference> contentReferences) {
+        return contentReferences.stream()
+            .map(this::toDTO).collect(Collectors.toList());
     }
 
     /**
@@ -132,7 +134,8 @@ public abstract class ContentReferenceMapper {
      * @param contentReference the optional
      * @return the dto
      */
-    public Optional<ContentReferenceDTO> toDTO(final Optional<ContentReference> contentReference) {
+    public Optional<ContentReferenceDTO> toDTO(
+        final Optional<ContentReference> contentReference) {
         if (contentReference.isEmpty()) {
             return Optional.empty();
         }

@@ -41,8 +41,8 @@ public abstract class TimePeriodMapper {
     @BeanMapping(nullValuePropertyMappingStrategy =
         NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateTimePeriodFromTimePeriodDTO(
-        final TimePeriodDTO update,
-        @MappingTarget final TimePeriod toUpdate);
+        TimePeriodDTO update,
+        @MappingTarget TimePeriod toUpdate);
 
     public TimePeriod updateOrCreateFromDTO(final TimePeriodDTO update) {
         final Optional<TimePeriod> contentReferenceOptional
@@ -87,7 +87,8 @@ public abstract class TimePeriodMapper {
      * @param timePeriod the optional
      * @return the dto
      */
-    public Optional<TimePeriodDTO> toDTO(final Optional<TimePeriod> timePeriod) {
+    public Optional<TimePeriodDTO> toDTO(
+        final Optional<TimePeriod> timePeriod) {
         if (timePeriod.isEmpty()) {
             return Optional.empty();
         }

@@ -60,7 +60,7 @@ class ContentReferenceServiceIT {
     contentReferenceDTO.setCourseId(THE_COURSE.getId());
     contentReferenceService.save(contentReferenceDTO);
     final ContentReferenceDTO result = contentReferenceService.findAll().get(0);
-
+    contentReferenceDTO.setId(result.getId());
     ContentReferenceUtil.equalsContentReferenceDTO(contentReferenceDTO, result);
   }
 

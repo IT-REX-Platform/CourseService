@@ -6,7 +6,6 @@ import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,8 +49,8 @@ class CourseServiceIT {
     final CourseDTO courseDTO = CourseUtil.createCourseDTO();
     courseService.save(courseDTO);
     final CourseDTO result = courseService.findAll().get(0);
-
-    CourseUtil.equals(courseDTO, result);
+    courseDTO.setId(result.getId());
+    assertEquals(courseDTO, result);
   }
 
   @Test
