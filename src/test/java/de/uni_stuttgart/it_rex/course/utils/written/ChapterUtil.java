@@ -61,7 +61,7 @@ public final class ChapterUtil {
     }
 
     /**
-     * Creates a List of random DTO.
+     * Creates a List of random DTOs.
      *
      * @param number the length of the list
      * @return the DTOs
