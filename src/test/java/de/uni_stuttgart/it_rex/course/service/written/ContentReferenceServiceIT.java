@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {CourseServiceApp.class, TestSecurityConfiguration.class})
 class ContentReferenceServiceIT {
-  private static final int NUMBER_OF_CHAPTERS = 20;
+  private static final int NUMBER_OF_CONTENT_REFERENCES = 20;
   private static final int THE_CHOSEN_INDEX = 13;
   private static final LocalDate NEW_DATE = LocalDate.now().plusDays(200);
 
@@ -68,7 +68,7 @@ class ContentReferenceServiceIT {
   @Transactional
   void findAll() {
     final int numberOfEntitiesBefore = contentReferenceRepository.findAll().size();
-    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CHAPTERS);
+    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
       contentReferenceDTO.setCourseId(THE_COURSE.getId());
@@ -81,7 +81,7 @@ class ContentReferenceServiceIT {
 
   @Test
   void findOne() {
-    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CHAPTERS);
+    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
       contentReferenceDTO.setCourseId(THE_COURSE.getId());
@@ -97,7 +97,7 @@ class ContentReferenceServiceIT {
   @Test
   void delete() {
     final int numberOfEntitiesBefore = contentReferenceRepository.findAll().size();
-    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CHAPTERS);
+    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
       contentReferenceDTO.setCourseId(THE_COURSE.getId());
