@@ -7,6 +7,7 @@ import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceReposit
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -74,10 +75,23 @@ public abstract class TimePeriodMapper {
         return timePeriodDTO;
     }
 
-    public Collection<TimePeriodDTO> toDTO
+    public List<TimePeriodDTO> toDTO
         (final Collection<TimePeriod> timePeriods) {
         return timePeriods.stream().map(this::toDTO)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Converts an optional entity to a optional DTO.
+     *
+     * @param timePeriod the entity
+     * @return the dto
+     */
+    public Optional<TimePeriodDTO> toDTO(final Optional<TimePeriod> timePeriod) {
+        if (timePeriod.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(toDTO(timePeriod.get()));
     }
 
     public TimePeriod toEntity(final TimePeriodDTO timePeriodDTO) {
@@ -87,14 +101,14 @@ public abstract class TimePeriodMapper {
         timePeriod.setEndDate(timePeriodDTO.getEndDate());
 
         if (timePeriodDTO.getCourseId() != null) {
-            final Optional<Course> courseOptional = courseRepository
-                .findById(timePeriodDTO.getCourseId());
-            courseOptional.ifPresent(timePeriod::setCourse);
+            courseRepository.findById(timePeriodDTO.getCourseId())
+                .ifPresent(timePeriod::setCourse);
         }
         if (timePeriodDTO.getContentReferenceIds() != null) {
-            timePeriod.setContentReferences(
-                contentReferenceRepository
-                    .findAllById(timePeriodDTO.getContentReferenceIds()));
+            final List<ContentReference> contentReferences =
+                contentReferenceRepository.findAllById(
+                    timePeriodDTO.getContentReferenceIds());
+            timePeriod.setContentReferences(contentReferences);
         }
 
         return timePeriod;

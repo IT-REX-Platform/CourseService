@@ -4,6 +4,9 @@ import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -53,6 +56,17 @@ public final class TimePeriodUtil {
             .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
         return timePeriodDTO;
     }
+
+    /**
+     * Creates a List of random DTOs.
+     *
+     * @param number the length of the list
+     * @return the DTOs
+     */
+    public static List<TimePeriodDTO> createTimePeriodDTOs(final int number) {
+        return IntStream.range(0, number).mapToObj(i -> createTimePeriodDTO()).collect(Collectors.toList());
+    }
+
 
     /**
      * Tests if two DTOs are equal but ignores their id.
