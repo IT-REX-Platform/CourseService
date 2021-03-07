@@ -1,8 +1,10 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
+import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.service.written.ProgressTrackingService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -46,12 +48,20 @@ public class ProgressResource {
     private final ProgressTrackingService progressTrackingService;
 
     /**
+     * Used course service.
+     */
+    private final CourseService courseService;
+
+    /**
      * Constructor.
      *
      * @param newProgressTrackingService the progress service.
+     * @param newCourseService the course service.
      */
-    public ProgressResource(final ProgressTrackingService newProgressTrackingService) {
+    public ProgressResource(final ProgressTrackingService newProgressTrackingService,
+                            final CourseService newCourseService) {
         this.progressTrackingService = newProgressTrackingService;
+        this.courseService = newCourseService;
     }
 
     /**
@@ -66,6 +76,14 @@ public class ProgressResource {
         @PathVariable final UUID courseId) {
         log.debug("REST request to get Course Progress for Course : {}",
             courseId);
+
+        // check that a course with the given id exists
+        // might want to compare against the list of the user's courses
+        // instead of asking the courseservice like this
+        if (courseService.findOne(courseId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
         UUID userId = RexAuthz.getUserId();
         CourseProgressTrackerDTO progress =
             progressTrackingService.findCourseProgress(courseId, userId);
