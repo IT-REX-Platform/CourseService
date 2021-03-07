@@ -1,10 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.ContentProgressState;
-
-import javax.swing.text.AbstractDocument;
 import java.util.Objects;
-import java.util.UUID;
 
 public class ContentProgressTrackerDTO {
 
