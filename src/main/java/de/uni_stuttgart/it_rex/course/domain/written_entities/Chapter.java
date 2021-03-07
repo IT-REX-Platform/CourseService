@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "chapter")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Chapter implements Serializable {
+public class Chapter implements Serializable, Organizable{
 
     /**
      * Constructor.
