@@ -92,6 +92,7 @@ public abstract class CourseProgressTrackerMapper {
         } else {
             lastContentReference = null;
         }
+        trackerDTO.setCourseId(tracker.getCourseId());
         trackerDTO.setLastContentReference(lastContentReference);
         return trackerDTO;
     }

@@ -8,10 +8,13 @@ import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseProgressTrack
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,15 +67,16 @@ public class ProgressTrackingService {
      * Find a DTO for the course-wide progress of the current user.
      *
      * @param courseId Course to find the progress for
+     * @param userId id of user
      * @return Progress DTO for the course
      */
     public CourseProgressTrackerDTO findCourseProgress(
         final UUID courseId, final UUID userId) {
 
-        Optional<CourseProgressTracker> optTracker =
-            findCourseProgressInRepository(courseId, userId);
+        CourseProgressTracker tracker =
+            findCourseProgressInRepositoryOrStartFresh(courseId, userId);
 
-        return courseProgressTrackerMapper.toDTO(optTracker.get());
+        return courseProgressTrackerMapper.toDTO(tracker);
     }
 
     /**
@@ -83,19 +87,19 @@ public class ProgressTrackingService {
      *
      * @param courseId
      * @param userId
+     * @return the newly created tracking entity
      */
 
-    public void startCourseProgressTracking(final UUID courseId, final UUID userId) {
+    public CourseProgressTracker startCourseProgressTracking(final UUID courseId, final UUID userId) {
         LOGGER.debug("Start course progress tracking for user {} in course {}.", userId, courseId);
-        Optional<CourseProgressTracker> optTracker =
-            findCourseProgressInRepository(courseId, userId);
-        if (optTracker.isEmpty()) {
+
             // create a new one
             CourseProgressTracker newTracker = new CourseProgressTracker(
                 courseId, userId);
             courseProgressTrackerRepository.saveAndFlush(newTracker);
             LOGGER.debug("Created new CourseProgressTracker: {}.", newTracker);
-        }
+
+            return newTracker;
     }
 
     /**
@@ -103,16 +107,40 @@ public class ProgressTrackingService {
      *
      * @param courseId
      * @param userId
-     * @return Optional.empty() if no progress is tracked yet, else an Optional containing the Tracker
+     * @return a tracker
      */
-    private Optional<CourseProgressTracker> findCourseProgressInRepository(
+    private CourseProgressTracker findCourseProgressInRepositoryOrStartFresh(
         final UUID courseId, final UUID userId) {
-        CourseProgressTracker example = new CourseProgressTracker(courseId,
-            userId);
-        LOGGER.debug("Find course prog in repo with example: {}.", example);
-        LOGGER.debug("Find course prog in repo with example: {}.", Example.of(example));
-        Optional<CourseProgressTracker> result = courseProgressTrackerRepository.findOne(Example.of(example));
+
+        Optional<CourseProgressTracker> result = courseProgressTrackerRepository.findOne(getSpec(courseId, userId));
         LOGGER.debug("Result: {}", result);
-        return result;
+
+        if (result.isEmpty()) {
+            return startCourseProgressTracking(courseId, userId);
+        }
+
+        return result.get();
+    }
+
+    /**
+     * Method generates a specification that describes our desired tracker
+     * properties.
+     *
+     * @param courseId a course id
+     * @param userId a user id
+     * @return A specification describing said tracker
+     */
+    private Specification<CourseProgressTracker> getSpec(
+        final UUID courseId, final UUID userId) {
+        return (root, query, builder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(builder.equal(root.get("courseId"), courseId));
+            predicates.add(builder.equal(root.get("userId"), userId));
+
+            return builder.and(predicates.toArray(
+                new Predicate[predicates.size()]));
+        };
     }
 }

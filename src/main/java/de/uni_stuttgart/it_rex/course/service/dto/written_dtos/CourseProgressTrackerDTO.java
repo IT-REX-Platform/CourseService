@@ -9,9 +9,9 @@ import java.util.UUID;
 public class CourseProgressTrackerDTO {
 
     /**
-     * Id of the tracker.
+     * Id of the course the represented tracker belongs to.
      */
-    private UUID id;
+    private UUID courseId;
 
     /**
      * Last accessed content ref.
@@ -23,8 +23,8 @@ public class CourseProgressTrackerDTO {
      *
      * @return the id.
      */
-    public UUID getId() {
-        return id;
+    public UUID getCourseId() {
+        return courseId;
     }
 
     /**
@@ -34,6 +34,15 @@ public class CourseProgressTrackerDTO {
      */
     public Optional<ContentReferenceDTO> getLastContentReference() {
         return lastContentReference;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newCourseId the content ref id
+     */
+    public void setCourseId(final UUID newCourseId) {
+        this.courseId = newCourseId;
     }
 
     /**
@@ -60,7 +69,7 @@ public class CourseProgressTrackerDTO {
             return false;
         }
         CourseProgressTrackerDTO tracker = (CourseProgressTrackerDTO) o;
-        return Objects.equals(getId(), tracker.getId())
+        return Objects.equals(getCourseId(), tracker.getCourseId())
             && Objects.equals(
             getLastContentReference(), tracker.getLastContentReference());
     }
@@ -72,7 +81,7 @@ public class CourseProgressTrackerDTO {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLastContentReference());
+        return Objects.hash(getCourseId(), getLastContentReference());
     }
 
     /**
@@ -83,7 +92,7 @@ public class CourseProgressTrackerDTO {
     @Override
     public String toString() {
         return "CourseProgressTrackerDTO{"
-            + "id=" + id
+            + "courseId=" + courseId
             + ", lastContentRef='" + lastContentReference + '\''
             + '}';
     }
