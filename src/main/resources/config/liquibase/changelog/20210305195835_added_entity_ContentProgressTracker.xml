@@ -15,7 +15,10 @@
             <column name="user_id" type="${uuidType}">
                 <constraints nullable="false"/>
             </column>
-            <column name="progress_state" type="varchar(255)">
+            <column name="state" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="progress" type="float">
                 <constraints nullable="false" />
             </column>
             <column name="course_progress_tracker_id" type="${uuidType}">

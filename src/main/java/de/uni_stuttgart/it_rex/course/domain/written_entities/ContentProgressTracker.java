@@ -35,8 +35,11 @@ public class ContentProgressTracker implements Serializable {
     private UUID userId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="progress_state")
-    private ContentProgressState progressState;
+    @Column(name="state")
+    private ContentProgressState state;
+
+    @Column(name="progress")
+    private float progress;
 
     /**
      * A reference to the course-level progress tracking object for faster accumulation of data.
@@ -57,18 +60,29 @@ public class ContentProgressTracker implements Serializable {
         return userId;
     }
 
-    public ContentProgressState getProgressState() {
-        return progressState;
+    public ContentProgressState getState() {
+        return state;
     }
+
+    public float getProgress() { return progress; }
 
     public CourseProgressTracker getCourseProgressTracker() {
         return courseProgressTracker;
     }
 
     /**
-     * Sets the Tracker State to COMPLETED ({@link ContentProgressState})
+     * Sets the Tracker State to COMPLETED ({@link ContentProgressState}).
      */
-    public void complete(){
-        this.progressState = ContentProgressState.COMPLETED;
+    public void complete() {
+        this.state = ContentProgressState.COMPLETED;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newProgress the progress to set.
+     */
+    public void setProgress(final float newProgress) {
+        this.progress = newProgress;
     }
 }
