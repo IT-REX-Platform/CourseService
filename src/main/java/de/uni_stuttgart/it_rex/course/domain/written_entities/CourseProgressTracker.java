@@ -114,6 +114,15 @@ public class CourseProgressTracker implements Serializable {
     }
 
     /**
+     * Getter.
+     *
+     * @return the set of content progress trackers.
+     */
+    public Set<ContentProgressTracker> getContentProgressTrackers() {
+        return this.contentProgressTrackers;
+    }
+
+    /**
      * Setter.
      *
      * @param newId

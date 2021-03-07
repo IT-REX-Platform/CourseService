@@ -2,8 +2,11 @@ package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class CourseProgressTrackerDTO {
@@ -17,6 +20,11 @@ public class CourseProgressTrackerDTO {
      * Last accessed content ref.
      */
     private Optional<ContentReferenceDTO> lastContentReference;
+
+    /**
+     * Content Progress Trackers.
+     */
+    private Set<ContentProgressTrackerDTO> contentProgressTrackers;
 
     /**
      * Getter.
@@ -37,6 +45,15 @@ public class CourseProgressTrackerDTO {
     }
 
     /**
+     * Getter.
+     *
+     * @return list containing content progress trackers.
+     */
+    public Set<ContentProgressTrackerDTO> getContentProgressTrackers() {
+        return contentProgressTrackers;
+    }
+
+    /**
      * Setter.
      *
      * @param newCourseId the content ref id
@@ -48,10 +65,19 @@ public class CourseProgressTrackerDTO {
     /**
      * Setter.
      *
-     * @param lastContentReference the content ref id
+     * @param newLastContentReference the content ref id
      */
-    public void setLastContentReference(final ContentReferenceDTO lastContentReference) {
-        this.lastContentReference = Optional.ofNullable(lastContentReference);
+    public void setLastContentReference(final ContentReferenceDTO newLastContentReference) {
+        this.lastContentReference = Optional.ofNullable(newLastContentReference);
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newContentProgressTrackers the content ref id
+     */
+    public void setContentProgressTrackers(final Set<ContentProgressTrackerDTO> newContentProgressTrackers) {
+        this.contentProgressTrackers = newContentProgressTrackers;
     }
 
     /**
@@ -81,7 +107,7 @@ public class CourseProgressTrackerDTO {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getCourseId(), getLastContentReference());
+        return Objects.hash(getCourseId(), getLastContentReference(), getContentProgressTrackers());
     }
 
     /**
