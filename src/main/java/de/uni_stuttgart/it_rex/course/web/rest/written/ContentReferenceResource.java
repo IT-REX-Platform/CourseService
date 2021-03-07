@@ -35,7 +35,7 @@ public class ContentReferenceResource {
   /**
    * Logger.
    */
-  private final Logger log
+  private final Logger LOGGER
       = LoggerFactory.getLogger(ContentReferenceResource.class);
 
   /**
@@ -77,11 +77,11 @@ public class ContentReferenceResource {
   public ResponseEntity<ContentReferenceDTO> createContentReference(
       @RequestBody final ContentReferenceDTO contentReferenceDTO)
       throws URISyntaxException {
-    log.debug("REST request to save ContentReference : {}",
+    LOGGER.debug("REST request to save ContentReference : {}",
         contentReferenceDTO);
     if (contentReferenceDTO.getId() != null) {
       throw new BadRequestAlertException(
-          "A new contentReference cannot already "
+          "A new ContentReference cannot already "
               + "have an ID", ENTITY_NAME, "idexists");
     }
     ContentReferenceDTO result = contentReferenceService
@@ -107,7 +107,7 @@ public class ContentReferenceResource {
   public ResponseEntity<ContentReferenceDTO> updateContentReference(
       @RequestBody final ContentReferenceDTO contentReferenceDTO)
       throws URISyntaxException {
-    log.debug("REST request to update ContentReference : {}",
+    LOGGER.debug("REST request to update ContentReference : {}",
         contentReferenceDTO);
     if (contentReferenceDTO.getId() == null) {
       throw new BadRequestAlertException(
@@ -122,42 +122,42 @@ public class ContentReferenceResource {
   }
 
   /**
-   * {@code GET  /contentreferences/:id} : get the "id" contentReference.
+   * {@code GET  /contentreferences/:id} : get the "id" ContentReference.
    *
-   * @param id the id of the contentReference to retrieve.
+   * @param id the id of the ContentReference to retrieve.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-   * body the contentReference, or with status {@code 404 (Not Found)}.
+   * body the ContentReference, or with status {@code 404 (Not Found)}.
    */
   @GetMapping("/contentreferences/{id}")
   public ResponseEntity<ContentReferenceDTO> getContentReference(
       @PathVariable final UUID id) {
-    log.debug("REST request to get ContentReference : {}", id);
+    LOGGER.debug("REST request to get ContentReference : {}", id);
     Optional<ContentReferenceDTO> contentReference =
         contentReferenceService.findOne(id);
     return ResponseUtil.wrapOrNotFound(contentReference);
   }
 
   /**
-   * {@code GET  /contentreferences} : get all the contentReferences.
+   * {@code GET  /contentreferences} : get all the ContentReferences.
    *
-   * @return A list of all contentReferences.
+   * @return A list of all ContentReferences.
    */
   @GetMapping("/contentreferences")
   public List<ContentReferenceDTO> getAllContentReferences() {
-    log.debug("REST request to get filtered Courses");
+    LOGGER.debug("REST request to get filtered ContentReferences");
     return contentReferenceService.findAll();
   }
 
   /**
-   * {@code DELETE  /contentreferences/:id} : delete the "id" contentReference.
+   * {@code DELETE  /contentreferences/:id} : delete the "id" ContentReference.
    *
-   * @param id the id of the contentReference to delete.
+   * @param id the id of the ContentReference to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
    */
   @DeleteMapping("/contentreferences/{id}")
   public ResponseEntity<Void> deleteContentReference(
       @PathVariable final UUID id) {
-    log.debug("REST request to delete Course : {}", id);
+    LOGGER.debug("REST request to delete Course : {}", id);
     contentReferenceService.delete(id);
     return ResponseEntity.noContent().headers(HeaderUtil
         .createEntityDeletionAlert(applicationName, true,
@@ -166,18 +166,18 @@ public class ContentReferenceResource {
   }
 
   /**
-   * {@code PATCH  /contentreferences} : Patches an existing contentReference.
+   * {@code PATCH  /contentreferences} : Patches an existing ContentReference.
    *
-   * @param contentReferenceDTO the contentReference to patch.
+   * @param contentReferenceDTO the ContentReference to patch.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-   * body the updated contentReference, or with status {@code 400 (Bad Request)}
-   * if the contentReference is not valid, or with status {@code 500 (Internal
-   * Server Error)} if the contentReference couldn't be patched.
+   * body the updated ContentReference, or with status {@code 400 (Bad Request)}
+   * if the ContentReference is not valid, or with status {@code 500 (Internal
+   * Server Error)} if the ContentReference couldn't be patched.
    */
   @PatchMapping("/contentreferences")
   public ResponseEntity<ContentReferenceDTO> patchContentReference(
       @RequestBody final ContentReferenceDTO contentReferenceDTO) {
-    log.debug("REST request to patch ContentReference : {}",
+    LOGGER.debug("REST request to patch ContentReference : {}",
         contentReferenceDTO);
     if (contentReferenceDTO.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
@@ -185,6 +185,57 @@ public class ContentReferenceResource {
     }
     ContentReferenceDTO result = contentReferenceService
         .patch(contentReferenceDTO);
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
+            true, ENTITY_NAME, result.getId().toString()))
+        .body(result);
+  }
+
+  /**
+   * {@code POST /contentreferences/:contentReferenceId/timeperiods/:timePeriodId}
+   * : adds the "contentReferenceId" ContentReference to the "timePeriodId"
+   * TimePeriod.
+   *
+   * @param contentReferenceId the id of the ContentReference.
+   * @param timePeriodId       the id of the TimePeriod
+   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and
+   * with body the new contentReference, or with status {@code 400 (Bad
+   * Request)} if either the ContentReference or the TimePeriod was not found.
+   */
+  @PostMapping("/contentreferences/{contentReferenceId}/timeperiods/{timePeriodId}")
+  public ResponseEntity<ContentReferenceDTO> addToTimePeriod(
+      @PathVariable final UUID contentReferenceId,
+      @PathVariable final UUID timePeriodId) {
+    LOGGER.debug("REST request to add ContentReference: {} to TimePeriod: {}",
+        contentReferenceId, timePeriodId);
+
+    ContentReferenceDTO result = contentReferenceService
+        .addToTimePeriod(contentReferenceId, timePeriodId);
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
+            true, ENTITY_NAME, result.getId().toString()))
+        .body(result);
+  }
+
+  /**
+   * {@code POST /contentreferences/:contentReferenceId/chapters/:chapterId} :
+   * adds the "contentReferenceId" ContentReference to the "chapterId" Chapter.
+   *
+   * @param contentReferenceId the id of the ContentReference.
+   * @param chapterId          the id of the Chapter
+   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and
+   * with body the new contentReference, or with status {@code 400 (Bad
+   * Request)} if either the ContentReference or the Chapter was not found.
+   */
+  @PostMapping("/contentreferences/{contentReferenceId}/chapters/{chapterId}")
+  public ResponseEntity<ContentReferenceDTO> addToChapter(
+      @PathVariable final UUID contentReferenceId,
+      @PathVariable final UUID chapterId) {
+    LOGGER.debug("REST request to add ContentReference: {} to Chapter: {}",
+        contentReferenceId, chapterId);
+
+    ContentReferenceDTO result = contentReferenceService
+        .addToChapter(contentReferenceId, chapterId);
     return ResponseEntity.ok()
         .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
             true, ENTITY_NAME, result.getId().toString()))
