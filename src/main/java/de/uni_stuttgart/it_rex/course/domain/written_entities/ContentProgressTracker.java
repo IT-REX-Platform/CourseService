@@ -48,6 +48,24 @@ public class ContentProgressTracker implements Serializable {
     @JoinColumn(name="course_progress_tracker_id", referencedColumnName = "id")
     private CourseProgressTracker courseProgressTracker;
 
+    /**
+     * Empty contstructor for hibernate.
+     */
+    public ContentProgressTracker(){
+    }
+
+    /**
+     * Initialize a ContentProgressTracker with state "STARTED" and progress 0.0 for the given contentReference and userId.
+     * @param userId
+     * @param contentReference
+     */
+    public ContentProgressTracker(final UUID userId, final ContentReference contentReference){
+        this.userId = userId;
+        this.contentReference = contentReference;
+        this.state = ContentProgressState.STARTED;
+        this.progress = 0.0f;
+    }
+
     public UUID getId() {
         return id;
     }

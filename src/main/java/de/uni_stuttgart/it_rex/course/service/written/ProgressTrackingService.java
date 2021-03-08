@@ -1,9 +1,15 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentProgressTrackerRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseProgressTrackerRepository;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentProgressTrackerDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.ContentProgressTrackerMapper;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.ContentReferenceMapper;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseProgressTrackerMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +52,16 @@ public class ProgressTrackingService {
         contentProgressTrackerRepository;
 
     /**
+     * Content tracker mapper.
+     */
+    private final ContentProgressTrackerMapper contentProgressTrackerMapper;
+
+    /**
+     * ContentReference mapper.
+     */
+    private final ContentReferenceMapper contentReferenceMapper;
+
+    /**
      * Constructor.
      *
      * @param courseProgressTrackerRepository
@@ -56,28 +72,17 @@ public class ProgressTrackingService {
     public ProgressTrackingService(
         final CourseProgressTrackerRepository courseProgressTrackerRepository,
         final CourseProgressTrackerMapper courseProgressTrackerMapper,
-        final ContentProgressTrackerRepository contentProgressTrackerRepository) {
+        final ContentProgressTrackerRepository contentProgressTrackerRepository,
+        final ContentProgressTrackerMapper contentProgressTrackerMapper,
+        final ContentReferenceMapper contentReferenceMapper) {
         this.courseProgressTrackerRepository = courseProgressTrackerRepository;
         this.courseProgressTrackerMapper = courseProgressTrackerMapper;
         this.contentProgressTrackerRepository =
             contentProgressTrackerRepository;
+        this.contentProgressTrackerMapper = contentProgressTrackerMapper;
+        this.contentReferenceMapper = contentReferenceMapper;
     }
 
-    /**
-     * Find a DTO for the course-wide progress of the current user.
-     *
-     * @param courseId Course to find the progress for
-     * @param userId id of user
-     * @return Progress DTO for the course
-     */
-    public CourseProgressTrackerDTO findCourseProgress(
-        final UUID courseId, final UUID userId) {
-
-        CourseProgressTracker tracker =
-            findCourseProgressInRepositoryOrStartFresh(courseId, userId);
-
-        return courseProgressTrackerMapper.toDTO(tracker);
-    }
 
     /**
      * Initialize the progress tracking for a user in a course.
@@ -89,37 +94,79 @@ public class ProgressTrackingService {
      * @param userId
      * @return the newly created tracking entity
      */
-
-    public CourseProgressTracker startCourseProgressTracking(final UUID courseId, final UUID userId) {
+    public CourseProgressTrackerDTO startCourseProgressTracking(final UUID courseId, final UUID userId) {
         LOGGER.debug("Start course progress tracking for user {} in course {}.", userId, courseId);
 
-            // create a new one
-            CourseProgressTracker newTracker = new CourseProgressTracker(
-                courseId, userId);
-            courseProgressTrackerRepository.saveAndFlush(newTracker);
-            LOGGER.debug("Created new CourseProgressTracker: {}.", newTracker);
+        // create a new one
+        CourseProgressTracker newTracker = new CourseProgressTracker(
+            courseId, userId);
+        courseProgressTrackerRepository.saveAndFlush(newTracker);
+        LOGGER.debug("Created new CourseProgressTracker: {}.", newTracker);
 
-            return newTracker;
+        return courseProgressTrackerMapper.toDTO(newTracker);
     }
 
     /**
-     * Retrieve a CourseProgressTracker based on the attributes courseId and userId.
+     * Initialize the content progress tracking for a user regarding one specific content reference.
      *
-     * @param courseId
+     * To be used only once per user to create a tracker for the content reference.
+     *
+     * @param contentReference
      * @param userId
-     * @return a tracker
+     * @return the created {@link de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO}
      */
-    private CourseProgressTracker findCourseProgressInRepositoryOrStartFresh(
+    public ContentProgressTrackerDTO startContentProgressTracking(final ContentReference contentReference, final UUID userId){
+        LOGGER.debug("Start course progress tracking for user {} regarding content ref {}.", userId, contentReference);
+
+        ContentProgressTracker newTracker = new ContentProgressTracker(userId, contentReference);
+        contentProgressTrackerRepository.saveAndFlush(newTracker);
+        LOGGER.debug("Created new ContentProgressTracker: {}.", newTracker);
+
+        return contentProgressTrackerMapper.toDTO(newTracker);
+    }
+
+    /**
+     * Find a DTO for the course-wide progress of the current user.
+     * If the course progress is not yet tracked for the current user, create a tracker.
+     *
+     * @param courseId Course to find the progress for
+     * @param userId id of user
+     * @return Progress DTO for the course
+     */
+    public CourseProgressTrackerDTO findCourseProgressInRepositoryOrStartFresh(
         final UUID courseId, final UUID userId) {
 
-        Optional<CourseProgressTracker> result = courseProgressTrackerRepository.findOne(getSpec(courseId, userId));
+        Optional<CourseProgressTracker> result = courseProgressTrackerRepository.findOne(getCourseProgressSpec(courseId, userId));
         LOGGER.debug("Result: {}", result);
 
         if (result.isEmpty()) {
             return startCourseProgressTracking(courseId, userId);
         }
 
-        return result.get();
+        return courseProgressTrackerMapper.toDTO(result.get());
+    }
+
+    /**
+     * Retrieve or create a ContentProgressTracker for a user and a content reference.
+     * If the progress is not yet tracked for the current user, create a tracker.
+     *
+     * @param contentReference
+     * @param userId
+     * @return a tracker
+     */
+    public ContentProgressTrackerDTO findContentProgressInRepositoryOrStartFresh(
+        final ContentReference contentReference, final UUID userId) {
+
+        Optional<ContentProgressTracker> result =
+            contentProgressTrackerRepository
+                .findOne(getContentProgressSpec(contentReference, userId));
+        LOGGER.debug("Result: {}", result);
+
+        if (result.isEmpty()) {
+            return startContentProgressTracking(contentReference, userId);
+        }
+
+        return contentProgressTrackerMapper.toDTO(result.get());
     }
 
     /**
@@ -130,13 +177,35 @@ public class ProgressTrackingService {
      * @param userId a user id
      * @return A specification describing said tracker
      */
-    private Specification<CourseProgressTracker> getSpec(
+    private Specification<CourseProgressTracker> getCourseProgressSpec(
         final UUID courseId, final UUID userId) {
         return (root, query, builder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
 
             predicates.add(builder.equal(root.get("courseId"), courseId));
+            predicates.add(builder.equal(root.get("userId"), userId));
+
+            return builder.and(predicates.toArray(
+                new Predicate[predicates.size()]));
+        };
+    }
+
+    /**
+     * Method generates a specification that describes our desired tracker
+     * properties.
+     *
+     * @param contentReference a content reference id
+     * @param userId a user id
+     * @return A specification describing said tracker
+     */
+    private Specification<ContentProgressTracker> getContentProgressSpec(
+        final ContentReference contentReference, final UUID userId) {
+        return (root, query, builder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(builder.equal(root.get("contentReference"), contentReference));
             predicates.add(builder.equal(root.get("userId"), userId));
 
             return builder.and(predicates.toArray(
