@@ -92,6 +92,22 @@ public class ProgressResource {
     }
 
     /**
+     * {@code GET  /content/:trackerId} : Get Content Progress Tracker for Content Item for User
+     *
+     * @param trackerId id of Content Progress Tracker
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)}
+     * and with body the chapter, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/content/{trackerdId}")
+    public ResponseEntity<ContentProgressTrackerDTO> getContentProgress(
+        @PathVariable final UUID trackerId){
+        log.debug("REST request to get Content Progress for Content Item : {}", trackerId);
+        Optional <ContentProgressTrackerDTO> contentProgressTrackerDTO
+            = progressTrackingService.findContentProgressTracker(trackerId);
+        return ResponseUtil.wrapOrNotFound(contentProgressTrackerDTO);
+    }
+
+    /**
      * {@code POST  /content/ : post a new content tracker for the content Item of request user}
      *
      * @param contentReferenceDTO DTO of Content Item Reference
