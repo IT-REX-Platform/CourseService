@@ -35,7 +35,7 @@ public class ContentReferenceResource {
   /**
    * Logger.
    */
-  private final Logger LOGGER
+  private final Logger log
       = LoggerFactory.getLogger(ContentReferenceResource.class);
 
   /**
@@ -77,7 +77,7 @@ public class ContentReferenceResource {
   public ResponseEntity<ContentReferenceDTO> createContentReference(
       @RequestBody final ContentReferenceDTO contentReferenceDTO)
       throws URISyntaxException {
-    LOGGER.debug("REST request to save ContentReference : {}",
+    log.debug("REST request to save ContentReference : {}",
         contentReferenceDTO);
     if (contentReferenceDTO.getId() != null) {
       throw new BadRequestAlertException(
@@ -107,7 +107,7 @@ public class ContentReferenceResource {
   public ResponseEntity<ContentReferenceDTO> updateContentReference(
       @RequestBody final ContentReferenceDTO contentReferenceDTO)
       throws URISyntaxException {
-    LOGGER.debug("REST request to update ContentReference : {}",
+    log.debug("REST request to update ContentReference : {}",
         contentReferenceDTO);
     if (contentReferenceDTO.getId() == null) {
       throw new BadRequestAlertException(
@@ -131,7 +131,7 @@ public class ContentReferenceResource {
   @GetMapping("/contentreferences/{id}")
   public ResponseEntity<ContentReferenceDTO> getContentReference(
       @PathVariable final UUID id) {
-    LOGGER.debug("REST request to get ContentReference : {}", id);
+    log.debug("REST request to get ContentReference : {}", id);
     Optional<ContentReferenceDTO> contentReference =
         contentReferenceService.findOne(id);
     return ResponseUtil.wrapOrNotFound(contentReference);
@@ -144,7 +144,7 @@ public class ContentReferenceResource {
    */
   @GetMapping("/contentreferences")
   public List<ContentReferenceDTO> getAllContentReferences() {
-    LOGGER.debug("REST request to get filtered ContentReferences");
+    log.debug("REST request to get filtered ContentReferences");
     return contentReferenceService.findAll();
   }
 
@@ -157,7 +157,7 @@ public class ContentReferenceResource {
   @DeleteMapping("/contentreferences/{id}")
   public ResponseEntity<Void> deleteContentReference(
       @PathVariable final UUID id) {
-    LOGGER.debug("REST request to delete Course : {}", id);
+    log.debug("REST request to delete Course : {}", id);
     contentReferenceService.delete(id);
     return ResponseEntity.noContent().headers(HeaderUtil
         .createEntityDeletionAlert(applicationName, true,
@@ -177,7 +177,7 @@ public class ContentReferenceResource {
   @PatchMapping("/contentreferences")
   public ResponseEntity<ContentReferenceDTO> patchContentReference(
       @RequestBody final ContentReferenceDTO contentReferenceDTO) {
-    LOGGER.debug("REST request to patch ContentReference : {}",
+    log.debug("REST request to patch ContentReference : {}",
         contentReferenceDTO);
     if (contentReferenceDTO.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
@@ -192,7 +192,8 @@ public class ContentReferenceResource {
   }
 
   /**
-   * {@code POST /contentreferences/:contentReferenceId/timeperiods/:timePeriodId}
+   * {@code POST
+   * /contentreferences/:contentReferenceId/timeperiods/:timePeriodId}
    * : adds the "contentReferenceId" ContentReference to the "timePeriodId"
    * TimePeriod.
    *
@@ -202,11 +203,12 @@ public class ContentReferenceResource {
    * with body the new contentReference, or with status {@code 400 (Bad
    * Request)} if either the ContentReference or the TimePeriod was not found.
    */
-  @PostMapping("/contentreferences/{contentReferenceId}/timeperiods/{timePeriodId}")
+  @PostMapping(
+      "/contentreferences/{contentReferenceId}/timeperiods/{timePeriodId}")
   public ResponseEntity<ContentReferenceDTO> addToTimePeriod(
       @PathVariable final UUID contentReferenceId,
       @PathVariable final UUID timePeriodId) {
-    LOGGER.debug("REST request to add ContentReference: {} to TimePeriod: {}",
+    log.debug("REST request to add ContentReference: {} to TimePeriod: {}",
         contentReferenceId, timePeriodId);
 
     ContentReferenceDTO result = contentReferenceService
@@ -215,6 +217,31 @@ public class ContentReferenceResource {
         .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
             true, ENTITY_NAME, result.getId().toString()))
         .body(result);
+  }
+
+  /**
+   * {@code DELETE
+   * /contentreferences/:contentReferenceId/timeperiods/:timePeriodId}
+   * : removes the "contentReferenceId" ContentReference from the "timePeriodId"
+   * TimePeriod.
+   *
+   * @param contentReferenceId the id of the ContentReference.
+   * @param timePeriodId       the id of the TimePeriod
+   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+   */
+  @DeleteMapping(
+      "/contentreferences/{contentReferenceId}/timeperiods/{timePeriodId}")
+  public ResponseEntity<Void> removeFromTimePeriod(
+      @PathVariable final UUID contentReferenceId,
+      @PathVariable final UUID timePeriodId) {
+    log.debug("REST request to remove ContentReference: {} from TimePeriod: {}",
+        contentReferenceId, timePeriodId);
+    contentReferenceService
+        .removeFromTimePeriod(contentReferenceId, timePeriodId);
+    return ResponseEntity.noContent().headers(HeaderUtil
+        .createEntityDeletionAlert(applicationName, true,
+            ENTITY_NAME,
+            contentReferenceId.toString())).build();
   }
 
   /**
@@ -231,7 +258,7 @@ public class ContentReferenceResource {
   public ResponseEntity<ContentReferenceDTO> addToChapter(
       @PathVariable final UUID contentReferenceId,
       @PathVariable final UUID chapterId) {
-    LOGGER.debug("REST request to add ContentReference: {} to Chapter: {}",
+    log.debug("REST request to add ContentReference: {} to Chapter: {}",
         contentReferenceId, chapterId);
 
     ContentReferenceDTO result = contentReferenceService
@@ -240,5 +267,27 @@ public class ContentReferenceResource {
         .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
             true, ENTITY_NAME, result.getId().toString()))
         .body(result);
+  }
+
+  /**
+   * {@code DELETE /contentreferences/:contentReferenceId/chapters/:chapterId} :
+   * removes the "contentReferenceId" ContentReference from the "chapterId"
+   * Chapter.
+   *
+   * @param contentReferenceId the id of the ContentReference.
+   * @param chapterId          the id of the Chapter
+   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+   */
+  @DeleteMapping("/contentreferences/{contentReferenceId}/chapters/{chapterId}")
+  public ResponseEntity<Void> removeFromChapter(
+      @PathVariable final UUID contentReferenceId,
+      @PathVariable final UUID chapterId) {
+    log.debug("REST request to remove ContentReference: {} from Chapter: {}",
+        contentReferenceId, chapterId);
+    contentReferenceService.removeFromChapter(contentReferenceId, chapterId);
+    return ResponseEntity.noContent().headers(HeaderUtil
+        .createEntityDeletionAlert(applicationName, true,
+            ENTITY_NAME,
+            contentReferenceId.toString())).build();
   }
 }
