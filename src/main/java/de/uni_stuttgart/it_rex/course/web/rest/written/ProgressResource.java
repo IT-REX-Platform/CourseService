@@ -1,6 +1,5 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentProgressTrackerDTO;
@@ -8,7 +7,6 @@ import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceD
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.service.written.ProgressTrackingService;
-import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -18,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -88,7 +87,7 @@ public class ProgressResource {
 
         UUID userId = RexAuthz.getUserId();
         CourseProgressTrackerDTO progress =
-            progressTrackingService.findCourseProgress(courseId, userId);
+            progressTrackingService.findOrCreateCourseProgressTracker(courseId, userId);
         return ResponseUtil.wrapOrNotFound(Optional.of(progress));
     }
 
@@ -102,8 +101,9 @@ public class ProgressResource {
      */
     @PostMapping("/content/")
     public ResponseEntity<ContentProgressTrackerDTO> createContentProgress(
-        @RequestBody ContentReferenceDTO contentReferenceDTO
-    ) {
+        @RequestBody ContentReferenceDTO contentReferenceDTO,
+        @RequestParam UUID courseTrackerId
+    ) throws URISyntaxException {
         log.debug("REST request to post Content Progress for Content Item : {}", contentReferenceDTO.getContentId());
 
         //if (contentReferenceDTO.getId() == null) {
@@ -112,7 +112,8 @@ public class ProgressResource {
 
         UUID userId = RexAuthz.getUserId();
         ContentProgressTrackerDTO result =
-            ProgressTrackingService.startContentProgressTracking(contentReferenceDTO.getId(), userId);
+            progressTrackingService.startContentProgressTracking(contentReferenceDTO, userId,
+                courseTrackerId);
 
         return ResponseEntity.created(new URI("/api/progress/content/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName,
@@ -132,20 +133,20 @@ public class ProgressResource {
      */
     @PutMapping("/content/{trackerId}/progress")
     public ResponseEntity<ContentProgressTrackerDTO> updateContentProgress(
-        @PathVariable final UUID trackerId) {
+        @PathVariable final UUID trackerId,
+        @RequestParam final float progress) {
         log.debug("REST request to put Content Progress for Content Item : {}",
             trackerId);
 
         UUID userId = RexAuthz.getUserId();
-        ContentProgressTrackerDTO progress =
-            progressTrackingService.findContentProgress(trackerId, userId);
+        ContentProgressTrackerDTO contentProgressTrackerDTO =
+            progressTrackingService.updateContentProgress(trackerId, progress);
 
-        progressTrackingService.updateContentProgress(progress);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME_COURSEPT, progress.getId().toString()))
-            .body(progress);
+                true, ENTITY_NAME_COURSEPT, contentProgressTrackerDTO.getId().toString()))
+            .body(contentProgressTrackerDTO);
     }
 
     /**
@@ -165,14 +166,11 @@ public class ProgressResource {
             trackerId);
 
         UUID userId = RexAuthz.getUserId();
-        ContentProgressTrackerDTO state =
-            progressTrackingService.findContentProgress(trackerId, userId);
-
-        progressTrackingService.setContentStateAsComplete(state);
+        ContentProgressTrackerDTO contentProgressTrackerDTO = progressTrackingService.completeContentProgressTracker(trackerId);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME_COURSEPT, state.getId().toString()))
-            .body(state);
+                true, ENTITY_NAME_COURSEPT, contentProgressTrackerDTO.getId().toString()))
+            .body(contentProgressTrackerDTO);
     }
 }

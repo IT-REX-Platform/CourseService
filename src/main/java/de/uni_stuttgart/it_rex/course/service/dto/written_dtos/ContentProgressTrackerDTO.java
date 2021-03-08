@@ -2,11 +2,14 @@ package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.ContentProgressState;
 import java.util.Objects;
+import java.util.UUID;
 
 public class ContentProgressTrackerDTO {
 
+    private UUID id;
+
     /**
-     * Id of the content reference the represented tracker belongs to.
+     * The content reference the represented tracker belongs to.
      */
     private ContentReferenceDTO contentReference;
 
@@ -19,6 +22,14 @@ public class ContentProgressTrackerDTO {
      * Tracked Progress
      */
     private float progress;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     /**
      * Getter.

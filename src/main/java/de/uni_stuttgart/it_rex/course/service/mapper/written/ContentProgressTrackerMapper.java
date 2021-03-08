@@ -64,6 +64,7 @@ public abstract class ContentProgressTrackerMapper {
         final ContentProgressTrackerDTO trackerDTO =
             new ContentProgressTrackerDTO();
 
+        trackerDTO.setId(tracker.getId());
         trackerDTO.setContentReference(contentReferenceMapper.toDTO(tracker.getContentReference()));
         trackerDTO.setState(tracker.getState());
         trackerDTO.setProgress(tracker.getProgress());

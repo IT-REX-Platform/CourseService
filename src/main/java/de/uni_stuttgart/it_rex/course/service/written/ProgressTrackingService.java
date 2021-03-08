@@ -198,27 +198,26 @@ public class ProgressTrackingService {
     }
 
     /**
-     * Retrieve or create a ContentProgressTracker for a user and a content reference.
-     * If the progress is not yet tracked for the current user, create a tracker.
+     * Retrieve a ContentProgressTracker for a user and a content reference.
      *
      * @param contentReference
      * @param userId
      * @return a tracker
      */
-    public ContentProgressTrackerDTO findOrCreateContentProgressTracker(
-        final ContentReference contentReference, final UUID userId) {
-
-        Optional<ContentProgressTracker> result =
-            contentProgressTrackerRepository
-                .findOne(getContentProgressSpec(contentReference, userId));
-        LOGGER.debug("Result: {}", result);
-
-        if (result.isEmpty()) {
-            return startContentProgressTracking(contentReference, userId);
-        }
-
-        return contentProgressTrackerMapper.toDTO(result.get());
-    }
+//    public Optional<ContentProgressTrackerDTO> findContentProgressTracker(
+//        final ContentReference contentReference, final UUID userId) {
+//
+//        Optional<ContentProgressTracker> result =
+//            contentProgressTrackerRepository
+//                .findOne(getContentProgressSpec(contentReference, userId));
+//        LOGGER.debug("Result: {}", result);
+//
+//        if (result.isEmpty()) {
+//            return Optional.empty();
+//        }
+//
+//        return Optional.of(contentProgressTrackerMapper.toDTO(result.get()));
+//    }
 
     /**
      * Method generates a specification that describes our desired tracker
