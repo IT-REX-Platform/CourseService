@@ -3379,7 +3379,7 @@
 												"method": "GET",
 												"header": [],
 												"url": {
-													"raw": "{{baseUrl}}/api/progress/course/:id",
+													"raw": "{{baseUrl}}/api/progress/courses/:id",
 													"host": [
 														"{{baseUrl}}"
 													],
