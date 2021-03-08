@@ -177,6 +177,17 @@ public class ProgressTrackingService {
     }
 
     /**
+     * Get ContentTracker by id
+     *
+     * @param trackerId id of ContentTracker
+     * @return the ContentTracker
+     */
+    public Optional<ContentProgressTrackerDTO> findContentProgressTracker(final UUID trackerId) {
+        LOGGER.debug("Request to get ContentTracker : {}", trackerId);
+        return contentProgressTrackerMapper.toDTO(contentProgressTrackerRepository.findById(trackerId));
+    }
+
+    /**
      * Find a DTO for the course-wide progress of the current user.
      * If the course progress is not yet tracked for the current user, create a tracker.
      *
