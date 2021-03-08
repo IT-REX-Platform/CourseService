@@ -38,6 +38,10 @@ public class ContentProgressTracker implements Serializable {
     @Column(name="state")
     private ContentProgressState state;
 
+    /**
+     * A generic field for storing the progress of an individual content reference.
+     * Might be a percentage for s.th., the seconds of a video, ...
+     */
     @Column(name="progress")
     private float progress;
 
@@ -59,11 +63,12 @@ public class ContentProgressTracker implements Serializable {
      * @param userId
      * @param contentReference
      */
-    public ContentProgressTracker(final UUID userId, final ContentReference contentReference){
+    public ContentProgressTracker(final UUID userId, final ContentReference contentReference, final CourseProgressTracker courseProgressTracker){
         this.userId = userId;
         this.contentReference = contentReference;
         this.state = ContentProgressState.STARTED;
         this.progress = 0.0f;
+        this.courseProgressTracker = courseProgressTracker;
     }
 
     public UUID getId() {

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
+import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -111,18 +112,68 @@ public class ProgressTrackingService {
      *
      * To be used only once per user to create a tracker for the content reference.
      *
-     * @param contentReference
-     * @param userId
+     * As all ContentProgressTrackers logically belong to one @{@link CourseProgressTracker} as all contents
+     * belong to a course, from a business logic perspective, the relationship is already implicitly defined.
+     * However, for fast access from a @{@link CourseProgressTracker} to all its ContentProgressTrackers, we
+     * explicitly store this relationship.
+     *
+     * @param contentReferenceDTO the content reference to track
+     * @param userId the user to start the tracking for
+     * @param courseProgressTrackerId the ID of the course progress tracker that the content reference belongs to,
+     *                                must be a valid and existing ID
      * @return the created {@link de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO}
      */
-    public ContentProgressTrackerDTO startContentProgressTracking(final ContentReference contentReference, final UUID userId){
-        LOGGER.debug("Start course progress tracking for user {} regarding content ref {}.", userId, contentReference);
+    public ContentProgressTrackerDTO startContentProgressTracking(final ContentReferenceDTO contentReferenceDTO, final UUID userId, final UUID courseProgressTrackerId){
+        Optional<CourseProgressTracker> courseProgressTrackerOptional = courseProgressTrackerRepository.findById(courseProgressTrackerId);
+        if (courseProgressTrackerOptional.isEmpty()){
+            throw new NotFoundException(String.format("There is no ContentProgressTracker with the id %s", contentReferenceDTO));
+        }
+        CourseProgressTracker courseProgressTracker = courseProgressTrackerOptional.get();
 
-        ContentProgressTracker newTracker = new ContentProgressTracker(userId, contentReference);
+        LOGGER.debug("Start course progress tracking for user {} regarding content ref {}.", userId, contentReferenceDTO);
+
+        ContentReference contentReference = contentReferenceMapper.toEntity(contentReferenceDTO);
+
+        ContentProgressTracker newTracker = new ContentProgressTracker(userId, contentReference, courseProgressTracker);
         contentProgressTrackerRepository.saveAndFlush(newTracker);
         LOGGER.debug("Created new ContentProgressTracker: {}.", newTracker);
 
         return contentProgressTrackerMapper.toDTO(newTracker);
+    }
+
+    /**
+     * Update the state of a content progress tracker to "COMPLETED".
+     *
+     * @param trackerId the tracker to complete, is required to be a valid, existing trackerId.
+     */
+    public ContentProgressTrackerDTO completeContentProgressTracker(final UUID trackerId){
+        Optional<ContentProgressTracker> trackerOptional = contentProgressTrackerRepository.findById(trackerId);
+        if (trackerOptional.isPresent()){
+            ContentProgressTracker tracker = trackerOptional.get();
+            tracker.complete();
+            contentProgressTrackerRepository.saveAndFlush(tracker);
+            return contentProgressTrackerMapper.toDTO(tracker);
+        } else {
+            throw new NotFoundException(String.format("The given tracker id %s does not exist!", trackerId));
+        }
+    }
+
+    /**
+     * Update the progress of a content progress tracker.
+     *
+     * @param trackerId the tracker to update, is required to be a valid, existing trackerId.
+     * @param progress the progress to store
+     */
+    public ContentProgressTrackerDTO updateContentProgress(final UUID trackerId, final float progress){
+        Optional<ContentProgressTracker> trackerOptional = contentProgressTrackerRepository.findById(trackerId);
+        if (trackerOptional.isPresent()){
+            ContentProgressTracker tracker = trackerOptional.get();
+            tracker.setProgress(progress);
+            contentProgressTrackerRepository.saveAndFlush(tracker);
+            return contentProgressTrackerMapper.toDTO(tracker);
+        } else {
+            throw new NotFoundException(String.format("The given tracker id %s does not exist!", trackerId));
+        }
     }
 
     /**
@@ -133,7 +184,7 @@ public class ProgressTrackingService {
      * @param userId id of user
      * @return Progress DTO for the course
      */
-    public CourseProgressTrackerDTO findCourseProgressInRepositoryOrStartFresh(
+    public CourseProgressTrackerDTO findOrCreateCourseProgressTracker(
         final UUID courseId, final UUID userId) {
 
         Optional<CourseProgressTracker> result = courseProgressTrackerRepository.findOne(getCourseProgressSpec(courseId, userId));
@@ -154,7 +205,7 @@ public class ProgressTrackingService {
      * @param userId
      * @return a tracker
      */
-    public ContentProgressTrackerDTO findContentProgressInRepositoryOrStartFresh(
+    public ContentProgressTrackerDTO findOrCreateContentProgressTracker(
         final ContentReference contentReference, final UUID userId) {
 
         Optional<ContentProgressTracker> result =
