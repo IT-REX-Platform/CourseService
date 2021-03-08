@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 
 import java.time.LocalDate;
@@ -17,6 +18,11 @@ public class CourseDTO {
    * Name.
    */
   private String name;
+
+  /**
+   * courseRole.
+   */
+  private COURSEROLE courseRole;
 
   /**
    * Start date.
@@ -87,6 +93,24 @@ public class CourseDTO {
    */
   public void setName(final String newName) {
     this.name = newName;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the courseRole
+   */
+  public COURSEROLE getCourseRole() {
+    return courseRole;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newCourseRole the courseRole
+   */
+  public void setCourseRole(final COURSEROLE newCourseRole) {
+    this.courseRole = newCourseRole;
   }
 
   /**
@@ -214,6 +238,7 @@ public class CourseDTO {
     CourseDTO course = (CourseDTO) o;
     return Objects.equals(getId(), course.getId())
         && Objects.equals(getName(), course.getName())
+        && Objects.equals(getCourseRole(), course.getCourseRole())
         && Objects.equals(getStartDate(), course.getStartDate())
         && Objects.equals(getEndDate(), course.getEndDate())
         && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
@@ -231,6 +256,7 @@ public class CourseDTO {
   public int hashCode() {
     return Objects.hash(getId(),
         getName(),
+        getCourseRole(),
         getStartDate(),
         getEndDate(),
         getMaxFoodSum(),
@@ -248,6 +274,7 @@ public class CourseDTO {
     return "CourseDTO{"
         + "id=" + id
         + ", name='" + name + '\''
+        + ", courseRole='" + courseRole + '\''
         + ", startDate=" + startDate
         + ", endDate=" + endDate
         + ", maxFoodSum=" + maxFoodSum

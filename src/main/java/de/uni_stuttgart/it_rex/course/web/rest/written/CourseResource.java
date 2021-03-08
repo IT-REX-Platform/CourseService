@@ -1,6 +1,7 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
@@ -148,7 +149,7 @@ public class CourseResource {
     }
 
     /**
-     * Makes the currently logged in user join a course by id.
+     * {@code POST  /courses/:id/join} : Makes the currently logged in user join a course by id.
      *
      * @param id the id of the course to join.
      * @return an OK request for now.
@@ -163,7 +164,7 @@ public class CourseResource {
     }
 
     /**
-     * Makes the currently logged in user leave a course by id.
+     * {@code POST  /courses/:id/leave} : Makes the currently logged in user leave a course by id.
      *
      * @param id the id of the course to leave.
      * @return an OK request for now.
@@ -203,6 +204,44 @@ public class CourseResource {
     }
 
     /**
+     * {@code GET  /courses/published} : get all published courses.
+     * Optionally only select active courses.
+     *
+     * @param activeOnly Set true to only include active courses (current time
+     *                   between course start and end date + offset).
+     * @return A list of courses that fit the given parameters.
+     */
+    @GetMapping("/courses/published")
+    public List<CourseDTO> getAllPublishedCourses(
+        @RequestParam("activeOnly") final Optional<Boolean> activeOnly) {
+        log.debug("REST request to get all published Courses");
+        return courseService.findAll(Optional.of(PUBLISHSTATE.PUBLISHED), activeOnly);
+    }
+
+    /**
+     * {@code GET  /courses/user} : get all user courses.
+     * Filters them by the publish state if it exists.
+     * Optionally only select active courses. <p>
+     * additional filters: <p>
+     * - remove if {@link COURSEROLE#PARTICIPANT} && unpublished
+     *
+     * @param publishState Publish state of course.
+     * @param activeOnly Set true to only include active courses (current time
+     *                   between course start and end date + offset).
+     * @return A list of courses that fit the given parameters.
+     * 
+     * 
+     * @return
+     */
+    @GetMapping("/courses/user")
+    public List<CourseDTO> getUserCourses(
+        @RequestParam("publishState") final Optional<PUBLISHSTATE> publishState,
+        @RequestParam("activeOnly") final Optional<Boolean> activeOnly) {
+            log.debug("REST request to get all user Courses");
+        return courseService.findUserCourses(publishState, activeOnly);
+    }
+
+    /**
      * {@code GET  /courses} : get all the courses.
      * Filters them by the publish state if it exists.
      * Optionally only select active courses.
@@ -213,11 +252,12 @@ public class CourseResource {
      * @return A list of courses that fit the given parameters.
      */
     @GetMapping("/courses")
+    // @PreAuthorize("hasRole('ROLE_ITREX_ADMIN')") // TODO add later
     public List<CourseDTO> getAllCourses(
         @RequestParam("publishState") final Optional<PUBLISHSTATE>
             publishState,
         @RequestParam("activeOnly") final Optional<Boolean> activeOnly) {
-        log.debug("REST request to get filtered Courses");
+        log.debug("REST request to get all Courses");
         return courseService.findAll(publishState, activeOnly);
     }
 }
