@@ -31,8 +31,8 @@ class ContentReferenceMapperIT {
 
     ContentReference expected = new ContentReference();
     expected.setId(update.getId());
-    expected.setStartDate(toUpdate.getStartDate());
-    expected.setEndDate(toUpdate.getEndDate());
+  //  expected.setStartDate(toUpdate.getStartDate());
+  //  expected.setEndDate(toUpdate.getEndDate());
     expected.setContentId(toUpdate.getContentId());
 
     contentReferenceMapper.updateContentReferenceFromContentReferenceDTO(update, toUpdate);
@@ -46,8 +46,8 @@ class ContentReferenceMapperIT {
     ContentReferenceDTO expected = new ContentReferenceDTO();
 
     expected.setId(contentReference.getId());
-    expected.setStartDate(contentReference.getStartDate());
-    expected.setEndDate(contentReference.getEndDate());
+   //expected.setStartDate(contentReference.getStartDate());
+   //expected.setEndDate(contentReference.getEndDate());
     expected.setContentId(contentReference.getContentId());
 
     ContentReferenceDTO result = contentReferenceMapper.toDTO(contentReference);
@@ -61,8 +61,8 @@ class ContentReferenceMapperIT {
     ContentReference expected = new ContentReference();
 
     expected.setId(contentReferenceDTO.getId());
-    expected.setStartDate(contentReferenceDTO.getStartDate());
-    expected.setEndDate(contentReferenceDTO.getEndDate());
+  //  expected.setStartDate(contentReferenceDTO.getStartDate());
+  //  expected.setEndDate(contentReferenceDTO.getEndDate());
     expected.setContentId(contentReferenceDTO.getContentId());
 
     ContentReference result = contentReferenceMapper.toEntity(contentReferenceDTO);

@@ -2,7 +2,6 @@ package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -64,11 +63,6 @@ public class CourseDTO {
      * Time Period items.
      */
     private List<ChapterDTO> chapters;
-
-    /**
-     * Time Period items.
-     */
-    private List<ContentReferenceDTO> contentReferences;
 
     /**
      * Getter.
@@ -278,24 +272,6 @@ public class CourseDTO {
         + ", publishState=" + publishState
         + '}';
   }
-
-    /**
-     * Getter.
-     *
-     * @return the content references
-     */
-    public List<ContentReferenceDTO> getContentReferences() {
-        return contentReferences;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newContentReferences the content references
-     */
-    public void setContentReferences(final List<ContentReferenceDTO> newContentReferences) {
-        this.contentReferences = newContentReferences;
-    }
 
     /**
      * Equals method.

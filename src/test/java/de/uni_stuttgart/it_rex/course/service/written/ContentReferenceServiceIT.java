@@ -57,7 +57,7 @@ class ContentReferenceServiceIT {
   @Test
   void save() {
     final ContentReferenceDTO contentReferenceDTO = ContentReferenceUtil.createContentReferenceDTO();
-    contentReferenceDTO.setCourseId(THE_COURSE.getId());
+    contentReferenceDTO.setChapterId(THE_COURSE.getId());
     contentReferenceService.save(contentReferenceDTO);
     final ContentReferenceDTO result = contentReferenceService.findAll().get(0);
     contentReferenceDTO.setId(result.getId());
@@ -71,7 +71,7 @@ class ContentReferenceServiceIT {
     final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setCourseId(THE_COURSE.getId());
+      contentReferenceDTO.setChapterId(THE_COURSE.getId());
       contentReferenceService.save(contentReferenceDTO);
     });
 
@@ -84,7 +84,7 @@ class ContentReferenceServiceIT {
     final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setCourseId(THE_COURSE.getId());
+      contentReferenceDTO.setChapterId(THE_COURSE.getId());
       contentReferenceService.save(contentReferenceDTO);
     });
 
@@ -100,7 +100,7 @@ class ContentReferenceServiceIT {
     final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setCourseId(THE_COURSE.getId());
+      contentReferenceDTO.setChapterId(THE_COURSE.getId());
       contentReferenceService.save(contentReferenceDTO);
     });
 
@@ -115,24 +115,24 @@ class ContentReferenceServiceIT {
   @Test
   void patch() {
     final ContentReferenceDTO contentReferenceDTO = ContentReferenceUtil.createContentReferenceDTO();
-    contentReferenceDTO.setCourseId(THE_COURSE.getId());
+    contentReferenceDTO.setChapterId(THE_COURSE.getId());
     final UUID theId = contentReferenceService.save(contentReferenceDTO).getId();
 
     final ContentReferenceDTO patch = new ContentReferenceDTO();
     patch.setId(theId);
-    patch.setEndDate(NEW_DATE);
+ //   patch.setEndDate(NEW_DATE);
 
     contentReferenceService.patch(patch);
 
     final ContentReferenceDTO expected = new ContentReferenceDTO();
 
     expected.setId(theId);
-    expected.setCourseId(contentReferenceDTO.getCourseId());
-    expected.setStartDate(contentReferenceDTO.getStartDate());
+    expected.setChapterId(contentReferenceDTO.getChapterId());
+   // expected.setStartDate(contentReferenceDTO.getStartDate());
     expected.setContentId(contentReferenceDTO.getContentId());
-    expected.setChapterIds(Collections.emptySet());
-    expected.setTimePeriodIds(Collections.emptySet());
-    expected.setEndDate(NEW_DATE);
+ //  expected.setChapterIds(Collections.emptySet());
+ //  expected.setTimePeriodIds(Collections.emptySet());
+ //  expected.setEndDate(NEW_DATE);
 
     final ContentReferenceDTO result = contentReferenceService.findAll().get(0);
 

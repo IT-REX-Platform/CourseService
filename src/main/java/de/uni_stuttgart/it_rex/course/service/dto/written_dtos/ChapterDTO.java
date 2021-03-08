@@ -1,6 +1,5 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,9 +11,9 @@ public class ChapterDTO {
   private UUID id;
 
   /**
-   * Title of the chapter.
+   * Name of the chapter.
    */
-  private String title;
+  private String name;
 
   /**
    * Course id.
@@ -22,19 +21,9 @@ public class ChapterDTO {
   private UUID courseId;
 
   /**
-   * Start date of the Chapter.
-   */
-  private LocalDate startDate;
-
-  /**
-   * End date of the Chapter.
-   */
-  private LocalDate endDate;
-
-  /**
    * Content Reference items.
    */
-  private List<UUID> contentReferenceIds;
+  private List<ContentReferenceDTO> contentReferences;
 
   /**
    * Equals method.
@@ -52,12 +41,8 @@ public class ChapterDTO {
     }
     final ChapterDTO chapterDTO = (ChapterDTO) o;
     return Objects.equals(getId(), chapterDTO.getId())
-        && Objects.equals(getTitle(), chapterDTO.getTitle())
-        && Objects.equals(getCourseId(), chapterDTO.getCourseId())
-        && Objects.equals(getStartDate(), chapterDTO.getStartDate())
-        && Objects.equals(getEndDate(), chapterDTO.getEndDate())
-        && Objects.equals(
-        getContentReferenceIds(), chapterDTO.getContentReferenceIds());
+        && Objects.equals(getName(), chapterDTO.getName())
+        && Objects.equals(getCourseId(), chapterDTO.getCourseId());
   }
 
   /**
@@ -68,11 +53,8 @@ public class ChapterDTO {
   @Override
   public int hashCode() {
     return Objects.hash(getId(),
-        getTitle(),
-        getCourseId(),
-        getStartDate(),
-        getEndDate(),
-        getContentReferenceIds());
+        getName(),
+        getCourseId());
   }
 
   /**
@@ -83,10 +65,8 @@ public class ChapterDTO {
   @Override
   public String toString() {
     return "ChapterDTO{" + "id=" + id
-        + ", title='" + title + '\''
-        + ", courseId=" + courseId
-        + ", startDate=" + startDate
-        + ", endDate=" + endDate + '}';
+        + ", title='" + name + '\''
+        + ", courseId=" + courseId + '}';
   }
 
   /**
@@ -110,19 +90,19 @@ public class ChapterDTO {
   /**
    * Getter.
    *
-   * @return the title
+   * @return the name
    */
-  public String getTitle() {
-    return title;
+  public String getName() {
+    return name;
   }
 
   /**
    * Setter.
    *
-   * @param newTitle the title
+   * @param newTitle the name
    */
-  public void setTitle(final String newTitle) {
-    this.title = newTitle;
+  public void setName(final String newTitle) {
+    this.name = newTitle;
   }
 
   /**
@@ -143,57 +123,11 @@ public class ChapterDTO {
     this.courseId = newCourseId;
   }
 
-  /**
-   * Getter.
-   *
-   * @return the start date.
-   */
-  public LocalDate getStartDate() {
-    return startDate;
+  public List<ContentReferenceDTO> getContentReferences() {
+    return contentReferences;
   }
 
-  /**
-   * Setter.
-   *
-   * @param newStartDate the start date.
-   */
-  public void setStartDate(final LocalDate newStartDate) {
-    this.startDate = newStartDate;
-  }
-
-  /**
-   * Getter.
-   *
-   * @return the end date.
-   */
-  public LocalDate getEndDate() {
-    return endDate;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param newEndDate the end date.
-   */
-  public void setEndDate(final LocalDate newEndDate) {
-    this.endDate = newEndDate;
-  }
-
-  /**
-   * Getter.
-   *
-   * @return the content ids.
-   */
-  public List<UUID> getContentReferenceIds() {
-    return contentReferenceIds;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param newContents the content ids.
-   */
-  public void setContentReferenceIds(final List<UUID> newContents) {
-    this.contentReferenceIds = newContents;
+  public void setContentReferences(final List<ContentReferenceDTO> contentReferences) {
+    this.contentReferences = contentReferences;
   }
 }

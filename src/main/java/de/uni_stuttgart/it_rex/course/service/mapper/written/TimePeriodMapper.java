@@ -4,9 +4,10 @@ import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
-import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,17 +19,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+    uses = ContentReferenceMapper.class,
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class TimePeriodMapper {
-
-    @Autowired
-    private CourseRepository courseRepository;
 
     @Autowired
     private ContentReferenceRepository contentReferenceRepository;
 
     @Autowired
-    private TimePeriodRepository timePeriodRepository;
+    private CourseRepository courseRepository;
 
     /**
      * Updates an entity from a DTO.
@@ -44,42 +44,21 @@ public abstract class TimePeriodMapper {
         TimePeriodDTO update,
         @MappingTarget TimePeriod toUpdate);
 
-    public TimePeriod updateOrCreateFromDTO(final TimePeriodDTO update) {
-        final Optional<TimePeriod> contentReferenceOptional
-            = timePeriodRepository.findById(update.getId());
+    @Mapping(target = "courseId", source = "course.id")
+    @Mapping(target = "contentReferenceIds", ignore = true)
+    public abstract TimePeriodDTO toDTO(final TimePeriod timePeriod);
 
-        TimePeriod toUpdate = new TimePeriod();
-        if (contentReferenceOptional.isPresent()) {
-            toUpdate = contentReferenceOptional.get();
-        }
-        updateTimePeriodFromTimePeriodDTO(update, toUpdate);
-        return toUpdate;
+    @AfterMapping
+    protected void setContentReferenceIds(
+        final TimePeriod timePeriod,
+        @MappingTarget TimePeriodDTO timePeriodDTO) {
+        timePeriodDTO.setContentReferenceIds(timePeriod.getContentReferences()
+            .stream().map(ContentReference::getId)
+            .collect(Collectors.toList()));
     }
 
-    public TimePeriodDTO toDTO(final TimePeriod timePeriod) {
-        final TimePeriodDTO timePeriodDTO = new TimePeriodDTO();
-        timePeriodDTO.setId(timePeriod.getId());
-        timePeriodDTO.setStartDate(timePeriod.getStartDate());
-        timePeriodDTO.setEndDate(timePeriod.getEndDate());
-
-        if (timePeriod.getCourse() != null) {
-            timePeriodDTO.setCourseId(timePeriod.getCourse().getId());
-        }
-
-        timePeriodDTO.setContentReferenceIds(
-            timePeriod.getContentReferences().stream()
-                .map(ContentReference::getId).collect(
-                Collectors.toList())
-        );
-
-        return timePeriodDTO;
-    }
-
-    public List<TimePeriodDTO> toDTO
-        (final Collection<TimePeriod> timePeriods) {
-        return timePeriods.stream().map(this::toDTO)
-            .collect(Collectors.toList());
-    }
+    public abstract List<TimePeriodDTO> toDTO(
+        final Collection<TimePeriod> timePeriods);
 
     /**
      * Converts an optional entity to a optional DTO.
@@ -95,29 +74,23 @@ public abstract class TimePeriodMapper {
         return Optional.of(toDTO(timePeriod.get()));
     }
 
-    public TimePeriod toEntity(final TimePeriodDTO timePeriodDTO) {
-        TimePeriod timePeriod = new TimePeriod();
-        timePeriod.setId(timePeriodDTO.getId());
-        timePeriod.setStartDate(timePeriodDTO.getStartDate());
-        timePeriod.setEndDate(timePeriodDTO.getEndDate());
+    @Mapping(target = "course", ignore = true)
+    @Mapping(target = "contentReferences", ignore = true)
+    public abstract TimePeriod toEntity(final TimePeriodDTO timePeriodDTO);
 
+    @AfterMapping
+    protected void setMappings(
+        TimePeriodDTO timePeriodDTO, @MappingTarget TimePeriod timePeriod) {
         if (timePeriodDTO.getCourseId() != null) {
             courseRepository.findById(timePeriodDTO.getCourseId())
                 .ifPresent(timePeriod::setCourse);
         }
         if (timePeriodDTO.getContentReferenceIds() != null) {
-            final List<ContentReference> contentReferences =
-                contentReferenceRepository.findAllById(
-                    timePeriodDTO.getContentReferenceIds());
-            timePeriod.setContentReferences(contentReferences);
+            timePeriod.setContentReferences(contentReferenceRepository
+                .findAllById(timePeriodDTO.getContentReferenceIds()));
         }
-
-        return timePeriod;
     }
 
-    public List<TimePeriod> toEntity(final List<TimePeriodDTO> timePeriodDTOs) {
-        return timePeriodDTOs.stream()
-            .map(this::toEntity)
-            .collect(Collectors.toList());
-    }
+    public abstract List<TimePeriod> toEntity(
+        final List<TimePeriodDTO> timePeriodDTOs);
 }

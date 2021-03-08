@@ -21,9 +21,9 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -39,9 +39,8 @@ public class Course implements Serializable {
      * Constructor.
      */
     public Course() {
-        this.timePeriods = new HashSet<>();
-        this.chapters = new HashSet<>();
-        this.contentReferences = new HashSet<>();
+        this.timePeriods = new ArrayList<>();
+        this.chapters = new ArrayList<>();
     }
 
     /**
@@ -109,7 +108,7 @@ public class Course implements Serializable {
         orphanRemoval = true,
         mappedBy = "course")
     @OrderBy("startDate")
-    private final Set<TimePeriod> timePeriods;
+    private final List<TimePeriod> timePeriods;
 
     /**
      * Chapters.
@@ -118,16 +117,7 @@ public class Course implements Serializable {
         fetch = FetchType.LAZY,
         orphanRemoval = true,
         mappedBy = "course")
-    private final Set<Chapter> chapters;
-
-    /**
-     * References to Contents.
-     */
-    @OneToMany(cascade = CascadeType.ALL,
-        fetch = FetchType.LAZY,
-        orphanRemoval = true,
-        mappedBy = "course")
-    private final Set<ContentReference> contentReferences;
+    private final List<Chapter> chapters;
 
     /**
      * Getter.
@@ -289,7 +279,7 @@ public class Course implements Serializable {
      * @param newTimePeriods the time periods
      */
     public void setTimePeriods(final Collection<TimePeriod> newTimePeriods) {
-        getTimePeriods().clear();
+        timePeriods.clear();
         addTimePeriods(newTimePeriods);
     }
 
@@ -299,7 +289,7 @@ public class Course implements Serializable {
      * @param newTimePeriod the time period
      */
     public void addTimePeriod(final TimePeriod newTimePeriod) {
-        getTimePeriods().add(newTimePeriod);
+        timePeriods.add(newTimePeriod);
         newTimePeriod.course = this;
     }
 
@@ -309,7 +299,7 @@ public class Course implements Serializable {
      * @param newTimePeriods the chapterIndexes
      */
     public void addTimePeriods(final Collection<TimePeriod> newTimePeriods) {
-        getTimePeriods().addAll(newTimePeriods.stream().map(newTimePeriod -> {
+        timePeriods.addAll(newTimePeriods.stream().map(newTimePeriod -> {
             newTimePeriod.course = this;
             return newTimePeriod;
         }).collect(Collectors.toList()));
@@ -322,7 +312,7 @@ public class Course implements Serializable {
      */
     public void removeTimePeriod(final TimePeriod newTimePeriod) {
         newTimePeriod.course = null;
-        getTimePeriods().remove(newTimePeriod);
+        timePeriods.remove(newTimePeriod);
     }
 
     /**
@@ -340,7 +330,7 @@ public class Course implements Serializable {
      * @param newChapters the chapters
      */
     public void setChapters(final Collection<Chapter> newChapters) {
-        getChapters().clear();
+        chapters.clear();
         addChapters(newChapters);
     }
 
@@ -350,7 +340,7 @@ public class Course implements Serializable {
      * @param newChapter the chapter
      */
     public void addChapter(final Chapter newChapter) {
-        getChapters().add(newChapter);
+        chapters.add(newChapter);
         newChapter.course = this;
     }
 
@@ -360,7 +350,7 @@ public class Course implements Serializable {
      * @param newChapters the chapters
      */
     public void addChapters(final Collection<Chapter> newChapters) {
-        getChapters().addAll(newChapters.stream().map(newChapter -> {
+        chapters.addAll(newChapters.stream().map(newChapter -> {
             newChapter.course = this;
             return newChapter;
         }).collect(Collectors.toList()));
@@ -373,58 +363,7 @@ public class Course implements Serializable {
      */
     public void removeChapter(final Chapter newChapter) {
         newChapter.course = null;
-        this.chapters.remove(newChapter);
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the content references
-     */
-    public Collection<ContentReference> getContentReferences() {
-        return contentReferences;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newContentReferences the content references
-     */
-    public void setContentReferences(final Collection<ContentReference> newContentReferences) {
-        getContentReferences().clear();
-        addContentReferences(newContentReferences);
-    }
-
-    /**
-     * Adds a Content Reference.
-     *
-     * @param newContentReference the content reference
-     */
-    public void addContentReference(final ContentReference newContentReference) {
-        getContentReferences().add(newContentReference);
-        newContentReference.course = this;
-    }
-
-    /**
-     * Adds a set of Content References.
-     *
-     * @param newContentReferences the content references
-     */
-    public void addContentReferences(final Collection<ContentReference> newContentReferences) {
-        getContentReferences().addAll(newContentReferences.stream().map(newContentReference -> {
-            newContentReference.course = this;
-            return newContentReference;
-        }).collect(Collectors.toList()));
-    }
-
-    /**
-     * Removes a Content Reference.
-     *
-     * @param newContentReference the content references
-     */
-    public void removeContentReference(final ContentReference newContentReference) {
-        newContentReference.course = null;
-        getContentReferences().remove(newContentReference);
+        chapters.remove(newChapter);
     }
 
     /**

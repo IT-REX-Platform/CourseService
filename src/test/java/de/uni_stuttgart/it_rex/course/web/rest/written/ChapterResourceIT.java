@@ -105,9 +105,9 @@ public class ChapterResourceIT {
    */
   public static Chapter createFirstChapter(EntityManager em) {
     Chapter chapter = new Chapter();
-    chapter.setTitle(FIRST_TITLE);
-    chapter.setStartDate(FIRST_START_DATE);
-    chapter.setEndDate(FIRST_END_DATE);
+    chapter.setName(FIRST_TITLE);
+  //  chapter.setStartDate(FIRST_START_DATE);
+  //  chapter.setEndDate(FIRST_END_DATE);
     return chapter;
   }
 
@@ -119,9 +119,9 @@ public class ChapterResourceIT {
    */
   public static Chapter createSecondChapter(EntityManager em) {
     Chapter chapter = new Chapter();
-    chapter.setTitle(SECOND_TITLE);
-    chapter.setStartDate(SECOND_START_DATE);
-    chapter.setEndDate(SECOND_END_DATE);
+    chapter.setName(SECOND_TITLE);
+  //  chapter.setStartDate(SECOND_START_DATE);
+  //  chapter.setEndDate(SECOND_END_DATE);
     return chapter;
   }
 
@@ -133,9 +133,9 @@ public class ChapterResourceIT {
    */
   public static Chapter createThirdChapter(EntityManager em) {
     Chapter chapter = new Chapter();
-    chapter.setTitle(THIRD_TITLE);
-    chapter.setStartDate(THIRD_START_DATE);
-    chapter.setEndDate(THIRD_END_DATE);
+    chapter.setName(THIRD_TITLE);
+ //  chapter.setStartDate(THIRD_START_DATE);
+ //  chapter.setEndDate(THIRD_END_DATE);
     return chapter;
   }
 
@@ -147,9 +147,9 @@ public class ChapterResourceIT {
    */
   public static Chapter createUpdatedEntity(EntityManager em) {
     Chapter chapter = new Chapter();
-    chapter.setTitle(SECOND_TITLE);
-    chapter.setStartDate(SECOND_START_DATE);
-    chapter.setEndDate(SECOND_END_DATE);
+    chapter.setName(SECOND_TITLE);
+  // chapter.setStartDate(SECOND_START_DATE);
+  // chapter.setEndDate(SECOND_END_DATE);
     return chapter;
   }
 
@@ -184,9 +184,9 @@ public class ChapterResourceIT {
     List<Chapter> chapterList = chapterRepository.findAll();
     assertThat(chapterList).hasSize(databaseSizeBeforeCreate + 1);
     Chapter testChapter = chapterList.get(chapterList.size() - 1);
-    assertEquals(FIRST_TITLE, testChapter.getTitle());
-    assertEquals(FIRST_START_DATE, testChapter.getStartDate());
-    assertEquals(FIRST_END_DATE, testChapter.getEndDate());
+    assertEquals(FIRST_TITLE, testChapter.getName());
+  // assertEquals(FIRST_START_DATE, testChapter.getStartDate());
+  // assertEquals(FIRST_END_DATE, testChapter.getEndDate());
   }
 
   @Test
@@ -262,9 +262,9 @@ public class ChapterResourceIT {
     // Disconnect from session so that the updates on updatedChapter are not directly saved in db
     em.detach(updatedChapter);
 
-    updatedChapter.setTitle(SECOND_TITLE);
-    updatedChapter.setStartDate(SECOND_START_DATE);
-    updatedChapter.setEndDate(SECOND_END_DATE);
+    updatedChapter.setName(SECOND_TITLE);
+   // updatedChapter.setStartDate(SECOND_START_DATE);
+   // updatedChapter.setEndDate(SECOND_END_DATE);
 
     restChapterMockMvc.perform(put("/api/chapters").with(csrf())
         .contentType(MediaType.APPLICATION_JSON)
@@ -276,9 +276,9 @@ public class ChapterResourceIT {
     List<Chapter> chapterList = chapterRepository.findAll();
     assertThat(chapterList).hasSize(databaseSizeBeforeUpdate);
     Chapter testChapter = chapterList.get(chapterList.size() - 1);
-    assertThat(testChapter.getTitle()).isEqualTo(SECOND_TITLE);
-    assertThat(testChapter.getStartDate()).isEqualTo(SECOND_START_DATE);
-    assertThat(testChapter.getEndDate()).isEqualTo(SECOND_END_DATE);
+    assertThat(testChapter.getName()).isEqualTo(SECOND_TITLE);
+ //   assertThat(testChapter.getStartDate()).isEqualTo(SECOND_START_DATE);
+ //   assertThat(testChapter.getEndDate()).isEqualTo(SECOND_END_DATE);
   }
 
   @Test
@@ -321,24 +321,24 @@ public class ChapterResourceIT {
   @Transactional
   void patchChapter() throws URISyntaxException {
     Chapter toUpdate = new Chapter();
-    toUpdate.setTitle(FIRST_TITLE);
-    toUpdate.setStartDate(FIRST_START_DATE);
-    toUpdate.setEndDate(FIRST_END_DATE);
+    toUpdate.setName(FIRST_TITLE);
+  //  toUpdate.setStartDate(FIRST_START_DATE);
+  //  toUpdate.setEndDate(FIRST_END_DATE);
    // toUpdate.setContents(EXPECTED_CONTENTS);
 
     UUID id = chapterResource.createChapter(chapterMapper.toDTO(toUpdate)).getBody().getId();
     Chapter update = new Chapter();
     update.setId(id);
-    update.setTitle(SECOND_TITLE);
-    update.setEndDate(SECOND_END_DATE);
+    update.setName(SECOND_TITLE);
+   // update.setEndDate(SECOND_END_DATE);
 
     chapterResource.patchChapter(chapterMapper.toDTO(update));
 
     Chapter expected = new Chapter();
     expected.setId(id);
-    expected.setTitle(SECOND_TITLE);
-    expected.setStartDate(FIRST_START_DATE);
-    expected.setEndDate(SECOND_END_DATE);
+    expected.setName(SECOND_TITLE);
+  //  expected.setStartDate(FIRST_START_DATE);
+  //  expected.setEndDate(SECOND_END_DATE);
    // expected.setContents(EXPECTED_CONTENTS);
 
     ChapterDTO updated = chapterResource.getChapter(id).getBody();
@@ -346,16 +346,16 @@ public class ChapterResourceIT {
     expected.setId(id);
 
     assertEquals(updated.getId(), expected.getId());
-    assertEquals(updated.getTitle(), expected.getTitle());
-    assertEquals(updated.getStartDate(), expected.getStartDate());
-    assertEquals(updated.getEndDate(), expected.getEndDate());
+    assertEquals(updated.getName(), expected.getName());
+ //  assertEquals(updated.getStartDate(), expected.getStartDate());
+ //  assertEquals(updated.getEndDate(), expected.getEndDate());
   }
 
   @Test
   @Transactional
   void patchChapterWithoutId() {
     Chapter toUpdate = new Chapter();
-    toUpdate.setTitle(SECOND_TITLE);
+    toUpdate.setName(SECOND_TITLE);
 
     Exception e = assertThrows(BadRequestAlertException.class, () -> chapterResource.patchChapter(chapterMapper.toDTO(toUpdate)));
     assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);

@@ -12,16 +12,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,7 +35,7 @@ public class Chapter implements Serializable, Organizable{
      * Constructor.
      */
     public Chapter() {
-        this.contentReferences = new HashSet<>();
+        this.contentReferences = new ArrayList<>();
     }
 
     /**
@@ -48,41 +46,10 @@ public class Chapter implements Serializable, Organizable{
     private UUID id;
 
     /**
-     * Title of the chapter.
+     * Name of the chapter.
      */
-    @Column(name = "title")
-    private String title;
-
-    /**
-     * Start date of the Chapter.
-     */
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    /**
-     * End date of the Chapter.
-     */
-    @Column(name = "end_date")
-    private LocalDate endDate;
-
-    /**
-     * Content items.
-     */
-    @ManyToMany(cascade = {
-        CascadeType.PERSIST,
-        CascadeType.MERGE,
-        CascadeType.REFRESH,
-        CascadeType.DETACH},
-        fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "chapter_content",
-        joinColumns = {
-            @JoinColumn(name = "chapter_id", referencedColumnName = "id")},
-        inverseJoinColumns = {
-            @JoinColumn(name = "content_id", referencedColumnName = "id")}
-    )
-    @OrderBy("startDate")
-    protected final Set<ContentReference> contentReferences;
+    @Column(name = "name")
+    private String name;
 
     /**
      * The Course.
@@ -90,6 +57,16 @@ public class Chapter implements Serializable, Organizable{
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     protected Course course;
+
+    /**
+     * Content items.
+     */
+    @OneToMany(cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        orphanRemoval = true,
+        mappedBy = "chapter")
+    @OrderBy("index")
+    protected final List<ContentReference> contentReferences;
 
     /**
      * Getter.
@@ -103,7 +80,7 @@ public class Chapter implements Serializable, Organizable{
     /**
      * Setter.
      *
-     * @param newId
+     * @param newId the id
      */
     public void setId(final UUID newId) {
         this.id = newId;
@@ -112,63 +89,27 @@ public class Chapter implements Serializable, Organizable{
     /**
      * Getter.
      *
-     * @return the title
+     * @return the name
      */
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     /**
      * Setter.
      *
-     * @param newTitle the title
+     * @param newTitle the name
      */
-    public void setTitle(final String newTitle) {
-        this.title = newTitle;
+    public void setName(final String newTitle) {
+        this.name = newTitle;
     }
 
     /**
      * Getter.
      *
-     * @return the start date.
+     * @return the content references
      */
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newStartDate the start date.
-     */
-    public void setStartDate(final LocalDate newStartDate) {
-        this.startDate = newStartDate;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the end date.
-     */
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newEndDate the end date.
-     */
-    public void setEndDate(final LocalDate newEndDate) {
-        this.endDate = newEndDate;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return content references
-     */
-    public Collection<ContentReference> getContentReferences() {
+    public List<ContentReference> getContentReferences() {
         return contentReferences;
     }
 
@@ -177,31 +118,50 @@ public class Chapter implements Serializable, Organizable{
      *
      * @param newContentReferences the content references
      */
-    public void setContentReferences(
-        final Collection<ContentReference> newContentReferences) {
-        getContentReferences().clear();
+    public void setContentReferences(final Collection<ContentReference> newContentReferences) {
+        if (newContentReferences == null) {
+            return;
+        }
+        contentReferences.clear();
         addContentReferences(newContentReferences);
     }
 
-    public void addContentReference(
-        final ContentReference newContentReference) {
-        newContentReference.chapters.add(this);
-        this.contentReferences.add(newContentReference);
+    /**
+     * Adds a Content Reference.
+     *
+     * @param newContentReference the content reference
+     */
+    public void addContentReference(final ContentReference newContentReference) {
+        if (newContentReference == null) {
+            return;
+        }
+        contentReferences.add(newContentReference);
+        newContentReference.chapter = this;
     }
 
-    public void addContentReferences(
-        final Collection<ContentReference> newContentReferences) {
-        getContentReferences()
-            .addAll(newContentReferences.stream().map(newContentReference -> {
-                newContentReference.chapters.add(this);
-                return newContentReference;
-            }).collect(Collectors.toSet()));
+    /**
+     * Adds a set of Content References.
+     *
+     * @param newContentReferences the content references
+     */
+    public void addContentReferences(final Collection<ContentReference> newContentReferences) {
+        if (newContentReferences == null) {
+            return;
+        }
+        contentReferences.addAll(newContentReferences.stream().map(newContentReference -> {
+            newContentReference.chapter = this;
+            return newContentReference;
+        }).collect(Collectors.toList()));
     }
 
-    public void removeContentReference(
-        final ContentReference newContentReference) {
-        newContentReference.chapters.remove(this);
-        this.contentReferences.remove(newContentReference);
+    /**
+     * Removes a Content Reference.
+     *
+     * @param newContentReference the content references
+     */
+    public void removeContentReference(final ContentReference newContentReference) {
+        newContentReference.chapter = null;
+        getContentReferences().remove(newContentReference);
     }
 
     public Course getCourse() {

@@ -122,7 +122,7 @@ class CourseServiceIT {
     expected.setRemainActiveOffset(courseDTO.getRemainActiveOffset());
     expected.setCourseDescription(courseDTO.getCourseDescription());
     expected.setPublishState(courseDTO.getPublishState());
-    expected.setContentReferences(Collections.emptyList());
+//    expected.setContentReferences(Collections.emptyList());
     expected.setChapters(Collections.emptyList());
     expected.setTimePeriods(Collections.emptyList());
 
