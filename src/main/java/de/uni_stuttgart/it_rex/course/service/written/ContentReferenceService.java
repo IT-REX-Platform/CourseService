@@ -146,7 +146,7 @@ public class ContentReferenceService {
   }
 
   /**
-   * Adds a ContentReference to the TimePeriod by id.
+   * Adds a ContentReference to a TimePeriod by id.
    *
    * @param contentReferenceId the id of the ContentReference
    * @param timePeriodId       the id of the TimePeriod
@@ -160,7 +160,7 @@ public class ContentReferenceService {
   }
 
   /**
-   * Adds a ContentReference to the Chapter by id.
+   * Adds a ContentReference to a Chapter by id.
    *
    * @param contentReferenceId the id of the ContentReference
    * @param chapterId          the id of the Chapter
@@ -173,19 +173,68 @@ public class ContentReferenceService {
         chapterId, chapterRepository, Chapter.class.getName());
   }
 
-  private <T extends Organizable> ContentReferenceDTO addToOrganizable(
+  private <ORGANIZABLE extends Organizable> ContentReferenceDTO addToOrganizable(
       final UUID contentReferenceId,
       final UUID organizableId,
-      final JpaRepository<T, UUID> organizableRepository,
+      final JpaRepository<ORGANIZABLE, UUID> organizableRepository,
       final String organizableName) {
     final ContentReference contentReference = contentReferenceRepository
         .findById(contentReferenceId).orElseThrow(
             () -> new BadRequestAlertException("Invalid id",
                 ContentReference.class.getName(), "idnotfound"));
-    final T organizable = organizableRepository.findById(organizableId)
+    final ORGANIZABLE organizable = organizableRepository.findById(organizableId)
         .orElseThrow(() -> new BadRequestAlertException("Invalid id",
             organizableName, "idnotfound"));
     organizable.addContentReference(contentReference);
     return contentReferenceMapper.toDTO(contentReference);
+  }
+
+  /**
+   * Removes a ContentReference from a TimePeriod by id.
+   *
+   * @param contentReferenceId the id of the ContentReference
+   * @param timePeriodId       the id of the TimePeriod
+   */
+  @Transactional
+  public void removeFromTimePeriod(final UUID contentReferenceId,
+                                   final UUID timePeriodId) {
+    removeFromOrganizable(contentReferenceId, timePeriodId,
+        timePeriodRepository);
+  }
+
+  /**
+   * Removes a ContentReference from a Chapter by id.
+   *
+   * @param contentReferenceId the id of the ContentReference
+   * @param chapterId          the id of the Chapter
+   */
+  @Transactional
+  public void removeFromChapter(final UUID contentReferenceId,
+                                final UUID chapterId) {
+    removeFromOrganizable(contentReferenceId, chapterId, chapterRepository);
+  }
+
+  private <ORGANIZABLE extends Organizable> void removeFromOrganizable(
+      final UUID contentReferenceId,
+      final UUID organizableId,
+      final JpaRepository<ORGANIZABLE, UUID> organizableRepository) {
+
+    final Optional<ContentReference> contentReferenceOptional
+        = contentReferenceRepository.findById(contentReferenceId);
+    final Optional<ORGANIZABLE> organizableOptional
+        = organizableRepository.findById(organizableId);
+    if (bothArePresent(contentReferenceOptional, organizableOptional)) {
+      return;
+    }
+    final ContentReference contentReference = contentReferenceOptional.get();
+    final ORGANIZABLE organizable = organizableOptional.get();
+    organizable.removeContentReference(contentReference);
+  }
+
+  private <ORGANIZABLE extends Organizable> boolean bothArePresent(
+      final Optional<ContentReference> contentReferenceOptional,
+      final Optional<ORGANIZABLE> organizableOptional) {
+    return !(contentReferenceOptional.isPresent()
+        && organizableOptional.isPresent());
   }
 }
