@@ -125,7 +125,7 @@ public class CourseService {
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
         CourseDTO courseDto = courseMapper.toDTO(storedCourse);
-        addRole(courseDto);
+        addRoleofUserToDto(courseDto);
         return courseDto;
     }
 
@@ -138,7 +138,7 @@ public class CourseService {
     public List<CourseDTO> findAll() {
         LOGGER.debug("Request to get all Courses");
         List<CourseDTO> courseDtos = courseMapper.toDTO(courseRepository.findAll());
-        addRole(courseDtos);
+        addRoleofUserToDto(courseDtos);
         return courseDtos;
     }
 
@@ -154,7 +154,7 @@ public class CourseService {
         LOGGER.debug("Request to get Course : {}", id);
 
         Optional<CourseDTO> courseDto = courseMapper.toDTO(courseRepository.findById(id));
-        addRole(courseDto);
+        addRoleofUserToDto(courseDto);
         return courseDto;
     }
 
@@ -222,7 +222,7 @@ public class CourseService {
         courses = courseRepository.findAll(spec);
 
         List<CourseDTO> courseDtos = courseMapper.toDTO(courses);
-        addRole(courseDtos);
+        addRoleofUserToDto(courseDtos);
         return courseDtos;
     }
 
@@ -247,7 +247,7 @@ public class CourseService {
         courses = courseRepository.findAll(spec);
 
         List<CourseDTO> courseDtos = courseMapper.toDTO(courses);
-        addRole(courseDtos);
+        addRoleofUserToDto(courseDtos);
         courseDtos = courseDtos.stream().filter(o -> o.getCourseRole() != null).collect(Collectors.toList());
         courseDtos = courseDtos.stream().filter(
                 o -> !(o.getCourseRole() == COURSEROLE.PARTICIPANT && o.getPublishState() == PUBLISHSTATE.UNPUBLISHED))
@@ -331,7 +331,7 @@ public class CourseService {
      *
      * @param courseDto the courseDto.
      */
-    private void addRole(CourseDTO courseDto) {
+    private void addRoleofUserToDto(CourseDTO courseDto) {
         Map<UUID, COURSEROLE> coursesAndRoles = RexAuthz.getCoursesAndRolesOfUser();
         courseDto.setCourseRole(coursesAndRoles.get(courseDto.getId()));
     }
@@ -342,8 +342,8 @@ public class CourseService {
      *
      * @param courseDto the courseDtos.
      */
-    private void addRole(List<CourseDTO> courseDtos) {
-        courseDtos.forEach(o -> addRole(o));
+    private void addRoleofUserToDto(List<CourseDTO> courseDtos) {
+        courseDtos.forEach(o -> addRoleofUserToDto(o));
     }
 
     /**
@@ -352,7 +352,7 @@ public class CourseService {
      *
      * @param courseDto the courseDto.
      */
-    private void addRole(Optional<CourseDTO> courseDto) {
-        courseDto.ifPresent(o -> addRole(o));
+    private void addRoleofUserToDto(Optional<CourseDTO> courseDto) {
+        courseDto.ifPresent(o -> addRoleofUserToDto(o));
     }
 }
