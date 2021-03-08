@@ -98,7 +98,7 @@ public class ProgressResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)}
      * and with body the chapter, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/content/{trackerdId}")
+    @GetMapping("/content/{trackerId}")
     public ResponseEntity<ContentProgressTrackerDTO> getContentProgress(
         @PathVariable final UUID trackerId){
         log.debug("REST request to get Content Progress for Content Item : {}", trackerId);
