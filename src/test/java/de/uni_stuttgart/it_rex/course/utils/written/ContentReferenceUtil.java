@@ -22,10 +22,10 @@ public final class ContentReferenceUtil {
     public static ContentReference createContentReference() {
         ContentReference contentReference = new ContentReference();
         contentReference.setContentId(UUID.randomUUID());
-        contentReference.setStartDate(LocalDate.now()
-            .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        contentReference.setEndDate(LocalDate.now()
-            .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
+     //  contentReference.setStartDate(LocalDate.now()
+     //      .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
+     //  contentReference.setEndDate(LocalDate.now()
+     //      .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
         return contentReference;
     }
 
@@ -51,8 +51,8 @@ public final class ContentReferenceUtil {
     public static void equalsContentReference(final ContentReference first,
                                               final ContentReference second) {
         assertEquals(first.getContentId(), second.getContentId());
-        assertEquals(first.getStartDate(), second.getStartDate());
-        assertEquals(first.getEndDate(), second.getEndDate());
+       // assertEquals(first.getStartDate(), second.getStartDate());
+       // assertEquals(first.getEndDate(), second.getEndDate());
         /* Todo: replace with equals methods
         assertEquals(first.getCourse(), second.getCourse());
         assertEquals(first.getChapters(), second.getChapters());
@@ -68,10 +68,10 @@ public final class ContentReferenceUtil {
     public static ContentReferenceDTO createContentReferenceDTO() {
         ContentReferenceDTO contentReferenceDTO = new ContentReferenceDTO();
         contentReferenceDTO.setContentId(UUID.randomUUID());
-        contentReferenceDTO.setStartDate(LocalDate.now()
-            .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        contentReferenceDTO.setEndDate(LocalDate.now()
-            .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
+       // contentReferenceDTO.setStartDate(LocalDate.now()
+       //     .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
+      //  contentReferenceDTO.setEndDate(LocalDate.now()
+       //     .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
         return contentReferenceDTO;
     }
 
@@ -95,8 +95,8 @@ public final class ContentReferenceUtil {
         final ContentReferenceDTO first,
         final ContentReferenceDTO second) {
         assertEquals(first.getContentId(), second.getContentId());
-        assertEquals(first.getStartDate(), second.getStartDate());
-        assertEquals(first.getEndDate(), second.getEndDate());
+      // assertEquals(first.getStartDate(), second.getStartDate());
+      // assertEquals(first.getEndDate(), second.getEndDate());
         /* Todo: replace with equals methods
         assertEquals(first.getCourse(), second.getCourse());
         assertEquals(first.getChapters(), second.getChapters());

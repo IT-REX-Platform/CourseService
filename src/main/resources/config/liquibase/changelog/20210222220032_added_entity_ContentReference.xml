@@ -9,8 +9,14 @@
             <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="course_id" type="${uuidType}">
+            <column name="index" type="integer">
                 <constraints nullable="false"/>
+            </column>
+            <column name="chapter_id" type="${uuidType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_period_id" type="${uuidType}">
+                <constraints nullable="true"/>
             </column>
             <column name="content_id" type="${uuidType}">
                 <constraints nullable="false"/>

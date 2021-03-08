@@ -10,30 +10,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "content_reference")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ContentReference implements Serializable {
-
-    /**
-     * Constructor.
-     */
-    public ContentReference() {
-        this.chapters = new HashSet<>();
-        this.timePeriods = new HashSet<>();
-    }
 
     /**
      * Identifier.
@@ -43,16 +28,10 @@ public class ContentReference implements Serializable {
     private UUID id;
 
     /**
-     * Start date.
+     * Index of the content in the chapter.
      */
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    /**
-     * End date.
-     */
-    @Column(name = "end_date")
-    private LocalDate endDate;
+    @Column(name = "index")
+    private int index;
 
     /**
      * Content id.
@@ -63,21 +42,16 @@ public class ContentReference implements Serializable {
     /**
      * The Chapters.
      */
-    @ManyToMany(mappedBy = "contentReferences")
-    protected final Set<Chapter> chapters;
+    @ManyToOne
+    @JoinColumn(name = "chapter_id", referencedColumnName = "id")
+    protected Chapter chapter;
 
     /**
-     * The Time Periods.
-     */
-    @ManyToMany(mappedBy = "contentReferences")
-    protected final Set<TimePeriod> timePeriods;
-
-    /**
-     * The Course.
+     * The TimePeriod.
      */
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
-    protected Course course;
+    @JoinColumn(name = "time_period_id", referencedColumnName = "id")
+    protected TimePeriod timePeriod;
 
     /**
      * Getter.
@@ -95,42 +69,6 @@ public class ContentReference implements Serializable {
      */
     public void setId(final UUID newId) {
         this.id = newId;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the start date
-     */
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param startDate the start date
-     */
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the end date.
-     */
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param endDate the end date
-     */
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     /**
@@ -156,35 +94,18 @@ public class ContentReference implements Serializable {
      *
      * @return chapters
      */
-    public Set<Chapter> getChapters() {
-        return chapters;
+    public Chapter getChapter() {
+        return chapter;
     }
 
     /**
      * Setter.
      *
-     * @param newChapters the chapters
+     * @param newChapter the chapters
      */
-    public void setChapters(final Collection<Chapter> newChapters) {
-        chapters.clear();
-        addChapters(newChapters);
-    }
-
-    public void addChapter(final Chapter newChapter) {
+    public void setChapter(final Chapter newChapter) {
+        chapter = newChapter;
         newChapter.contentReferences.add(this);
-        this.chapters.add(newChapter);
-    }
-
-    public void addChapters(final Collection<Chapter> newChapters) {
-        chapters.addAll(newChapters.stream().map(newChapter -> {
-            newChapter.contentReferences.add(this);
-            return newChapter;
-        }).collect(Collectors.toSet()));
-    }
-
-    public void removeChapter(final Chapter chapter) {
-        chapter.contentReferences.remove(this);
-        this.chapters.remove(chapter);
     }
 
     /**
@@ -192,47 +113,26 @@ public class ContentReference implements Serializable {
      *
      * @return time periods
      */
-    public Set<TimePeriod> getTimePeriods() {
-        return timePeriods;
+    public TimePeriod getTimePeriod() {
+        return timePeriod;
     }
 
     /**
      * Setter.
      *
-     * @param newTimePeriods the time periods
+     * @param newTimePeriod the time periods
      */
-    public void setTimePeriods(final Collection<TimePeriod> newTimePeriods) {
-        timePeriods.clear();
-        addTimePeriods(newTimePeriods);
-    }
-
-    public void addTimePeriod(final TimePeriod newTimePeriod) {
+    public void setTimePeriod(final TimePeriod newTimePeriod) {
+        timePeriod = newTimePeriod;
         newTimePeriod.contentReferences.add(this);
-        this.timePeriods.add(newTimePeriod);
     }
 
-    public void addTimePeriods(final Collection<TimePeriod> newTimePeriods) {
-        timePeriods.addAll(newTimePeriods.stream().map(newTimePeriod -> {
-            newTimePeriod.contentReferences.add(this);
-            return newTimePeriod;
-        }).collect(Collectors.toSet()));
+    public int getIndex() {
+        return index;
     }
 
-    public void removeTimePeriod(final TimePeriod timePeriod) {
-        timePeriod.contentReferences.remove(this);
-        this.timePeriods.remove(timePeriod);
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(final Course newCourse) {
-        if (course != null) {
-            course.removeContentReference(this);
-        }
-        newCourse.getContentReferences().add(this);
-        this.course = newCourse;
+    public void setIndex(final int index) {
+        this.index = index;
     }
 
     /**
@@ -252,7 +152,6 @@ public class ContentReference implements Serializable {
         final ContentReference contentReference = (ContentReference) o;
         return new EqualsBuilder()
             .append(id, contentReference.id)
-            .append(course, contentReference.course)
             .isEquals();
     }
 
@@ -263,6 +162,7 @@ public class ContentReference implements Serializable {
      */
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(course).toHashCode();
+        return new HashCodeBuilder().append(id).toHashCode();
     }
+
 }

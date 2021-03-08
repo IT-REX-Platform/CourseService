@@ -29,7 +29,7 @@ class ChapterMapperIT {
 
     Chapter expected = new Chapter();
     expected.setId(update.getId());
-    expected.setTitle(toUpdate.getTitle());
+    expected.setName(toUpdate.getName());
 
     chapterMapper.updateChapterFromChapterDTO(update, toUpdate);
 
@@ -42,7 +42,7 @@ class ChapterMapperIT {
     ChapterDTO expected = new ChapterDTO();
 
     expected.setId(chapter.getId());
-    expected.setTitle(chapter.getTitle());
+    expected.setName(chapter.getName());
 
     ChapterDTO result = chapterMapper.toDTO(chapter);
     ChapterUtil.equalsChapterDTO(expected, result);
@@ -54,7 +54,7 @@ class ChapterMapperIT {
     Chapter expected = new Chapter();
 
     expected.setId(chapterDTO.getId());
-    expected.setTitle(chapterDTO.getTitle());
+    expected.setName(chapterDTO.getName());
 
     Chapter result = chapterMapper.toEntity(chapterDTO);
     ChapterUtil.equalsChapter(expected, result);

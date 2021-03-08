@@ -3,23 +3,20 @@ package de.uni_stuttgart.it_rex.course.domain.written_entities;
 import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
 import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OrderBy;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
 public class TimePeriod implements Serializable, Organizable {
 
     public TimePeriod() {
-        this.contentReferences = new HashSet<>();
+        this.contentReferences = new ArrayList<>();
     }
 
     @Id
@@ -50,21 +47,8 @@ public class TimePeriod implements Serializable, Organizable {
     /**
      * Content items.
      */
-    @ManyToMany(cascade = {
-        CascadeType.PERSIST,
-        CascadeType.MERGE,
-        CascadeType.REFRESH,
-        CascadeType.DETACH},
-        fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "time_period_content",
-        joinColumns = {
-            @JoinColumn(name = "time_period_id", referencedColumnName = "id")},
-        inverseJoinColumns = {
-            @JoinColumn(name = "content_id", referencedColumnName = "id")}
-    )
-    @OrderBy("startDate")
-    protected final Set<ContentReference> contentReferences;
+    @OneToMany(mappedBy = "timePeriod", fetch = FetchType.LAZY)
+    protected final List<ContentReference> contentReferences;
 
     /**
      * The Course.
@@ -72,7 +56,6 @@ public class TimePeriod implements Serializable, Organizable {
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     protected Course course;
-
 
     public UUID getId() {
         return id;
@@ -113,14 +96,14 @@ public class TimePeriod implements Serializable, Organizable {
      * @param newContentReferences the content references
      */
     public void setContentReferences(
-        final Collection<ContentReference> newContentReferences) {
+        final List<ContentReference> newContentReferences) {
         contentReferences.clear();
         addContentReferences(newContentReferences);
     }
 
     public void addContentReference(
         final ContentReference newContentReference) {
-        newContentReference.timePeriods.add(this);
+        newContentReference.timePeriod = this;
         this.contentReferences.add(newContentReference);
     }
 
@@ -128,14 +111,14 @@ public class TimePeriod implements Serializable, Organizable {
         final Collection<ContentReference> newContentReferences) {
         contentReferences
             .addAll(newContentReferences.stream().map(newContentReference -> {
-                newContentReference.timePeriods.add(this);
+                newContentReference.timePeriod = this;
                 return newContentReference;
             }).collect(Collectors.toSet()));
     }
 
     public void removeContentReference(
         final ContentReference newContentReference) {
-        newContentReference.timePeriods.remove(this);
+        newContentReference.timePeriod = null;
         this.contentReferences.remove(newContentReference);
     }
 

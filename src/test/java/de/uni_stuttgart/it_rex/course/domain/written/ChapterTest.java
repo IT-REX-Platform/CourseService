@@ -37,21 +37,21 @@ public class ChapterTest {private static final UUID FIRST_ID = UUID.randomUUID()
 
     Chapter chapter1 = new Chapter();
     chapter1.setId(FIRST_ID);
-    chapter1.setTitle(FIRST_NAME);
-    chapter1.setStartDate(FIRST_START_DATE);
-    chapter1.setEndDate(FIRST_END_DATE);
+    chapter1.setName(FIRST_NAME);
+  // chapter1.setStartDate(FIRST_START_DATE);
+  // chapter1.setEndDate(FIRST_END_DATE);
 
     Chapter chapter2 = new Chapter();
     chapter2.setId(SECOND_ID);
-    chapter2.setTitle(SECOND_NAME);
-    chapter2.setStartDate(SECOND_START_DATE);
-    chapter2.setEndDate(SECOND_END_DATE);
+    chapter2.setName(SECOND_NAME);
+   // chapter2.setStartDate(SECOND_START_DATE);
+   // chapter2.setEndDate(SECOND_END_DATE);
 
     Chapter chapter3 = new Chapter();
     chapter3.setId(FIRST_ID);
-    chapter3.setTitle(FIRST_NAME);
-    chapter3.setStartDate(FIRST_START_DATE);
-    chapter3.setEndDate(FIRST_END_DATE);
+    chapter3.setName(FIRST_NAME);
+ //   chapter3.setStartDate(FIRST_START_DATE);
+ //   chapter3.setEndDate(FIRST_END_DATE);
 
     assertEquals(chapter1.hashCode(), chapter1.hashCode());
     assertEquals(chapter1, chapter1);
