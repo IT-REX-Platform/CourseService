@@ -7,7 +7,6 @@ import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
-import org.mapstruct.Context;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -88,15 +87,17 @@ public abstract class ChapterMapper {
     @AfterMapping
     protected void setContentReferences(
         ChapterDTO chapterDTO, @MappingTarget Chapter chapter) {
-        chapter.setContentReferences(IntStream
-            .range(0, chapterDTO.getContentReferences().size()).mapToObj(i -> {
-                final ContentReferenceDTO contentReferenceDTO
-                    = chapterDTO.getContentReferences().get(i);
-                final ContentReference contentReference
-                    = contentReferenceMapper.toEntity(contentReferenceDTO);
-                contentReference.setIndex(i);
-                return contentReference;
-            }).collect(Collectors.toList()));
+        if (chapterDTO.getContentReferences() != null) {
+            chapter.setContentReferences(IntStream
+                .range(0, chapterDTO.getContentReferences().size()).mapToObj(i -> {
+                    final ContentReferenceDTO contentReferenceDTO
+                        = chapterDTO.getContentReferences().get(i);
+                    final ContentReference contentReference
+                        = contentReferenceMapper.toEntity(contentReferenceDTO);
+                    contentReference.setIndex(i);
+                    return contentReference;
+                }).collect(Collectors.toList()));
+        }
     }
 
     /**
