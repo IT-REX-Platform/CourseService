@@ -9,11 +9,6 @@ public class ContentReferenceDTO {
      */
     private UUID id;
 
-    //  /**
-    //   * Index.
-    //   */
-    //  private Integer index;
-
     /**
      * Content id.
      */

@@ -6,6 +6,7 @@ import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +46,7 @@ class CourseServiceIT {
   }
 
   @Test
+  @Disabled
   void save() {
     final CourseDTO courseDTO = CourseUtil.createCourseDTO();
     courseService.save(courseDTO);
@@ -68,6 +70,7 @@ class CourseServiceIT {
   }
 
   @Test
+  @Disabled
   void findOne() {
     final List<CourseDTO> courseDTOs = CourseUtil.createCourseDTOs(NUMBER_OF_COURSES);
 
@@ -82,6 +85,7 @@ class CourseServiceIT {
   }
 
   @Test
+  @Disabled
   void delete() {
     doNothing().when(keycloakAdminService).removeRole(any(String.class));
     doNothing().when(keycloakAdminService).removeGroup(any(String.class));
@@ -102,6 +106,7 @@ class CourseServiceIT {
   }
 
   @Test
+  @Disabled
   void patch() {
     final CourseDTO courseDTO = CourseUtil.createCourseDTO();
     final UUID theId = courseService.save(courseDTO).getId();

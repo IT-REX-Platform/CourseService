@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,6 +58,8 @@ class CourseMapperIT {
         expected.setPublishState(course.getPublishState());
         expected.setStartDate(course.getStartDate());
         expected.setEndDate(course.getEndDate());
+        expected.setChapters(Collections.emptyList());
+        expected.setTimePeriods(Collections.emptyList());
 
         CourseDTO result = courseMapper.toDTO(course);
         assertEquals(expected, result);
