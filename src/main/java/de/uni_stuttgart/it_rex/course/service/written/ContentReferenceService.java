@@ -140,23 +140,4 @@ public class ContentReferenceService {
     }
     return null;
   }
-
-
-
-
-  /**
-   * Removes a ContentReference from a TimePeriod by id.
-   *
-   * @param contentReferenceId the id of the ContentReference
-   * @param timePeriodId       the id of the TimePeriod
-   */
-
-
-  /**
-   * Removes a ContentReference from a Chapter by id.
-   *
-   * @param contentReferenceId the id of the ContentReference
-   * @param chapterId          the id of the Chapter
-   */
-
 }

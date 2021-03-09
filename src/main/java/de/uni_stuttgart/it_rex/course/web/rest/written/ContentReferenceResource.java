@@ -98,9 +98,9 @@ public class ContentReferenceResource {
    *
    * @param contentReferenceDTO the contentReference to update.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-   * body the updated contentReference, or with status {@code 400 (Bad Request)}
-   * if the contentReference is not valid, or with status {@code 500 (Internal
-   * Server Error)} if the contentReference couldn't be updated.
+   * body the updated contentReference, or with status {@code 400 (Bad
+   * Request)} if the contentReference is not valid, or with status {@code 500
+   * (Internal Server Error)} if the contentReference couldn't be updated.
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PutMapping("/contentreferences")
@@ -149,7 +149,8 @@ public class ContentReferenceResource {
   }
 
   /**
-   * {@code DELETE  /contentreferences/:id} : delete the "id" ContentReference.
+   * {@code DELETE  /contentreferences/:id} : delete the "id"
+   * ContentReference.
    *
    * @param id the id of the ContentReference to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
@@ -166,13 +167,14 @@ public class ContentReferenceResource {
   }
 
   /**
-   * {@code PATCH  /contentreferences} : Patches an existing ContentReference.
+   * {@code PATCH  /contentreferences} : Patches an existing
+   * ContentReference.
    *
    * @param contentReferenceDTO the ContentReference to patch.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-   * body the updated ContentReference, or with status {@code 400 (Bad Request)}
-   * if the ContentReference is not valid, or with status {@code 500 (Internal
-   * Server Error)} if the ContentReference couldn't be patched.
+   * body the updated ContentReference, or with status {@code 400 (Bad
+   * Request)} if the ContentReference is not valid, or with status {@code 500
+   * (Internal Server Error)} if the ContentReference couldn't be patched.
    */
   @PatchMapping("/contentreferences")
   public ResponseEntity<ContentReferenceDTO> patchContentReference(
@@ -190,104 +192,4 @@ public class ContentReferenceResource {
             true, ENTITY_NAME, result.getId().toString()))
         .body(result);
   }
-
-  /**
-   * {@code POST
-   * /contentreferences/:contentReferenceId/timeperiods/:timePeriodId}
-   * : adds the "contentReferenceId" ContentReference to the "timePeriodId"
-   * TimePeriod.
-   *
-   * @param contentReferenceId the id of the ContentReference.
-   * @param timePeriodId       the id of the TimePeriod
-   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and
-   * with body the new contentReference, or with status {@code 400 (Bad
-   * Request)} if either the ContentReference or the TimePeriod was not found.
-   */
-//  @PostMapping(
-//      "/contentreferences/{contentReferenceId}/timeperiods/{timePeriodId}")
-//  public ResponseEntity<ContentReferenceDTO> addToTimePeriod(
-//      @PathVariable final UUID contentReferenceId,
-//      @PathVariable final UUID timePeriodId) {
-//    log.debug("REST request to add ContentReference: {} to TimePeriod: {}",
-//        contentReferenceId, timePeriodId);
-//
-//    ContentReferenceDTO result = contentReferenceService
-//        .addToTimePeriod(contentReferenceId, timePeriodId);
-//    return ResponseEntity.ok()
-//        .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-//            true, ENTITY_NAME, result.getId().toString()))
-//        .body(result);
-//  }
-//
-//  /**
-//   * {@code DELETE
-//   * /contentreferences/:contentReferenceId/timeperiods/:timePeriodId}
-//   * : removes the "contentReferenceId" ContentReference from the "timePeriodId"
-//   * TimePeriod.
-//   *
-//   * @param contentReferenceId the id of the ContentReference.
-//   * @param timePeriodId       the id of the TimePeriod
-//   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-//   */
-//  @DeleteMapping(
-//      "/contentreferences/{contentReferenceId}/timeperiods/{timePeriodId}")
-//  public ResponseEntity<Void> removeFromTimePeriod(
-//      @PathVariable final UUID contentReferenceId,
-//      @PathVariable final UUID timePeriodId) {
-//    log.debug("REST request to remove ContentReference: {} from TimePeriod: {}",
-//        contentReferenceId, timePeriodId);
-//    contentReferenceService
-//        .removeFromTimePeriod(contentReferenceId, timePeriodId);
-//    return ResponseEntity.noContent().headers(HeaderUtil
-//        .createEntityDeletionAlert(applicationName, true,
-//            ENTITY_NAME,
-//            contentReferenceId.toString())).build();
-//  }
-//
-//  /**
-//   * {@code POST /contentreferences/:contentReferenceId/chapters/:chapterId} :
-//   * adds the "contentReferenceId" ContentReference to the "chapterId" Chapter.
-//   *
-//   * @param contentReferenceId the id of the ContentReference.
-//   * @param chapterId          the id of the Chapter
-//   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and
-//   * with body the new contentReference, or with status {@code 400 (Bad
-//   * Request)} if either the ContentReference or the Chapter was not found.
-//   */
-//  @PostMapping("/contentreferences/{contentReferenceId}/chapters/{chapterId}")
-//  public ResponseEntity<ContentReferenceDTO> addToChapter(
-//      @PathVariable final UUID contentReferenceId,
-//      @PathVariable final UUID chapterId) {
-//    log.debug("REST request to add ContentReference: {} to Chapter: {}",
-//        contentReferenceId, chapterId);
-//
-//    ContentReferenceDTO result = contentReferenceService
-//        .addToChapter(contentReferenceId, chapterId);
-//    return ResponseEntity.ok()
-//        .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-//            true, ENTITY_NAME, result.getId().toString()))
-//        .body(result);
-//  }
-//
-//  /**
-//   * {@code DELETE /contentreferences/:contentReferenceId/chapters/:chapterId} :
-//   * removes the "contentReferenceId" ContentReference from the "chapterId"
-//   * Chapter.
-//   *
-//   * @param contentReferenceId the id of the ContentReference.
-//   * @param chapterId          the id of the Chapter
-//   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-//   */
-//  @DeleteMapping("/contentreferences/{contentReferenceId}/chapters/{chapterId}")
-//  public ResponseEntity<Void> removeFromChapter(
-//      @PathVariable final UUID contentReferenceId,
-//      @PathVariable final UUID chapterId) {
-//    log.debug("REST request to remove ContentReference: {} from Chapter: {}",
-//        contentReferenceId, chapterId);
-//    contentReferenceService.removeFromChapter(contentReferenceId, chapterId);
-//    return ResponseEntity.noContent().headers(HeaderUtil
-//        .createEntityDeletionAlert(applicationName, true,
-//            ENTITY_NAME,
-//            contentReferenceId.toString())).build();
-//  }
 }

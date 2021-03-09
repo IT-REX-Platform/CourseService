@@ -150,7 +150,6 @@ public class ChapterService {
 
     final ContentReferenceDTO contentReferenceDTO = new ContentReferenceDTO();
     contentReferenceDTO.setContentId(contentReferenceId);
-   // contentReferenceDTO.setIndex(chapter.getContentReferences().size());
     contentReferenceDTO.setChapterId(chapter.getId());
 
     return contentReferenceService.save(contentReferenceDTO);
