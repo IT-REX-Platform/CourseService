@@ -7,14 +7,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,106 +24,125 @@ import java.util.stream.Collectors;
 @Table(name = "time_period")
 public class TimePeriod implements Serializable {
 
-  public TimePeriod() {
-    this.tPChapterRelation = new ArrayList<>();
-  }
-
-  @Id
-  @GeneratedValue
-  private UUID id;
-
-  /**
-   * Start date.
-   */
-  @Column(name = "start_date")
-  private LocalDate startDate;
-
-  /**
-   * End date.
-   */
-  @Column(name = "end_date")
-  private LocalDate endDate;
-
-  /**
-   * Course id
-   */
-  @ManyToOne
-  @JoinColumn(name = "course_id", referencedColumnName = "id")
-  protected Course course;
-
-  /**
-   * TpChapterRelation.
-   */
-  @OneToMany(cascade = CascadeType.ALL,
-      fetch = FetchType.LAZY,
-      orphanRemoval = true,
-      mappedBy = "timePeriod")
-  @OrderBy("index")
-  private List<TpChapterRelation> tPChapterRelation;
-
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(final UUID id) {
-    this.id = id;
-  }
-
-  public LocalDate getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(final LocalDate startDate) {
-    this.startDate = startDate;
-  }
-
-  public LocalDate getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(final LocalDate endDate) {
-    this.endDate = endDate;
-  }
-
-  public Course getCourse() {
-    return course;
-  }
-
-  public void setCourse(final Course newCourse) {
-    if (course != null) {
-      course.removeTimePeriod(this);
+    public TimePeriod() {
+        this.contentReferences = new HashSet<>();
     }
-    newCourse.getTimePeriods().add(this);
-    this.course = newCourse;
-  }
 
-  public List<TpChapterRelation> getTPChapterRelation() {
-    return tPChapterRelation;
-  }
+    @Id
+    @GeneratedValue
+    private UUID id;
 
-  public void setTPChapterRelation(
-      final List<TpChapterRelation> newChapterIndices) {
-    this.tPChapterRelation.clear();
-    addTPChapterRelations(newChapterIndices);
-  }
+    /**
+     * Start date.
+     */
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
-  public void addTPChapterRelation(final TpChapterRelation tpChapterRelation) {
-    tpChapterRelation.timePeriod = this;
-    this.tPChapterRelation.add(tpChapterRelation);
-  }
+    /**
+     * End date.
+     */
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
-  public void addTPChapterRelations(
-      final List<TpChapterRelation> newTPChapterRelation) {
-    this.tPChapterRelation.addAll(newTPChapterRelation.stream()
-        .map(tPChapterRelation -> {
-          tPChapterRelation.timePeriod = this;
-          return tPChapterRelation;
-        }).collect(Collectors.toList()));
-  }
+    /**
+     * Content items.
+     */
+    @ManyToMany(cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "time_period_content",
+        joinColumns = {
+            @JoinColumn(name = "time_period_id", referencedColumnName = "id")},
+        inverseJoinColumns = {
+            @JoinColumn(name = "content_id", referencedColumnName = "id")}
+    )
+    @OrderBy("startDate")
+    protected final Set<ContentReference> contentReferences;
 
-  public void removeTPChapterRelation(
-      final TpChapterRelation tpChapterRelation) {
-    tpChapterRelation.timePeriod = null;
-    getTPChapterRelation().remove(tpChapterRelation);
-  }
+    /**
+     * Course id
+     */
+    @ManyToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    protected Course course;
+
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(final UUID id) {
+        this.id = id;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(final LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(final LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return content references
+     */
+    public Collection<ContentReference> getContentReferences() {
+        return contentReferences;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newContentReferences the content references
+     */
+    public void setContentReferences(
+        final Collection<ContentReference> newContentReferences) {
+        contentReferences.clear();
+        addContentReferences(newContentReferences);
+    }
+
+    public void addContentReference(
+        final ContentReference newContentReference) {
+        newContentReference.timePeriods.add(this);
+        this.contentReferences.add(newContentReference);
+    }
+
+    public void addContentReferences(
+        final Collection<ContentReference> newContentReferences) {
+        contentReferences
+            .addAll(newContentReferences.stream().map(newContentReference -> {
+                newContentReference.timePeriods.add(this);
+                return newContentReference;
+            }).collect(Collectors.toSet()));
+    }
+
+    public void removeContentReference(
+        final ContentReference newContentReference) {
+        newContentReference.timePeriods.remove(this);
+        this.contentReferences.remove(newContentReference);
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(final Course newCourse) {
+        if (course != null) {
+            course.removeTimePeriod(this);
+        }
+        newCourse.getTimePeriods().add(this);
+        this.course = newCourse;
+    }
+
+
 }
