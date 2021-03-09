@@ -4,9 +4,11 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
+import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.TimePeriodMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +48,19 @@ public class CourseService {
     private final CourseRepository courseRepository;
 
     /**
+     * TimePeriodRepository.
+     */
+    private final TimePeriodRepository timePeriodRepository;
+
+    /**
      * Course mapper.
      */
     private final CourseMapper courseMapper;
+
+    /**
+     * TimePeriod mapper.
+     */
+    private final TimePeriodMapper timePeriodMapper;
 
     /**
      * KeycloakAdminService.
@@ -64,11 +76,15 @@ public class CourseService {
      */
     @Autowired
     public CourseService(final CourseRepository newCourseRepository,
+                         final TimePeriodRepository newTimePeriodRepository,
                          final CourseMapper newCourseMapper,
-                         final KeycloakAdminService newKeycloakAdminService) {
+                         final KeycloakAdminService newKeycloakAdminService,
+                         final TimePeriodMapper newTimePeriodMapper) {
         this.courseRepository = newCourseRepository;
+        this.timePeriodRepository = newTimePeriodRepository;
         this.courseMapper = newCourseMapper;
         this.keycloakAdminService = newKeycloakAdminService;
+        this.timePeriodMapper = newTimePeriodMapper;
     }
 
 
@@ -80,8 +96,9 @@ public class CourseService {
      */
     public CourseDTO save(final CourseDTO courseDTO) {
         LOGGER.debug("Request to save Course : {}", courseDTO);
-        final Course course
-            = courseRepository.save(courseMapper.toEntity(courseDTO));
+
+        Course course = courseMapper.toEntity(courseDTO);
+        course = courseRepository.saveAndFlush(course);
         return courseMapper.toDTO(course);
     }
 
@@ -92,10 +109,10 @@ public class CourseService {
      * @param courseDTO the Chapter
      * @return the created Course
      */
+    @Transactional
     public CourseDTO create(final CourseDTO courseDTO) {
         LOGGER.debug("Request to create Course : {}", courseDTO);
-        final Course course = courseMapper.toEntity(courseDTO);
-        final Course storedCourse = courseRepository.save(course);
+        final CourseDTO storedCourse = this.save(courseDTO);
 
         // Add keycloak roles and groups for the course.
         for (COURSEROLE role : COURSEROLE.values()) {
@@ -163,6 +180,7 @@ public class CourseService {
      *
      * @param id the id of the entity.
      */
+    @Transactional
     public void delete(final UUID id) {
         LOGGER.debug("Request to delete Course : {}", id);
 
@@ -184,19 +202,20 @@ public class CourseService {
      * @param courseDTO the DTO to use to update a created entity.
      * @return the persisted entity.
      */
+    @Transactional
     public CourseDTO patch(final CourseDTO courseDTO) {
         LOGGER.debug("Request to update Course : {}", courseDTO);
-        Optional<Course> oldCourse =
+        Optional<Course> courseOptional =
             courseRepository.findById(courseDTO.getId());
 
-        if (!oldCourse.isPresent()) {
+        if (!courseOptional.isPresent()) {
             return null;
         }
 
-        Course oldCourseEntity = oldCourse.get();
-        courseMapper.updateCourseFromCourse(
-            courseMapper.toEntity(courseDTO), oldCourseEntity);
-        return courseMapper.toDTO(courseRepository.save(oldCourseEntity));
+        Course course = courseOptional.get();
+        courseMapper.updateCourseFromCourseDTO(courseDTO, course);
+        course = courseRepository.save(course);
+        return courseMapper.toDTO(course);
     }
 
     /**
@@ -207,6 +226,7 @@ public class CourseService {
      *                     between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
      */
+    @Transactional(readOnly = true)
     public List<CourseDTO> findAll(
         final Optional<PUBLISHSTATE> publishState,
         final Optional<Boolean> activeOnly) {

@@ -5,8 +5,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
@@ -31,16 +35,18 @@ public class ChapterIndex implements Serializable {
   private int index;
 
   /**
-   * Chapter id.
+   * Chapter.
    */
-  @Column(name = "chapter_id")
-  private UUID chapterId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "chapter_id", referencedColumnName = "id")
+  protected Chapter chapter;
 
   /**
-   * Course id.
+   * TimePeriod.
    */
-  @Column(name = "course_id")
-  private UUID courseId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "time_period_id", referencedColumnName = "id")
+  protected TimePeriod timePeriod;
 
   /**
    * Getter.
@@ -81,37 +87,42 @@ public class ChapterIndex implements Serializable {
   /**
    * Getter.
    *
-   * @return the course id
+   * @return the time period
    */
-  public UUID getCourseId() {
-    return courseId;
+  public TimePeriod getTimePeriod() {
+    return timePeriod;
   }
 
   /**
    * Setter.
    *
-   * @param newCourseId the course id
+   * @param newTimePeriod the time period
    */
-  public void setCourseId(final UUID newCourseId) {
-    this.courseId = newCourseId;
+  public void setTimePeriod(final TimePeriod newTimePeriod) {
+    if (timePeriod != null) {
+      timePeriod.removeChapterIndex(this);
+    }
+    this.timePeriod = newTimePeriod;
+    newTimePeriod.getChapterIndices().add(this);
   }
 
   /**
    * Getter.
    *
-   * @return chapter id
+   * @return the chapter
    */
-  public UUID getChapterId() {
-    return chapterId;
+  public Chapter getChapter() {
+    return chapter;
   }
 
   /**
    * Setter.
    *
-   * @param newChapterId the chapter id
+   * @param newChapter the chapter
    */
-  public void setChapterId(final UUID newChapterId) {
-    this.chapterId = newChapterId;
+  public void setChapter(final Chapter newChapter) {
+    newChapter.chapterIndices.add(this);
+    this.chapter = newChapter;
   }
 
   /**
@@ -131,8 +142,8 @@ public class ChapterIndex implements Serializable {
     final ChapterIndex that = (ChapterIndex) o;
     return getIndex() == that.getIndex()
         && Objects.equals(getId(), that.getId())
-        && Objects.equals(getChapterId(), that.getChapterId())
-        && Objects.equals(getCourseId(), that.getCourseId());
+        && Objects.equals(getChapter(), that.getChapter())
+        && Objects.equals(getTimePeriod(), that.getTimePeriod());
   }
 
   /**
@@ -145,8 +156,8 @@ public class ChapterIndex implements Serializable {
     return Objects.hash(
         getId(),
         getIndex(),
-        getChapterId(),
-        getCourseId());
+        getChapter(),
+        getTimePeriod());
   }
 
   /**
@@ -159,7 +170,7 @@ public class ChapterIndex implements Serializable {
     return "ChapterIndex{"
         + "id=" + id
         + ", index=" + index
-        + ", chapterId=" + chapterId
-        + ", courseId=" + courseId + '}';
+        + ", chapterId=" + chapter
+        + ", courseId=" + timePeriod + '}';
   }
 }

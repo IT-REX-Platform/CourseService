@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -38,7 +37,7 @@ public class Course implements Serializable {
      * Constructor.
      */
     public Course() {
-        this.chapters = new ArrayList<>();
+        this.timePeriods = new ArrayList<>();
     }
 
     /**
@@ -99,14 +98,14 @@ public class Course implements Serializable {
     private PUBLISHSTATE publishState;
 
     /**
-     * Chapter items.
+     * Time period items.
      */
     @OneToMany(cascade = CascadeType.ALL,
-        fetch = FetchType.EAGER,
-        orphanRemoval = true)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
-    @OrderBy("index")
-    private List<ChapterIndex> chapters;
+        fetch = FetchType.LAZY,
+        orphanRemoval = true,
+        mappedBy = "course")
+    @OrderBy("startDate")
+    private List<TimePeriod> timePeriods;
 
     /**
      * Getter.
@@ -256,41 +255,51 @@ public class Course implements Serializable {
     /**
      * Getter.
      *
-     * @return the chapters
+     * @return the time periods
      */
-    public List<ChapterIndex> getChapters() {
-        return chapters;
+    public List<TimePeriod> getTimePeriods() {
+        return timePeriods;
     }
 
     /**
      * Setter.
      *
-     * @param newChapters the chapters
+     * @param newTimePeriods the time periods
      */
-    public void setChapters(final List<ChapterIndex> newChapters) {
-        getChapters().clear();
-        addChapterIndex(newChapters);
+    public void setTimePeriods(final List<TimePeriod> newTimePeriods) {
+        getTimePeriods().clear();
+        addTimePeriods(newTimePeriods);
     }
 
     /**
-     * Adds a ChapterIndex.
+     * Adds a TimePeriod.
      *
-     * @param chapterIndex the chapterIndex
+     * @param newTimePeriod the time period
      */
-    public void addChapterIndex(final ChapterIndex chapterIndex) {
-        chapterIndex.setCourseId(getId());
-        getChapters().add(chapterIndex);
+    public void addTimePeriod(final TimePeriod newTimePeriod) {
+        getTimePeriods().add(newTimePeriod);
+        newTimePeriod.course = this;
     }
 
     /**
-     * Adds a list of ChapterIndexes.
+     * Removes a TimePeriod.
      *
-     * @param chapterIndexes the chapterIndexes
+     * @param newTimePeriod the time period
      */
-    public void addChapterIndex(final List<ChapterIndex> chapterIndexes) {
-        getChapters().addAll(chapterIndexes.stream().map(chapterIndex -> {
-            chapterIndex.setCourseId(getId());
-            return chapterIndex;
+    public void removeTimePeriod(final TimePeriod newTimePeriod) {
+        newTimePeriod.course = null;
+        getTimePeriods().remove(newTimePeriod);
+    }
+
+    /**
+     * Adds a list of TimePeriods.
+     *
+     * @param newTimePeriods the chapterIndexes
+     */
+    public void addTimePeriods(final List<TimePeriod> newTimePeriods) {
+        getTimePeriods().addAll(newTimePeriods.stream().map(newTimePeriod -> {
+            newTimePeriod.course = this;
+            return newTimePeriod;
         }).collect(Collectors.toList()));
     }
 
@@ -314,12 +323,12 @@ public class Course implements Serializable {
             && Objects.equals(getStartDate(), course.getStartDate())
             && Objects.equals(getEndDate(), course.getEndDate())
             && Objects.equals(getRemainActiveOffset(),
-                                                course.getRemainActiveOffset())
+            course.getRemainActiveOffset())
             && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
             && Objects.equals(getCourseDescription(),
             course.getCourseDescription())
             && getPublishState() == course.getPublishState()
-            && Objects.equals(getChapters(), course.getChapters());
+            && Objects.equals(getTimePeriods(), course.getTimePeriods());
     }
 
     /**
@@ -337,7 +346,7 @@ public class Course implements Serializable {
             getMaxFoodSum(),
             getCourseDescription(),
             getPublishState(),
-            getChapters());
+            getTimePeriods());
     }
 
     /**

@@ -21,8 +21,8 @@ public final class ChapterIndexUtil {
   public static ChapterIndex createChapterIndex(final UUID courseId, final int index) {
     ChapterIndex chapterIndex = new ChapterIndex();
     chapterIndex.setIndex(index);
-    chapterIndex.setChapterId(UUID.randomUUID());
-    chapterIndex.setCourseId(courseId);
+  //  chapterIndex.setChapter(UUID.randomUUID());
+  //  chapterIndex.setTimePeriod(courseId);
     return chapterIndex;
   }
 
@@ -65,7 +65,7 @@ public final class ChapterIndexUtil {
    */
   public static void equals(final ChapterIndex first, final ChapterIndex second) {
     assertEquals(first.getIndex(), second.getIndex());
-    assertEquals(first.getChapterId(), second.getChapterId());
-    assertEquals(first.getCourseId(), second.getCourseId());
+    assertEquals(first.getChapter(), second.getChapter());
+    assertEquals(first.getTimePeriod(), second.getTimePeriod());
   }
 }
