@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "chapter")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Chapter implements Serializable, Organizable{
+public class Chapter implements Serializable {
 
     /**
      * Constructor.
@@ -135,8 +135,8 @@ public class Chapter implements Serializable, Organizable{
         if (newContentReference == null) {
             return;
         }
-        contentReferences.add(newContentReference);
         newContentReference.chapter = this;
+        contentReferences.add(newContentReference);
     }
 
     /**

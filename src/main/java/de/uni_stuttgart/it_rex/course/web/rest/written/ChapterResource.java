@@ -1,12 +1,14 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.written.ChapterService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -58,7 +60,9 @@ public class ChapterResource {
    *
    * @param newChapterService the chapter service.
    */
-  public ChapterResource(final ChapterService newChapterService) {
+  @Autowired
+  public ChapterResource(
+      final ChapterService newChapterService) {
     this.chapterService = newChapterService;
   }
 
@@ -173,6 +177,31 @@ public class ChapterResource {
           "idnull");
     }
     ChapterDTO result = chapterService.patch(chapterDTO);
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
+            true, ENTITY_NAME, result.getId().toString()))
+        .body(result);
+  }
+
+  /**
+   * {@code POST /chapters/:chapterId/addContent/:contentId} : adds the
+   * "contentReferenceId" ContentReference to the "chapter" TimePeriod.
+   *
+   * @param chapterId the id of the Chapter.
+   * @param contentId the id of the Content
+   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and
+   * with body the new contentReference, or with status {@code 400 (Bad
+   * Request)} if the chapter was not found.
+   */
+  @PostMapping("/chapters/{chapterId}/addContent/{contentId}")
+  public ResponseEntity<ContentReferenceDTO> addToTimePeriod(
+      @PathVariable final UUID chapterId,
+      @PathVariable final UUID contentId) {
+    log.debug("REST request to add ContentReference: {} to Chapter: {}",
+        chapterId, contentId);
+
+    ContentReferenceDTO result = chapterService
+        .addToChapter(chapterId, contentId);
     return ResponseEntity.ok()
         .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
             true, ENTITY_NAME, result.getId().toString()))

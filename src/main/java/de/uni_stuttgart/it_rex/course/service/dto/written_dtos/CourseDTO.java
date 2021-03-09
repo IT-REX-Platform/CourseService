@@ -13,21 +13,20 @@ public class CourseDTO {
      * Id.
      */
     private UUID id;
-
     /**
      * Name.
      */
     private String name;
 
-  /**
-   * courseRole.
-   */
-  private COURSEROLE courseRole;
+    /**
+     * courseRole.
+     */
+    private COURSEROLE courseRole;
 
-  /**
-   * Start date.
-   */
-  private LocalDate startDate;
+    /**
+     * Start date.
+     */
+    private LocalDate startDate;
 
     /**
      * End date.
@@ -82,32 +81,23 @@ public class CourseDTO {
         this.id = newId;
     }
 
-  /**
-   * Getter.
-   *
-   * @return the courseRole
-   */
-  public COURSEROLE getCourseRole() {
-    return courseRole;
-  }
+    /**
+     * Getter.
+     *
+     * @return the courseRole
+     */
+    public COURSEROLE getCourseRole() {
+        return courseRole;
+    }
 
-  /**
-   * Setter.
-   *
-   * @param newCourseRole the courseRole
-   */
-  public void setCourseRole(final COURSEROLE newCourseRole) {
-    this.courseRole = newCourseRole;
-  }
-
-  /**
-   * Getter.
-   *
-   * @return the start date.
-   */
-  public LocalDate getStartDate() {
-    return startDate;
-  }
+    /**
+     * Setter.
+     *
+     * @param newCourseRole the courseRole
+     */
+    public void setCourseRole(final COURSEROLE newCourseRole) {
+        this.courseRole = newCourseRole;
+    }
 
     /**
      * Setter.
@@ -116,6 +106,15 @@ public class CourseDTO {
      */
     public void setName(final String newName) {
         this.name = newName;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -225,53 +224,14 @@ public class CourseDTO {
     public void setTimePeriods(final List<TimePeriodDTO> newTimePeriods) {
         this.timePeriods = newTimePeriods;
     }
-    CourseDTO course = (CourseDTO) o;
-    return Objects.equals(getId(), course.getId())
-        && Objects.equals(getName(), course.getName())
-        && Objects.equals(getCourseRole(), course.getCourseRole())
-        && Objects.equals(getStartDate(), course.getStartDate())
-        && Objects.equals(getEndDate(), course.getEndDate())
-        && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
-        && Objects.equals(getCourseDescription(),
-        course.getCourseDescription())
-        && getPublishState() == course.getPublishState();
-  }
 
-  /**
-   * Hash code.
-   *
-   * @return the hash code.
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId(),
-        getName(),
-        getCourseRole(),
-        getStartDate(),
-        getEndDate(),
-        getMaxFoodSum(),
-        getCourseDescription(),
-        getPublishState());
-  }
+    public List<ChapterDTO> getChapters() {
+        return chapters;
+    }
 
-  /**
-   * Converts the dto to a string.
-   *
-   * @return the string
-   */
-  @Override
-  public String toString() {
-    return "CourseDTO{"
-        + "id=" + id
-        + ", name='" + name + '\''
-        + ", courseRole='" + courseRole + '\''
-        + ", startDate=" + startDate
-        + ", endDate=" + endDate
-        + ", maxFoodSum=" + maxFoodSum
-        + ", courseDescription='" + courseDescription + '\''
-        + ", publishState=" + publishState
-        + '}';
-  }
+    public void setChapters(final List<ChapterDTO> chapters) {
+        this.chapters = chapters;
+    }
 
     /**
      * Equals method.

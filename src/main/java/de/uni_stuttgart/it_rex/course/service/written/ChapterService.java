@@ -3,7 +3,9 @@ package de.uni_stuttgart.it_rex.course.service.written;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
+import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,11 @@ public class ChapterService {
       = LoggerFactory.getLogger(ChapterService.class);
 
   /**
+   * ContentReferenceService.
+   */
+  private final ContentReferenceService contentReferenceService;
+
+  /**
    * Chapter Repository.
    */
   private final ChapterRepository chapterRepository;
@@ -44,8 +51,11 @@ public class ChapterService {
    * @param newChapterMapper
    */
   @Autowired
-  public ChapterService(final ChapterRepository newChapterRepository,
-                        final ChapterMapper newChapterMapper) {
+  public ChapterService(
+      final ContentReferenceService newContentReferenceService,
+      final ChapterRepository newChapterRepository,
+      final ChapterMapper newChapterMapper) {
+    this.contentReferenceService = newContentReferenceService;
     this.chapterRepository = newChapterRepository;
     this.chapterMapper = newChapterMapper;
   }
@@ -56,6 +66,7 @@ public class ChapterService {
    * @param chapterDTO the Chapter to save.
    * @return the persisted Chapter.
    */
+  @Transactional
   public ChapterDTO save(final ChapterDTO chapterDTO) {
     LOGGER.debug("Request to save Chapter : {}", chapterDTO);
     final Chapter chapter = chapterRepository
@@ -121,5 +132,27 @@ public class ChapterService {
       return chapterMapper.toDTO(chapterRepository.save(oldChapterEntity));
     }
     return null;
+  }
+
+  /**
+   * Adds a ContentReference to a Chapter by id.
+   *
+   * @param chapterId          the id of the Chapter
+   * @param contentReferenceId the id of the ContentReference
+   * @return the added ContentReference
+   */
+  @Transactional
+  public ContentReferenceDTO addToChapter(final UUID chapterId,
+                                          final UUID contentReferenceId) {
+    final Chapter chapter = chapterRepository.findById(chapterId)
+        .orElseThrow(() -> new BadRequestAlertException("Invalid id",
+            Chapter.class.getName(), "idnotfound"));
+
+    final ContentReferenceDTO contentReferenceDTO = new ContentReferenceDTO();
+    contentReferenceDTO.setContentId(contentReferenceId);
+   // contentReferenceDTO.setIndex(chapter.getContentReferences().size());
+    contentReferenceDTO.setChapterId(chapter.getId());
+
+    return contentReferenceService.save(contentReferenceDTO);
   }
 }

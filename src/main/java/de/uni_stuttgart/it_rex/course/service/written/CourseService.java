@@ -125,9 +125,9 @@ public class CourseService {
             RexAuthz.getCourseGroupString(storedCourse.getId(), COURSEROLE.OWNER);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
-        CourseDTO courseDto = courseMapper.toDTO(storedCourse);
-        addRoleofUserToDto(courseDto);
-        return courseDto;
+       // CourseDTO courseDto = courseMapper.toDTO(storedCourse);
+        addRoleofUserToDto(storedCourse);
+        return storedCourse;
     }
 
     /**
@@ -342,7 +342,7 @@ public class CourseService {
      * adds the {@link COURSEROLE} of the user to a {@link List} of
      * {@link CourseDTO}.
      *
-     * @param courseDto the courseDtos.
+     * @param courseDtos the courseDtos.
      */
     private void addRoleofUserToDto(List<CourseDTO> courseDtos) {
         courseDtos.forEach(o -> addRoleofUserToDto(o));

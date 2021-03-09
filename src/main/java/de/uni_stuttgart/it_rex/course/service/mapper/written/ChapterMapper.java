@@ -1,12 +1,13 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
-import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
+import org.mapstruct.Context;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Mapper(componentModel = "spring",
     uses = ContentReferenceMapper.class,
@@ -25,6 +28,9 @@ public abstract class ChapterMapper {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private  ContentReferenceMapper contentReferenceMapper;
 
     /**
      * Updates an entity from a DTO.
@@ -79,6 +85,20 @@ public abstract class ChapterMapper {
         }
     }
 
+    @AfterMapping
+    protected void setContentReferences(
+        ChapterDTO chapterDTO, @MappingTarget Chapter chapter) {
+        chapter.setContentReferences(IntStream
+            .range(0, chapterDTO.getContentReferences().size()).mapToObj(i -> {
+                final ContentReferenceDTO contentReferenceDTO
+                    = chapterDTO.getContentReferences().get(i);
+                final ContentReference contentReference
+                    = contentReferenceMapper.toEntity(contentReferenceDTO);
+                contentReference.setIndex(i);
+                return contentReference;
+            }).collect(Collectors.toList()));
+    }
+
     /**
      * Converts a DTO to an entity.
      *
@@ -86,5 +106,6 @@ public abstract class ChapterMapper {
      * @return the entity
      */
     @Mapping(target = "course", ignore = true)
-    public abstract Chapter toEntity(final ChapterDTO chapterDTO) ;
+    @Mapping(target = "contentReferences", ignore = true)
+    public abstract Chapter toEntity(final ChapterDTO chapterDTO);
 }

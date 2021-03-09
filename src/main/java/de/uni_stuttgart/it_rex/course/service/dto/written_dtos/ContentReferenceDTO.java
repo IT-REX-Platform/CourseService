@@ -9,10 +9,10 @@ public class ContentReferenceDTO {
      */
     private UUID id;
 
-    /**
-     * Index.
-     */
-    private Integer index;
+    //  /**
+    //   * Index.
+    //   */
+    //  private Integer index;
 
     /**
      * Content id.
@@ -51,14 +51,6 @@ public class ContentReferenceDTO {
 
     public void setChapterId(UUID chapterId) {
         this.chapterId = chapterId;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(final Integer index) {
-        this.index = index;
     }
 
     @Override

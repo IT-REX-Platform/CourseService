@@ -5,6 +5,7 @@ import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -26,6 +27,8 @@ public abstract class CourseMapper {
      */
     @BeanMapping(nullValuePropertyMappingStrategy =
         NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "timePeriods", source = "timePeriods",
+        dependsOn = "chapters")
     public abstract void updateCourseFromCourseDTO(
         CourseDTO update,
         @MappingTarget Course toUpdate);
@@ -36,6 +39,7 @@ public abstract class CourseMapper {
      * @param course the entity
      * @return the dto
      */
+    @Mapping(target = "courseRole", ignore = true)
     public abstract CourseDTO toDTO(final Course course);
 
     /**
@@ -65,6 +69,8 @@ public abstract class CourseMapper {
      * @param courseDTO the dto
      * @return the entity
      */
+    @Mapping(target = "timePeriods", source = "timePeriods",
+        dependsOn = "chapters")
     public abstract Course toEntity(final CourseDTO courseDTO);
 
     /**

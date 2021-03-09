@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public abstract class ContentReferenceMapper {
@@ -34,6 +33,7 @@ public abstract class ContentReferenceMapper {
      */
     @Mapping(target = "chapter", ignore = true)
     @Mapping(target = "timePeriod", ignore = true)
+    @Mapping(target = "index", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy =
         NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateContentReferenceFromContentReferenceDTO(
@@ -42,6 +42,7 @@ public abstract class ContentReferenceMapper {
 
     @Mapping(target = "chapter", ignore = true)
     @Mapping(target = "timePeriod", ignore = true)
+    @Mapping(target = "index", ignore = true)
     public abstract ContentReference toEntity(
         final ContentReferenceDTO contentReferenceDTO);
 
@@ -60,6 +61,14 @@ public abstract class ContentReferenceMapper {
             timePeriodRepository.findById(contentReferenceDTO.getTimePeriodId())
                 .ifPresent(contentReference::setTimePeriod);
         }
+    }
+
+    @AfterMapping
+    protected void setIndex(@MappingTarget ContentReference contentReference) {
+        contentReference.setIndex(  contentReference
+                .getChapter()
+                .getContentReferences()
+                .indexOf(contentReference));
     }
 
     @Mapping(target = "chapterId", source = "chapter.id")
