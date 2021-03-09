@@ -79,25 +79,6 @@ public class CourseResource {
     }
 
     /**
-     * {@code GET  /courses} : get all the courses.
-     * Filters them by the publish state if it exists.
-     * Optionally only select active courses.
-     *
-     * @param publishState Publish state of course.
-     * @param activeOnly Set true to only include active courses (current time
-     *                   between course start and end date + offset).
-     * @return A list of courses that fit the given parameters.
-     */
-    @GetMapping("/courses")
-    public List<CourseDTO> getAllCourses(
-        @RequestParam("publishState") final Optional<PUBLISHSTATE>
-            publishState,
-        @RequestParam("activeOnly") final Optional<Boolean> activeOnly) {
-        log.debug("REST request to get filtered Courses");
-        return courseService.findAll(publishState, activeOnly);
-    }
-
-    /**
      * {@code POST  /courses} : Create a new course.
      *
      * @param courseDTO the course to create.
@@ -221,31 +202,6 @@ public class CourseResource {
         courseService.leave(id);
 
         return ResponseEntity.ok().build();
-    }
-
-    /**
-     * {@code PATCH  /courses} : Patches an existing course.
-     *
-     * @param courseDTO the course to patch.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-     * body the updated course,
-     * or with status {@code 400 (Bad Request)} if the course is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the course
-     * couldn't be patched.
-     */
-    @PatchMapping("/courses")
-    public ResponseEntity<CourseDTO> patchCourse(
-        @RequestBody final CourseDTO courseDTO) {
-        log.debug("REST request to patch Course : {}", courseDTO);
-        if (courseDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
-                "idnull");
-        }
-        final CourseDTO result = courseService.patch(courseDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
     }
 
     /**

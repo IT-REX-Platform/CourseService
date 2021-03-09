@@ -108,7 +108,6 @@ public class CourseService {
     @Transactional
     public CourseDTO create(final CourseDTO courseDTO) {
         LOGGER.debug("Request to create Course : {}", courseDTO);
-        final CourseDTO storedCourse = this.save(courseDTO);
 
         final List<TimePeriodDTO> storedTimePeriodDTOS = timePeriodService
             .createTimePeriodDTOsInRange(courseDTO.getStartDate(),
