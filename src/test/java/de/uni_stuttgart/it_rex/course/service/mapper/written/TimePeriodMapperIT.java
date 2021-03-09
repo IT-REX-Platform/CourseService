@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest(classes = {CourseServiceApp.class, TestSecurityConfiguration.class})
@@ -45,6 +46,7 @@ class TimePeriodMapperIT {
     expected.setId(TimePeriod.getId());
     expected.setStartDate(TimePeriod.getStartDate());
     expected.setEndDate(TimePeriod.getEndDate());
+    expected.setContentReferenceIds(List.of());
 
     TimePeriodDTO result = timePeriodMapper.toDTO(TimePeriod);
     TimePeriodUtil.equalsTimePeriodDTO(expected, result);

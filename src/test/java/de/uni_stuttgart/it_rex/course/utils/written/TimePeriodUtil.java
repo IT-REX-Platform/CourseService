@@ -5,6 +5,7 @@ import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -33,7 +34,8 @@ public final class TimePeriodUtil {
      * @param first
      * @param second
      */
-    public static void equalsTimePeriod(final TimePeriod first, final TimePeriod second) {
+    public static void equalsTimePeriod(final TimePeriod first,
+                                        final TimePeriod second) {
         assertEquals(first.getStartDate(), second.getStartDate());
         assertEquals(first.getEndDate(), second.getEndDate());
 
@@ -54,6 +56,25 @@ public final class TimePeriodUtil {
             .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
         timePeriodDTO.setEndDate(LocalDate.now()
             .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        timePeriodDTO.setContentReferenceIds(List.of());
+        return timePeriodDTO;
+    }
+
+    /**
+     * Creates a DTO from given values.
+     *
+     * @return the DTO
+     */
+    public static TimePeriodDTO createTimePeriodDTO(
+        final LocalDate startDate,
+        final LocalDate endDate,
+        final UUID courseId,
+        final List<UUID> contentReferenceIds) {
+        TimePeriodDTO timePeriodDTO = new TimePeriodDTO();
+        timePeriodDTO.setStartDate(startDate);
+        timePeriodDTO.setEndDate(endDate);
+        timePeriodDTO.setCourseId(courseId);
+        timePeriodDTO.setContentReferenceIds(contentReferenceIds);
         return timePeriodDTO;
     }
 
@@ -64,7 +85,8 @@ public final class TimePeriodUtil {
      * @return the DTOs
      */
     public static List<TimePeriodDTO> createTimePeriodDTOs(final int number) {
-        return IntStream.range(0, number).mapToObj(i -> createTimePeriodDTO()).collect(Collectors.toList());
+        return IntStream.range(0, number).mapToObj(i -> createTimePeriodDTO())
+            .collect(Collectors.toList());
     }
 
 
@@ -74,14 +96,27 @@ public final class TimePeriodUtil {
      * @param first
      * @param second
      */
-    public static void equalsTimePeriodDTO(final TimePeriodDTO first, final TimePeriodDTO second) {
+    public static void equalsTimePeriodDTO(final TimePeriodDTO first,
+                                           final TimePeriodDTO second) {
         assertEquals(first.getStartDate(), second.getStartDate());
         assertEquals(first.getEndDate(), second.getEndDate());
-
-        /* Todo: replace with equals methods
-        assertEquals(first.getCourse(), second.getCourse());
-        assertEquals(first.getContentReferences(), second.getContentReferences());
-         */
+        assertEquals(first.getCourseId(), second.getCourseId());
+        assertEquals(first.getContentReferenceIds(),
+            second.getContentReferenceIds());
     }
 
+    /**
+     * Tests if two Lists of DTOs are equal but ignores their id.
+     *
+     * @param first
+     * @param second
+     */
+    public static boolean equalsTimePeriodDTOs(final List<TimePeriodDTO> first,
+                                           final List<TimePeriodDTO> second) {
+        assertEquals(first.size(), second.size());
+        for(int i = 0; i < first.size(); i++) {
+            equalsTimePeriodDTO(first.get(i), second.get(i));
+        }
+        return true;
+    }
 }
