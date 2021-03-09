@@ -90,223 +90,178 @@ public class CourseDTO {
         return courseRole;
     }
 
-    /**
-     * Setter.
-     *
-     * @param newCourseRole the courseRole
-     */
-    public void setCourseRole(final COURSEROLE newCourseRole) {
-        this.courseRole = newCourseRole;
+  /**
+   * Getter.
+   *
+   * @return the start date.
+   */
+  public LocalDate getStartDate() {
+    return startDate;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newStartDate the start date.
+   */
+  public void setStartDate(final LocalDate newStartDate) {
+    this.startDate = newStartDate;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the end date.
+   */
+  public LocalDate getEndDate() {
+    return endDate;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newEndDate the end date.
+   */
+  public void setEndDate(final LocalDate newEndDate) {
+    this.endDate = newEndDate;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the maximum food sum.
+   */
+  public Integer getMaxFoodSum() {
+    return maxFoodSum;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newMaxFoodSum the maximum food sum
+   */
+  public void setMaxFoodSum(final Integer newMaxFoodSum) {
+    this.maxFoodSum = newMaxFoodSum;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the course description.
+   */
+  public String getCourseDescription() {
+    return courseDescription;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newCourseDescription the course description
+   */
+  public void setCourseDescription(final String newCourseDescription) {
+    this.courseDescription = newCourseDescription;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the publish state
+   */
+  public PUBLISHSTATE getPublishState() {
+    return publishState;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newPublishState the publish state
+   */
+  public void setPublishState(final PUBLISHSTATE newPublishState) {
+    this.publishState = newPublishState;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the chapters
+   */
+  public List<UUID> getChapters() {
+    return chapters;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newChapters the chapters
+   */
+  public void setChapters(final List<UUID> newChapters) {
+    this.chapters = newChapters;
+  }
+
+  /**
+   * Equals method.
+   *
+   * @param o the other instance.
+   * @return if they are equal.
+   */
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof CourseDTO)) {
+      return false;
     }
 
-    /**
-     * Setter.
-     *
-     * @param newName the name
-     */
-    public void setName(final String newName) {
-        this.name = newName;
-    }
+  /**
+   * Hash code.
+   *
+   * @return the hash code.
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(),
+        getName(),
+        getStartDate(),
+        getEndDate(),
+        getMaxFoodSum(),
+        getCourseDescription(),
+        getPublishState());
+  }
 
-    /**
-     * Getter.
-     *
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * Converts the dto to a string.
+   *
+   * @return the string
+   */
+  @Override
+  public String toString() {
+    return "CourseDTO{"
+        + "id=" + id
+        + ", name='" + name + '\''
+        + ", startDate=" + startDate
+        + ", endDate=" + endDate
+        + ", maxFoodSum=" + maxFoodSum
+        + ", courseDescription='" + courseDescription + '\''
+        + ", publishState=" + publishState
+        + '}';
+  }
 
-    /**
-     * Getter.
-     *
-     * @return the start date.
-     */
-    public LocalDate getStartDate() {
-        return startDate;
-    }
+  /**
+   * Getter.
+   *
+   * @return the active offset.
+   */
+  public Integer getRemainActiveOffset() {
+    return remainActiveOffset;
+  }
 
-    /**
-     * Setter.
-     *
-     * @param newStartDate the start date.
-     */
-    public void setStartDate(final LocalDate newStartDate) {
-        this.startDate = newStartDate;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the end date.
-     */
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newEndDate the end date.
-     */
-    public void setEndDate(final LocalDate newEndDate) {
-        this.endDate = newEndDate;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the maximum food sum.
-     */
-    public Integer getMaxFoodSum() {
-        return maxFoodSum;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newMaxFoodSum the maximum food sum
-     */
-    public void setMaxFoodSum(final Integer newMaxFoodSum) {
-        this.maxFoodSum = newMaxFoodSum;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the course description.
-     */
-    public String getCourseDescription() {
-        return courseDescription;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newCourseDescription the course description
-     */
-    public void setCourseDescription(final String newCourseDescription) {
-        this.courseDescription = newCourseDescription;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the publish state
-     */
-    public PUBLISHSTATE getPublishState() {
-        return publishState;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newPublishState the publish state
-     */
-    public void setPublishState(final PUBLISHSTATE newPublishState) {
-        this.publishState = newPublishState;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the time periods
-     */
-    public List<TimePeriodDTO> getTimePeriods() {
-        return timePeriods;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newTimePeriods the time periods
-     */
-    public void setTimePeriods(final List<TimePeriodDTO> newTimePeriods) {
-        this.timePeriods = newTimePeriods;
-    }
-
-    public List<ChapterDTO> getChapters() {
-        return chapters;
-    }
-
-    public void setChapters(final List<ChapterDTO> chapters) {
-        this.chapters = chapters;
-    }
-
-    /**
-     * Equals method.
-     *
-     * @param o the other instance.
-     * @return if they are equal.
-     */
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CourseDTO)) {
-            return false;
-        }
-        CourseDTO course = (CourseDTO) o;
-        return Objects.equals(getId(), course.getId())
-            && Objects.equals(getName(), course.getName())
-            && Objects.equals(getStartDate(), course.getStartDate())
-            && Objects.equals(getEndDate(), course.getEndDate())
-            && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
-            && Objects.equals(getCourseDescription(),
-            course.getCourseDescription())
-            && getPublishState() == course.getPublishState();
-    }
-
-    /**
-     * Hash code.
-     *
-     * @return the hash code.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(),
-            getName(),
-            getStartDate(),
-            getEndDate(),
-            getMaxFoodSum(),
-            getCourseDescription(),
-            getPublishState());
-    }
-
-    /**
-     * Converts the dto to a string.
-     *
-     * @return the string
-     */
-    @Override
-    public String toString() {
-        return "CourseDTO{"
-            + "id=" + id
-            + ", name='" + name + '\''
-            + ", startDate=" + startDate
-            + ", endDate=" + endDate
-            + ", maxFoodSum=" + maxFoodSum
-            + ", courseDescription='" + courseDescription + '\''
-            + ", publishState=" + publishState
-            + '}';
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the active offset.
-     */
-    public Integer getRemainActiveOffset() {
-        return remainActiveOffset;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param remainActiveOffset the active offset.
-     */
-    public void setRemainActiveOffset(final Integer remainActiveOffset) {
-        this.remainActiveOffset = remainActiveOffset;
-    }
+  /**
+   * Setter.
+   *
+   * @param remainActiveOffset the active offset.
+   */
+  public void setRemainActiveOffset(final Integer remainActiveOffset) {
+    this.remainActiveOffset = remainActiveOffset;
+  }
 }

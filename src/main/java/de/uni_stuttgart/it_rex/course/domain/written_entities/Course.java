@@ -279,6 +279,9 @@ public class Course implements Serializable {
      * @param newTimePeriods the time periods
      */
     public void setTimePeriods(final Collection<TimePeriod> newTimePeriods) {
+        if (newTimePeriods == null) {
+            return;
+        }
         timePeriods.clear();
         addTimePeriods(newTimePeriods);
     }
@@ -289,6 +292,9 @@ public class Course implements Serializable {
      * @param newTimePeriod the time period
      */
     public void addTimePeriod(final TimePeriod newTimePeriod) {
+        if (newTimePeriod == null) {
+            return;
+        }
         timePeriods.add(newTimePeriod);
         newTimePeriod.course = this;
     }
@@ -299,6 +305,9 @@ public class Course implements Serializable {
      * @param newTimePeriods the chapterIndexes
      */
     public void addTimePeriods(final Collection<TimePeriod> newTimePeriods) {
+        if (newTimePeriods == null) {
+            return;
+        }
         timePeriods.addAll(newTimePeriods.stream().map(newTimePeriod -> {
             newTimePeriod.course = this;
             return newTimePeriod;
@@ -330,6 +339,9 @@ public class Course implements Serializable {
      * @param newChapters the chapters
      */
     public void setChapters(final Collection<Chapter> newChapters) {
+        if (newChapters == null) {
+            return;
+        }
         chapters.clear();
         addChapters(newChapters);
     }
@@ -340,6 +352,9 @@ public class Course implements Serializable {
      * @param newChapter the chapter
      */
     public void addChapter(final Chapter newChapter) {
+        if (newChapter == null) {
+            return;
+        }
         chapters.add(newChapter);
         newChapter.course = this;
     }
@@ -350,6 +365,9 @@ public class Course implements Serializable {
      * @param newChapters the chapters
      */
     public void addChapters(final Collection<Chapter> newChapters) {
+        if (newChapters == null) {
+            return;
+        }
         chapters.addAll(newChapters.stream().map(newChapter -> {
             newChapter.course = this;
             return newChapter;

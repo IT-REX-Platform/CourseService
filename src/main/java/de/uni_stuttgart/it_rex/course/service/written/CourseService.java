@@ -6,6 +6,7 @@ import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,21 +57,28 @@ public class CourseService {
     private final KeycloakAdminService keycloakAdminService;
 
     /**
+     * TimePeriod Service.
+     */
+    private final TimePeriodService timePeriodService;
+
+    /**
      * Constructor.
      *
      * @param newCourseRepository     the course repository.
      * @param newCourseMapper         the course mapper.
      * @param newKeycloakAdminService the keycloakAdminService.
+     * @param newTimePeriodService    the timePeriodService.
      */
     @Autowired
     public CourseService(final CourseRepository newCourseRepository,
                          final CourseMapper newCourseMapper,
-                         final KeycloakAdminService newKeycloakAdminService) {
+                         final KeycloakAdminService newKeycloakAdminService,
+                         final TimePeriodService newTimePeriodService) {
         this.courseRepository = newCourseRepository;
         this.courseMapper = newCourseMapper;
         this.keycloakAdminService = newKeycloakAdminService;
+        this.timePeriodService = newTimePeriodService;
     }
-
 
     /**
      * Save a course.
@@ -90,12 +98,24 @@ public class CourseService {
      * Creates a Course.
      * TODO: transaction handling
      *
+     * First create the TimePeriods and store them.
+     * Then store the Course entity.
+     * After that add keycloak roles and groups for the course.
+     *
      * @param courseDTO the Chapter
      * @return the created Course
      */
     @Transactional
     public CourseDTO create(final CourseDTO courseDTO) {
         LOGGER.debug("Request to create Course : {}", courseDTO);
+        final CourseDTO storedCourse = this.save(courseDTO);
+
+        final List<TimePeriodDTO> storedTimePeriodDTOS = timePeriodService
+            .createTimePeriodDTOsInRange(courseDTO.getStartDate(),
+                courseDTO.getEndDate(), courseDTO.getId());
+
+        courseDTO.setTimePeriods(storedTimePeriodDTOS);
+
         final CourseDTO storedCourse = this.save(courseDTO);
 
         // Add keycloak roles and groups for the course.
@@ -122,7 +142,8 @@ public class CourseService {
         Authentication auth =
             SecurityContextHolder.getContext().getAuthentication();
         String groupName =
-            RexAuthz.getCourseGroupString(storedCourse.getId(), COURSEROLE.OWNER);
+            RexAuthz
+                .getCourseGroupString(storedCourse.getId(), COURSEROLE.OWNER);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
        // CourseDTO courseDto = courseMapper.toDTO(storedCourse);

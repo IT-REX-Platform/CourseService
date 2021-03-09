@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "time_period")
-public class TimePeriod implements Serializable {
+public class TimePeriod implements Serializable, Organizable {
 
     public TimePeriod() {
         this.contentReferences = new ArrayList<>();

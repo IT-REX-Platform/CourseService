@@ -2,10 +2,13 @@ package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
+import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
+import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.ContentReferenceUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
 import org.junit.jupiter.api.AfterEach;
@@ -40,12 +43,21 @@ class ContentReferenceServiceIT {
   @Autowired
   private CourseRepository courseRepository;
 
+  @Autowired
+  private ChapterRepository chapterRepository;
+
   private static Course THE_COURSE;
+
+  private static Chapter THE_CHAPTER;
 
   @BeforeEach
   void init() {
     THE_COURSE = CourseUtil.createCourse();
     courseRepository.save(THE_COURSE);
+
+    THE_CHAPTER = ChapterUtil.createChapter();
+    THE_CHAPTER.setCourse(THE_COURSE);
+    chapterRepository.save(THE_CHAPTER);
   }
 
   @AfterEach
@@ -57,7 +69,7 @@ class ContentReferenceServiceIT {
   @Test
   void save() {
     final ContentReferenceDTO contentReferenceDTO = ContentReferenceUtil.createContentReferenceDTO();
-    contentReferenceDTO.setChapterId(THE_COURSE.getId());
+    contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
     contentReferenceService.save(contentReferenceDTO);
     final ContentReferenceDTO result = contentReferenceService.findAll().get(0);
     contentReferenceDTO.setId(result.getId());
@@ -71,7 +83,7 @@ class ContentReferenceServiceIT {
     final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setChapterId(THE_COURSE.getId());
+      contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
       contentReferenceService.save(contentReferenceDTO);
     });
 
@@ -84,7 +96,7 @@ class ContentReferenceServiceIT {
     final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setChapterId(THE_COURSE.getId());
+      contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
       contentReferenceService.save(contentReferenceDTO);
     });
 
@@ -100,7 +112,7 @@ class ContentReferenceServiceIT {
     final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
     contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setChapterId(THE_COURSE.getId());
+      contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
       contentReferenceService.save(contentReferenceDTO);
     });
 
@@ -115,7 +127,7 @@ class ContentReferenceServiceIT {
   @Test
   void patch() {
     final ContentReferenceDTO contentReferenceDTO = ContentReferenceUtil.createContentReferenceDTO();
-    contentReferenceDTO.setChapterId(THE_COURSE.getId());
+    contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
     final UUID theId = contentReferenceService.save(contentReferenceDTO).getId();
 
     final ContentReferenceDTO patch = new ContentReferenceDTO();
