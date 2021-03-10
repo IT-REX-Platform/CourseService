@@ -24,9 +24,7 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {CourseServiceApp.class,
     TestSecurityConfiguration.class})
@@ -66,7 +64,8 @@ class TimePeriodServiceIT {
         timePeriodService.save(timePeriodDTO);
         final TimePeriodDTO result = timePeriodService.findAll().get(0);
         timePeriodDTO.setId(result.getId());
-        TimePeriodUtil.equalsTimePeriodDTO(timePeriodDTO, result);
+        timePeriodDTO.setContentReferenceIds(Collections.emptyList());
+        assertEquals(timePeriodDTO, result);
     }
 
     @Test
