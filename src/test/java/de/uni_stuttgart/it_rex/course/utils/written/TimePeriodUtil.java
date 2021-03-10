@@ -21,10 +21,8 @@ public final class TimePeriodUtil {
      */
     public static TimePeriod createTimePeriod() {
         TimePeriod timePeriod = new TimePeriod();
-        timePeriod.setStartDate(LocalDate.now()
-            .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        timePeriod.setEndDate(LocalDate.now()
-            .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        timePeriod.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        timePeriod.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
         return timePeriod;
     }
 
@@ -38,11 +36,6 @@ public final class TimePeriodUtil {
                                         final TimePeriod second) {
         assertEquals(first.getStartDate(), second.getStartDate());
         assertEquals(first.getEndDate(), second.getEndDate());
-
-        /* Todo: replace with equals methods
-        assertEquals(first.getCourse(), second.getCourse());
-        assertEquals(first.getContentReferences(), second.getContentReferences());
-         */
     }
 
     /**
@@ -52,11 +45,8 @@ public final class TimePeriodUtil {
      */
     public static TimePeriodDTO createTimePeriodDTO() {
         TimePeriodDTO timePeriodDTO = new TimePeriodDTO();
-        timePeriodDTO.setStartDate(LocalDate.now()
-            .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        timePeriodDTO.setEndDate(LocalDate.now()
-            .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        timePeriodDTO.setContentReferenceIds(List.of());
+        timePeriodDTO.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        timePeriodDTO.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
         return timePeriodDTO;
     }
 
@@ -85,8 +75,7 @@ public final class TimePeriodUtil {
      * @return the DTOs
      */
     public static List<TimePeriodDTO> createTimePeriodDTOs(final int number) {
-        return IntStream.range(0, number).mapToObj(i -> createTimePeriodDTO())
-            .collect(Collectors.toList());
+        return IntStream.range(0, number).mapToObj(i -> createTimePeriodDTO()).collect(Collectors.toList());
     }
 
 
@@ -101,8 +90,7 @@ public final class TimePeriodUtil {
         assertEquals(first.getStartDate(), second.getStartDate());
         assertEquals(first.getEndDate(), second.getEndDate());
         assertEquals(first.getCourseId(), second.getCourseId());
-        assertEquals(first.getContentReferenceIds(),
-            second.getContentReferenceIds());
+        assertEquals(first.getContentReferenceIds(), second.getContentReferenceIds());
     }
 
     /**

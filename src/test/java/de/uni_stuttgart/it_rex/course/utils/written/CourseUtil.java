@@ -1,12 +1,10 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
-import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -22,13 +20,10 @@ public final class CourseUtil {
     public static Course createCourse() {
         Course course = new Course();
         course.setName(StringUtil.generateRandomString(10, 50));
-        course.setStartDate(LocalDate.now()
-            .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        course.setEndDate(LocalDate.now()
-            .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        course.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        course.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        course.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
         course.setMaxFoodSum(NumbersUtil.generateRandomInteger(1000, 200000));
-        course.setRemainActiveOffset(
-            NumbersUtil.generateRandomInteger(33, 34563));
         course.setCourseDescription(StringUtil.generateRandomString(300, 600));
         course.setPublishState(PublishStateUtil.generateRandomPublishState());
         return course;
@@ -42,18 +37,12 @@ public final class CourseUtil {
     public static CourseDTO createCourseDTO() {
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setName(StringUtil.generateRandomString(10, 50));
-        courseDTO.setStartDate(LocalDate.now()
-            .minusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        courseDTO.setEndDate(LocalDate.now()
-            .plusDays(NumbersUtil.generateRandomInteger(20, 200)));
-        courseDTO
-            .setMaxFoodSum(NumbersUtil.generateRandomInteger(1000, 200000));
-        courseDTO.setRemainActiveOffset(
-            NumbersUtil.generateRandomInteger(33, 34563));
-        courseDTO
-            .setCourseDescription(StringUtil.generateRandomString(300, 600));
-        courseDTO
-            .setPublishState(PublishStateUtil.generateRandomPublishState());
+        courseDTO.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        courseDTO.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
+        courseDTO.setMaxFoodSum(NumbersUtil.generateRandomInteger(1000, 200000));
+        courseDTO.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
+        courseDTO.setCourseDescription(StringUtil.generateRandomString(300, 600));
+        courseDTO.setPublishState(PublishStateUtil.generateRandomPublishState());
         return courseDTO;
     }
 

@@ -40,13 +40,6 @@ public final class ChapterUtil {
      */
     public static void equalsChapter(final Chapter first, final Chapter second) {
         assertEquals(first.getName(), second.getName());
-       // assertEquals(first.getStartDate(), second.getStartDate());
-       // assertEquals(first.getEndDate(), second.getEndDate());
-
-        /* Todo: replace with equals methods
-        assertEquals(first.getCourse(), second.getCourse());
-        assertEquals(first.getContentReferences(), second.getContentReferences());
-        */
     }
 
     /**
@@ -78,13 +71,5 @@ public final class ChapterUtil {
      */
     public static void equalsChapterDTO(final ChapterDTO first, final ChapterDTO second) {
         assertEquals(first.getName(), second.getName());
-     //   assertEquals(first.getStartDate(), second.getStartDate());
-     //   assertEquals(first.getEndDate(), second.getEndDate());
-
-        /* Todo: replace with equals methods
-        assertEquals(first.getCourse(), second.getCourse());
-        assertEquals(first.getContentReferences(), second.getContentReferences());
-        */
     }
-
 }
