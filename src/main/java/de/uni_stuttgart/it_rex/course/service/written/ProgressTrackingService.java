@@ -203,6 +203,43 @@ public class ProgressTrackingService {
     }
 
     /**
+     * Set the last accessed contentReference for a user.
+     *
+     * This information is stored per user per course, and for this purpose there is
+     * exactly one @{@link CourseProgressTracker}-object per user per course.
+     * For faster access, the CourseProgressTracker is identified by its Id.
+     *
+     * @param courseTrackerId a valid, existing Id of a course tracker
+     * @param contentReferenceDTO the last accessed contentReferenceDTO to store
+     *
+     * @return the updated {@link CourseProgressTrackerDTO}-object containing the new reference
+     *
+     * @throws NotFoundException if either the tracker Id or the content reference Id are invalid
+     */
+    @Transactional
+    public CourseProgressTrackerDTO updateLastAccessedContentReference(
+        final UUID courseTrackerId,
+        final ContentReferenceDTO contentReferenceDTO
+    ){
+        Optional<CourseProgressTracker> courseProgressTrackerOptional = courseProgressTrackerRepository.findById(courseTrackerId);
+        if (courseProgressTrackerOptional.isEmpty()){
+            throw new NotFoundException(String.format("There is no CourseProgressTracker with the id %s", courseTrackerId));
+        }
+        Optional<ContentReference> contentReferenceOptional = contentReferenceRepository.findById(contentReferenceDTO.getId());
+        if (contentReferenceOptional.isEmpty()){
+            throw new NotFoundException(String.format("There not ContentReference with the id %s", contentReferenceDTO.getId()));
+        }
+
+        CourseProgressTracker courseProgressTracker = courseProgressTrackerOptional.get();
+        ContentReference lastAccessedContentReference = contentReferenceOptional.get();
+
+        courseProgressTracker.setLastContentReference(lastAccessedContentReference);
+        courseProgressTrackerRepository.saveAndFlush(courseProgressTracker);
+
+        return courseProgressTrackerMapper.toDTO(courseProgressTracker);
+    }
+
+    /**
      * Initialize the progress tracking for a user in a course.
      * <p>
      * To be used only once when a user joins a course.

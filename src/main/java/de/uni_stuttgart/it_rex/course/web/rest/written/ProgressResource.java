@@ -33,9 +33,14 @@ public class ProgressResource {
     private final Logger log = LoggerFactory.getLogger(ChapterResource.class);
 
     /**
-     * Entity name.
+     * Entity name for the @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker}.
      */
     private static final String ENTITY_NAME_COURSEPT = "CourseProgressTracker";
+
+    /**
+     * Entity name for the @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker}.
+     */
+    private static final String ENTITY_NAME_CONTENTPT = "ContentProgressTracker";
 
     /**
      * Application name.
@@ -91,6 +96,18 @@ public class ProgressResource {
         return ResponseUtil.wrapOrNotFound(Optional.of(progress));
     }
 
+    @PutMapping("/courses/{courseTrackerId}/contentReference")
+    public ResponseEntity<CourseProgressTrackerDTO> updateLastAccessedContentReference(
+        @PathVariable final UUID courseTrackerId,
+        @RequestBody final ContentReferenceDTO contentReferenceDTO){
+        CourseProgressTrackerDTO result = progressTrackingService.updateLastAccessedContentReference(courseTrackerId,contentReferenceDTO);
+
+        return ResponseEntity.ok().
+            headers(HeaderUtil.createEntityUpdateAlert(
+                applicationName,true, ENTITY_NAME_COURSEPT, result.getId().toString())).
+            body(result);
+    }
+
     /**
      * {@code GET  /content/:trackerId} : Get Content Progress Tracker for Content Item for User
      *
@@ -133,7 +150,7 @@ public class ProgressResource {
 
         return ResponseEntity.created(new URI("/api/progress/content/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName,
-                true, ENTITY_NAME_COURSEPT, result.getId().toString()))
+                true, ENTITY_NAME_CONTENTPT, result.getId().toString()))
             .body(result);
     }
 
@@ -161,7 +178,7 @@ public class ProgressResource {
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME_COURSEPT, contentProgressTrackerDTO.getId().toString()))
+                true, ENTITY_NAME_CONTENTPT, contentProgressTrackerDTO.getId().toString()))
             .body(contentProgressTrackerDTO);
     }
 
@@ -181,12 +198,11 @@ public class ProgressResource {
         log.debug("REST request to put Content State on Complete for Content Item : {}",
             trackerId);
 
-        UUID userId = RexAuthz.getUserId();
         ContentProgressTrackerDTO contentProgressTrackerDTO = progressTrackingService.completeContentProgressTracker(trackerId);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME_COURSEPT, contentProgressTrackerDTO.getId().toString()))
+                true, ENTITY_NAME_CONTENTPT, contentProgressTrackerDTO.getId().toString()))
             .body(contentProgressTrackerDTO);
     }
 }
