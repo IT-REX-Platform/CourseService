@@ -115,7 +115,7 @@ public class ProgressResource {
      *    * and with body of the new content progress tracker, or with status {@code 400 (Bad Request)}
      *    * if the content progress tracker has already an ID.
      */
-    @PostMapping("/content/")
+    @PostMapping("/content")
     public ResponseEntity<ContentProgressTrackerDTO> createContentProgress(
         @RequestBody ContentReferenceDTO contentReferenceDTO,
         @RequestParam UUID courseTrackerId
