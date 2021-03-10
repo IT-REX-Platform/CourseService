@@ -1,15 +1,15 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.REXROLE;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
-import de.uni_stuttgart.it_rex.course.domain.enumeration.REXROLE;
-
 /**
- * The DTO for user information
+ * The DTO for user information.
  */
 public class UserDTO implements Serializable {
 
@@ -204,20 +204,22 @@ public class UserDTO implements Serializable {
      * @return if they are equal
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(getId(), userDTO.getId()) 
-                && Objects.equals(getUserName(), userDTO.getUserName())
-                && Objects.equals(getName(), userDTO.getName())
-                && Objects.equals(getGivenName(), userDTO.getGivenName())
-                && Objects.equals(getFamilyName(), userDTO.getFamilyName())
-                && Objects.equals(getEmail(), userDTO.getEmail()) 
-                && getRexRole() == userDTO.getRexRole()
-                && Objects.equals(getCourses(), userDTO.getCourses());
+        return Objects.equals(getId(), userDTO.getId())
+            && Objects.equals(getUserName(), userDTO.getUserName())
+            && Objects.equals(getName(), userDTO.getName())
+            && Objects.equals(getGivenName(), userDTO.getGivenName())
+            && Objects.equals(getFamilyName(), userDTO.getFamilyName())
+            && Objects.equals(getEmail(), userDTO.getEmail())
+            && getRexRole() == userDTO.getRexRole()
+            && Objects.equals(getCourses(), userDTO.getCourses());
     }
 
     /**
@@ -245,15 +247,14 @@ public class UserDTO implements Serializable {
      */
     @Override
     public String toString() {
-        return "UserDTO{" +
-            "id=" + id +
-            ", userName='" + userName + '\'' +
-            ", name='" + name + '\'' +
-            ", givenName='" + givenName + '\'' +
-            ", familyName='" + familyName + '\'' +
-            ", email='" + email + '\'' +
-            ", rexRole=" + rexRole +
-            ", courses=" + courses +
-            '}';
+        return "UserDTO{"
+            + "id=" + id
+            + ", userName='" + userName + '\''
+            + ", name='" + name + '\''
+            + ", givenName='" + givenName + '\''
+            + ", familyName='" + familyName + '\''
+            + ", email='" + email + '\''
+            + ", rexRole=" + rexRole
+            + ", courses=" + courses + '}';
     }
 }

@@ -24,30 +24,75 @@ public class ContentReferenceDTO {
      */
     private UUID timePeriodId;
 
+    /**
+     * Getter.
+     * @return the id
+     */
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    /**
+     * Setter.
+     * @param newId the id
+     */
+    public void setId(final UUID newId) {
+        this.id = newId;
     }
 
+    /**
+     * Getter.
+     * @return the Content Id
+     */
     public UUID getContentId() {
         return contentId;
     }
 
-    public void setContentId(UUID contentId) {
-        this.contentId = contentId;
+    /**
+     * Setter.
+     * @param newContentId the Content Id
+     */
+    public void setContentId(final UUID newContentId) {
+        this.contentId = newContentId;
     }
 
+    /**
+     * Getter.
+     * @return the Chapter Id.
+     */
     public UUID getChapterId() {
         return chapterId;
     }
 
-    public void setChapterId(UUID chapterId) {
-        this.chapterId = chapterId;
+    /**
+     * Setter.
+     * @param newChapterId the Chapter Id.
+     */
+    public void setChapterId(final UUID newChapterId) {
+        this.chapterId = newChapterId;
     }
 
+    /**
+     * Getter.
+     * @return the TimePeriod id.
+     */
+    public UUID getTimePeriodId() {
+        return timePeriodId;
+    }
+
+    /**
+     * Setter.
+     * @param newTimePeriodId the TimePeriod id.
+     */
+    public void setTimePeriodId(final UUID newTimePeriodId) {
+        this.timePeriodId = newTimePeriodId;
+    }
+
+    /**
+     * Equals method.
+     * @param o the other object
+     * @return if they are equal
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -58,21 +103,34 @@ public class ContentReferenceDTO {
         }
         final ContentReferenceDTO that = (ContentReferenceDTO) o;
         return Objects.equals(getId(), that.getId())
-            && Objects.equals(getContentId(), that.getContentId());
+            && Objects.equals(getContentId(), that.getContentId())
+            && Objects.equals(getChapterId(), that.getChapterId())
+            && Objects.equals(getTimePeriodId(), that.getTimePeriodId());
     }
 
+    /**
+     * Hash code.
+     * @return the Hash code
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(),
+        return Objects.hash(
+            getId(),
             getContentId(),
-            getChapterId());
+            getChapterId(),
+            getTimePeriodId());
     }
 
-    public UUID getTimePeriodId() {
-        return timePeriodId;
-    }
-
-    public void setTimePeriodId(final UUID timePeriodId) {
-        this.timePeriodId = timePeriodId;
+    /**
+     * To String method.
+     * @return the String
+     */
+    @Override
+    public String toString() {
+        return "ContentReferenceDTO{"
+            + "id=" + id
+            + ", contentId=" + contentId
+            + ", chapterId=" + chapterId
+            + ", timePeriodId=" + timePeriodId + '}';
     }
 }

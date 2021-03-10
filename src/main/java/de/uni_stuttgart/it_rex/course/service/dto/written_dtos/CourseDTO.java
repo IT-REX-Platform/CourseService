@@ -93,6 +93,15 @@ public class CourseDTO {
     /**
      * Getter.
      *
+     * @param newCourseRole the courseRole
+     */
+    public void setCourseRole(final COURSEROLE newCourseRole) {
+        this.courseRole = newCourseRole;
+    }
+
+    /**
+     * Getter.
+     *
      * @return the start date.
      */
     public LocalDate getStartDate() {
@@ -180,16 +189,22 @@ public class CourseDTO {
         this.publishState = newPublishState;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public void setCourseRole(final COURSEROLE courseRole) {
-        this.courseRole = courseRole;
+    /**
+     * Setter.
+     *
+     * @param newName the name
+     */
+    public void setName(final String newName) {
+        this.name = newName;
     }
 
     /**
@@ -204,10 +219,10 @@ public class CourseDTO {
     /**
      * Setter.
      *
-     * @param remainActiveOffset the active offset.
+     * @param newRemainActiveOffset the active offset.
      */
-    public void setRemainActiveOffset(final Integer remainActiveOffset) {
-        this.remainActiveOffset = remainActiveOffset;
+    public void setRemainActiveOffset(final Integer newRemainActiveOffset) {
+        this.remainActiveOffset = newRemainActiveOffset;
     }
 
     /**
@@ -273,7 +288,7 @@ public class CourseDTO {
             && Objects.equals(getCourseDescription(),
             courseDTO.getCourseDescription())
             && getPublishState() == courseDTO.getPublishState()
-            && Objects.equals(timePeriods, courseDTO.timePeriods)
+            && Objects.equals(getTimePeriods(), courseDTO.getTimePeriods())
             && Objects.equals(getChapters(), courseDTO.getChapters());
     }
 
@@ -284,8 +299,7 @@ public class CourseDTO {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(
-            getId(),
+        return Objects.hash(getId(),
             getName(),
             getCourseRole(),
             getStartDate(),
@@ -294,7 +308,7 @@ public class CourseDTO {
             getRemainActiveOffset(),
             getCourseDescription(),
             getPublishState(),
-            timePeriods,
+            getTimePeriods(),
             getChapters());
     }
 
@@ -305,18 +319,18 @@ public class CourseDTO {
      */
     @Override
     public String toString() {
-        return "CourseDTO{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", courseRole=" + courseRole +
-            ", startDate=" + startDate +
-            ", endDate=" + endDate +
-            ", maxFoodSum=" + maxFoodSum +
-            ", remainActiveOffset=" + remainActiveOffset +
-            ", courseDescription='" + courseDescription + '\'' +
-            ", publishState=" + publishState +
-            ", timePeriods=" + timePeriods +
-            ", chapters=" + chapters +
-            '}';
+        return "CourseDTO{"
+            + "id=" + id
+            + ", name='" + name + '\''
+            + ", courseRole=" + courseRole
+            + ", startDate=" + startDate
+            + ", endDate=" + endDate
+            + ", maxFoodSum=" + maxFoodSum
+            + ", remainActiveOffset=" + remainActiveOffset
+            + ", courseDescription='" + courseDescription + '\''
+            + ", publishState=" + publishState
+            + ", timePeriods=" + timePeriods
+            + ", chapters=" + chapters
+            + '}';
     }
 }

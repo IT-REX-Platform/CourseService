@@ -26,50 +26,6 @@ public class ChapterDTO {
   private List<ContentReferenceDTO> contentReferences;
 
   /**
-   * Equals method.
-   *
-   * @param o the other object.
-   * @return if they are equal
-   */
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof ChapterDTO)) {
-      return false;
-    }
-    final ChapterDTO chapterDTO = (ChapterDTO) o;
-    return Objects.equals(getId(), chapterDTO.getId())
-        && Objects.equals(getName(), chapterDTO.getName())
-        && Objects.equals(getCourseId(), chapterDTO.getCourseId());
-  }
-
-  /**
-   * Hash code method.
-   *
-   * @return the hash code.
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId(),
-        getName(),
-        getCourseId());
-  }
-
-  /**
-   * To string method.
-   *
-   * @return the string
-   */
-  @Override
-  public String toString() {
-    return "ChapterDTO{" + "id=" + id
-        + ", title='" + name + '\''
-        + ", courseId=" + courseId + '}';
-  }
-
-  /**
    * Getter.
    *
    * @return the id
@@ -123,11 +79,71 @@ public class ChapterDTO {
     this.courseId = newCourseId;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the ContentReferences
+   */
   public List<ContentReferenceDTO> getContentReferences() {
     return contentReferences;
   }
 
-  public void setContentReferences(final List<ContentReferenceDTO> contentReferences) {
-    this.contentReferences = contentReferences;
+  /**
+   * Setter.
+   *
+   * @param newContentReferences the ContentReferences
+   */
+  public void setContentReferences(
+      final List<ContentReferenceDTO> newContentReferences) {
+    this.contentReferences = newContentReferences;
+  }
+
+  /**
+   * Equals method.
+   *
+   * @param o the other object.
+   * @return if they are equal
+   */
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ChapterDTO)) {
+      return false;
+    }
+    final ChapterDTO that = (ChapterDTO) o;
+    return Objects.equals(getId(), that.getId())
+        && Objects.equals(getName(), that.getName())
+        && Objects.equals(getCourseId(), that.getCourseId())
+        && Objects.equals(getContentReferences(), that.getContentReferences());
+  }
+
+  /**
+   * Hash code method.
+   *
+   * @return the hash code.
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        getId(),
+        getName(),
+        getCourseId(),
+        getContentReferences());
+  }
+
+  /**
+   * To string method.
+   *
+   * @return the string
+   */
+  @Override
+  public String toString() {
+    return "ChapterDTO{"
+        + "id=" + id
+        + ", name='" + name + '\''
+        + ", courseId=" + courseId
+        + ", contentReferences=" + contentReferences + '}';
   }
 }

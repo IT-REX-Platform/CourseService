@@ -32,47 +32,103 @@ public class TimePeriodDTO {
      */
     private List<UUID> contentReferenceIds;
 
+    /**
+     * Getter.
+     *
+     * @return the id
+     */
     public UUID getId() {
         return id;
     }
 
-    public void setId(final UUID id) {
-        this.id = id;
+    /**
+     * Setter.
+     *
+     * @param newId the id
+     */
+    public void setId(final UUID newId) {
+        this.id = newId;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the start date
+     */
     public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(final LocalDate startDate) {
-        this.startDate = startDate;
+    /**
+     * Setter.
+     *
+     * @param newStartDate the start date
+     */
+    public void setStartDate(final LocalDate newStartDate) {
+        this.startDate = newStartDate;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the end date
+     */
     public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(final LocalDate endDate) {
-        this.endDate = endDate;
+    /**
+     * Setter.
+     *
+     * @param newEndDate the end date
+     */
+    public void setEndDate(final LocalDate newEndDate) {
+        this.endDate = newEndDate;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the Course Id
+     */
     public UUID getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(final UUID courseId) {
-        this.courseId = courseId;
+    /**
+     * Setter.
+     *
+     * @param newCourseId the Course Id
+     */
+    public void setCourseId(final UUID newCourseId) {
+        this.courseId = newCourseId;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the ContentReference Ids
+     */
     public List<UUID> getContentReferenceIds() {
         return contentReferenceIds;
     }
 
+    /**
+     * Setter.
+     *
+     * @param newContentReferenceIds the ContentReference Ids
+     */
     public void setContentReferenceIds(
-        List<UUID> contentReferenceIds) {
-        this.contentReferenceIds = contentReferenceIds;
+        final List<UUID> newContentReferenceIds) {
+        this.contentReferenceIds = newContentReferenceIds;
     }
 
+    /**
+     * Equals method.
+     *
+     * @param o the other object
+     * @return if they are equal
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -90,12 +146,34 @@ public class TimePeriodDTO {
             that.getContentReferenceIds());
     }
 
+    /**
+     * Hash code.
+     *
+     * @return the hash code
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(),
+        return Objects.hash(
+            getId(),
             getStartDate(),
             getEndDate(),
             getCourseId(),
             getContentReferenceIds());
+    }
+
+    /**
+     * To String method.
+     *
+     * @return the String
+     */
+    @Override
+    public String toString() {
+        return "TimePeriodDTO{"
+            + "id=" + id
+            + ", startDate=" + startDate
+            + ", endDate=" + endDate
+            + ", courseId=" + courseId
+            + ", contentReferenceIds=" + contentReferenceIds
+            + '}';
     }
 }
