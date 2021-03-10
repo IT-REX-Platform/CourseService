@@ -21,8 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,14 +49,6 @@ class ProgressResourceIT {
     private static final UUID FIRST_USER_ID = UUID.randomUUID();
     private static final UUID SECOND_USER_ID = UUID.randomUUID();
     private static final UUID THIRD_USER_ID = UUID.randomUUID();
-
-    private static final LocalDate FIRST_START_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate SECOND_START_DATE = LocalDate.now(ZoneId.systemDefault());
-    private static final LocalDate THIRD_START_DATE = LocalDate.now(ZoneId.systemDefault());
-
-    private static final LocalDate FIRST_END_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate SECOND_END_DATE = LocalDate.now(ZoneId.systemDefault());
-    private static final LocalDate THIRD_END_DATE = LocalDate.now(ZoneId.systemDefault());
 
     private static float progress1 = 123;
     private static float progress2 = 456;
@@ -136,22 +126,16 @@ class ProgressResourceIT {
     public static ContentReference createFirstContentReference (EntityManager em){
         ContentReference contentReference = new ContentReference();
         contentReference.setContentId(FIRST_CONTENT_ID);
-        contentReference.setStartDate(FIRST_START_DATE);
-        contentReference.setEndDate(FIRST_END_DATE);
         return contentReference;
     }
     public static ContentReference createSecondContentReference (EntityManager em){
         ContentReference contentReference = new ContentReference();
         contentReference.setContentId(SECOND_CONTENT_ID);
-        contentReference.setStartDate(SECOND_START_DATE);
-        contentReference.setEndDate(SECOND_END_DATE);
         return contentReference;
     }
     public static ContentReference createThirdContentReference (EntityManager em){
         ContentReference contentReference = new ContentReference();
         contentReference.setContentId(THIRD_CONTENT_ID);
-        contentReference.setStartDate(THIRD_START_DATE);
-        contentReference.setEndDate(THIRD_END_DATE);
         return contentReference;
     }
 
