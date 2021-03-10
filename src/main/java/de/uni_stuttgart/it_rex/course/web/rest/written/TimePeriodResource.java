@@ -88,32 +88,6 @@ public class TimePeriodResource {
   }
 
   /**
-   * {@code PUT  /timeperiods} : Updates an existing TimePeriod.
-   *
-   * @param timePeriodDTO the TimePeriod to update.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-   * body the updated TimePeriod, or with status {@code 400 (Bad Request)} if
-   * the TimePeriod is not valid, or with status {@code 500 (Internal Server
-   * Error)} if the TimePeriod couldn't be updated.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
-   */
-  @PutMapping("/timeperiods")
-  public ResponseEntity<TimePeriodDTO> updateTimePeriod(
-      @RequestBody final TimePeriodDTO timePeriodDTO)
-      throws URISyntaxException {
-    log.debug("REST request to update TimePeriod : {}", timePeriodDTO);
-    if (timePeriodDTO.getId() == null) {
-      throw new BadRequestAlertException(
-          "Invalid id", ENTITY_NAME, "idnull");
-    }
-    TimePeriodDTO result = timePeriodService.save(timePeriodDTO);
-    return ResponseEntity.ok()
-        .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-            true, ENTITY_NAME, result.getId().toString()))
-        .body(result);
-  }
-
-  /**
    * {@code GET  /timeperiods/:id} : get the "id" TimePeriod.
    *
    * @param id the id of the TimePeriod to retrieve.
