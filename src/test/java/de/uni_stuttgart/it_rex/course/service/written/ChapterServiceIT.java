@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -128,9 +129,7 @@ class ChapterServiceIT {
     expected.setId(theId);
     expected.setName(chapterDTO.getName());
     expected.setCourseId(chapterDTO.getCourseId());
-  //  expected.setStartDate(chapterDTO.getStartDate());
-  //  expected.setContentReferenceIds(Collections.emptyList());
-  //  expected.setEndDate(NEW_DATE);
+    expected.setContentReferences(Collections.emptyList());
 
     final ChapterDTO result = chapterService.findAll().get(0);
 
