@@ -109,11 +109,11 @@ public class CourseService {
     public CourseDTO create(final CourseDTO courseDTO) {
         LOGGER.debug("Request to create Course : {}", courseDTO);
 
-        final List<TimePeriodDTO> storedTimePeriodDTOS = timePeriodService
+        final List<TimePeriodDTO> timePeriodDTOS = timePeriodService
             .createTimePeriodDTOsInRange(courseDTO.getStartDate(),
                 courseDTO.getEndDate(), courseDTO.getId());
 
-        courseDTO.setTimePeriods(storedTimePeriodDTOS);
+        courseDTO.setTimePeriods(timePeriodDTOS);
 
         final CourseDTO storedCourse = this.save(courseDTO);
 

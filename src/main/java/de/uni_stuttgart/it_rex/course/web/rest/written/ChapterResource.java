@@ -185,7 +185,7 @@ public class ChapterResource {
 
   /**
    * {@code POST /chapters/:chapterId/addContent/:contentId} : adds the
-   * "contentReferenceId" ContentReference to the "chapter" TimePeriod.
+   * "contentReferenceId" ContentReference to the "chapter" Chapter.
    *
    * @param chapterId the id of the Chapter.
    * @param contentId the id of the Content
@@ -194,7 +194,7 @@ public class ChapterResource {
    * Request)} if the chapter was not found.
    */
   @PostMapping("/chapters/{chapterId}/addContent/{contentId}")
-  public ResponseEntity<ContentReferenceDTO> addToTimePeriod(
+  public ResponseEntity<ContentReferenceDTO> addToChapter(
       @PathVariable final UUID chapterId,
       @PathVariable final UUID contentId) {
     log.debug("REST request to add ContentReference: {} to Chapter: {}",

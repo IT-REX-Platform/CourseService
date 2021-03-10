@@ -138,19 +138,19 @@ public class ChapterService {
   /**
    * Adds a ContentReference to a Chapter by id.
    *
-   * @param chapterId          the id of the Chapter
-   * @param contentReferenceId the id of the ContentReference
+   * @param chapterId the id of the Chapter
+   * @param contentId the id of the Content
    * @return the added ContentReference
    */
   @Transactional
   public ContentReferenceDTO addToChapter(final UUID chapterId,
-                                          final UUID contentReferenceId) {
+                                          final UUID contentId) {
     final Chapter chapter = chapterRepository.findById(chapterId)
         .orElseThrow(() -> new BadRequestAlertException("Invalid id",
             Chapter.class.getName(), "idnotfound"));
 
     final ContentReferenceDTO contentReferenceDTO = new ContentReferenceDTO();
-    contentReferenceDTO.setContentId(contentReferenceId);
+    contentReferenceDTO.setContentId(contentId);
     contentReferenceDTO.setChapterId(chapter.getId());
 
     return contentReferenceService.save(contentReferenceDTO);

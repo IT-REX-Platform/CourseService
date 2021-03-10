@@ -64,7 +64,7 @@ public class TimePeriodService {
     public TimePeriodDTO save(final TimePeriodDTO timePeriodDTO) {
         LOGGER.debug("Request to save TimePeriod : {}", timePeriodDTO);
         final TimePeriod timePeriod = timePeriodRepository
-            .save(timePeriodMapper.toEntity(timePeriodDTO));
+            .saveAndFlush(timePeriodMapper.toEntity(timePeriodDTO));
         return timePeriodMapper.toDTO(timePeriod);
     }
 
