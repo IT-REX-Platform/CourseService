@@ -1,22 +1,20 @@
 package de.uni_stuttgart.it_rex.course.security.written;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.REXROLE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.UUID;
-
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.core.GrantedAuthority;
+
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Provides functionality to check the roles of a user. This includes both
@@ -103,50 +101,50 @@ public final class RexAuthz {
     }
 
     /**
-     * Returns the name of the user
+     * Returns the name of the user.
      *
-     * @return the name as string if extraction was successful,
-     * empty {@link Optional} otherwise.
+     * @return the name as string if extraction was successful, empty {@link
+     * Optional} otherwise.
      */
     public static Optional<String> getName() {
         return getClaimFromToken("name");
     }
 
     /**
-     * Returns the user name of the user
+     * Returns the user name of the user.
      *
-     * @return the user name as string if extraction was successful,
-     * empty {@link Optional} otherwise.
+     * @return the user name as string if extraction was successful, empty
+     * {@link Optional} otherwise.
      */
     public static Optional<String> getUserName() {
         return getClaimFromToken("preferred_username");
     }
 
     /**
-     * Returns the given name of the user
+     * Returns the given name of the user.
      *
-     * @return the given name as string if extraction was successful,
-     * empty {@link Optional} otherwise.
+     * @return the given name as string if extraction was successful, empty
+     * {@link Optional} otherwise.
      */
     public static Optional<String> getGivenName() {
         return getClaimFromToken("given_name");
     }
 
     /**
-     * Returns the family name of the user
+     * Returns the family name of the user.
      *
-     * @return the family name as string if extraction was successful,
-     * empty {@link Optional} otherwise.
+     * @return the family name as string if extraction was successful, empty
+     * {@link Optional} otherwise.
      */
     public static Optional<String> getFamilyName() {
         return getClaimFromToken("family_name");
     }
 
     /**
-     * Returns the email of the user
+     * Returns the email of the user.
      *
-     * @return the email as string if extraction was successful,
-     * empty {@link Optional} otherwise.
+     * @return the email as string if extraction was successful, empty {@link
+     * Optional} otherwise.
      */
     public static Optional<String> getEmail() {
         return getClaimFromToken("email");
@@ -408,12 +406,13 @@ public final class RexAuthz {
      * Extracts the course {@link UUID} with the related {@link COURSEROLE}
      * given a {@link COURSEROLE} role string.
      *
-     * @param roleString a {@link REXROLE} according to
-     *                   {@link RexAuthzConstants#TEMPLATE_COURSE_ROLE}
-     * @return a {@link SimpleEntry} of {@link UUID} and {@link COURSEROLE}
-     * if extraction was successful, empty {@link Optional} otherwise.
+     * @param roleString a {@link REXROLE} according to {@link
+     *                   RexAuthzConstants#TEMPLATE_COURSE_ROLE}
+     * @return a {@link SimpleEntry} of {@link UUID} and {@link COURSEROLE} if
+     * extraction was successful, empty {@link Optional} otherwise.
      */
-    private static Optional<SimpleEntry<UUID, COURSEROLE>> getCourseIdAndRoleFromRoleString(
+    private static Optional<SimpleEntry<UUID, COURSEROLE>>
+    getCourseIdAndRoleFromRoleString(
         final String roleString) {
         Optional<SimpleEntry<UUID, COURSEROLE>> entry = Optional.empty();
         String[] roleComponents = roleString.split("_");
@@ -452,17 +451,17 @@ public final class RexAuthz {
     }
 
     /**
-     * Extracts a claim string from the authz token
+     * Extracts a claim string from the authz token.
      *
      * @param claim the claim name
      * @return the content of the claim as string if extraction was successful,
      * empty {@link Optional} otherwise.
      */
-    private static Optional<String> getClaimFromToken(String claim) {
+    private static Optional<String> getClaimFromToken(final String claim) {
         Optional<String> rtn = Optional.empty();
         Object principal = getUserAuthn().getPrincipal();
         if (principal instanceof Jwt) {
-            Jwt jwt = (Jwt)principal;
+            final Jwt jwt = (Jwt) principal;
             rtn = Optional.ofNullable((String) jwt.getClaims().get(claim));
         }
         return rtn;
