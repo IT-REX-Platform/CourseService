@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
-import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
@@ -175,7 +175,8 @@ public class CourseResource {
     }
 
     /**
-     * {@code POST  /courses/:id/join} : Makes the currently logged in user join a course by id.
+     * {@code POST  /courses/:id/join} : Makes the currently logged in user join
+     * a course by id.
      *
      * @param id the id of the course to join.
      * @return an OK request for now.
@@ -190,7 +191,8 @@ public class CourseResource {
     }
 
     /**
-     * {@code POST  /courses/:id/leave} : Makes the currently logged in user leave a course by id.
+     * {@code POST  /courses/:id/leave} : Makes the currently logged in user
+     * leave a course by id.
      *
      * @param id the id of the course to leave.
      * @return an OK request for now.
@@ -216,7 +218,8 @@ public class CourseResource {
     public List<CourseDTO> getAllPublishedCourses(
         @RequestParam("activeOnly") final Optional<Boolean> activeOnly) {
         log.debug("REST request to get all published Courses");
-        return courseService.findAll(Optional.of(PUBLISHSTATE.PUBLISHED), activeOnly);
+        return courseService.findAll(Optional.of(
+            PUBLISHSTATE.PUBLISHED), activeOnly);
     }
 
     /**
@@ -230,8 +233,7 @@ public class CourseResource {
      * @param activeOnly Set true to only include active courses (current time
      *                   between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
-     * 
-     * 
+     *
      * @return
      */
     @GetMapping("/courses/user")

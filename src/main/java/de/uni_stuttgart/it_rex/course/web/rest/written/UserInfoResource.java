@@ -1,15 +1,13 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
+import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import de.uni_stuttgart.it_rex.course.domain.enumeration.REXROLE;
-import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
-import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.UserDTO;
 
 /**
  * REST controller for managing {@link User}.
@@ -33,7 +31,11 @@ public class UserInfoResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-
+    /**
+     * Gets the user info form the JWT token.
+     *
+     * @return the user info
+     */
     @GetMapping("/user-info")
     public UserDTO getUserInfo() {
 
