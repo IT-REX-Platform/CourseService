@@ -225,38 +225,6 @@ public class ProgressTrackingService {
     }
 
     /**
-     * Retrieve a ContentProgressTracker for a user and a content reference.
-     *
-     * @param contentReferenceDTO
-     * @param userId
-     * @return a @{@link ContentProgressTrackerDTO} wrapped in an Optional or Optional.empty
-     *
-     * @throws NotFoundException if the contentReference does not exist
-     */
-    public Optional<ContentProgressTrackerDTO> findContentProgressTracker(
-        final ContentReferenceDTO contentReferenceDTO, final UUID userId) {
-
-        Optional<ContentReference> contentReferenceOptional = contentReferenceRepository.findById(contentReferenceDTO.getId());
-        if (contentReferenceOptional.isEmpty()){
-            throw new NotFoundException(String.format("There is no ContentReference with the id %s", contentReferenceDTO.getId()));
-        }
-        ContentReference contentReference = contentReferenceOptional.get();
-
-        Specification<ContentProgressTracker> searchSpec =
-            getContentProgressSpec(contentReference, userId);
-        Optional<ContentProgressTracker> result =
-            contentProgressTrackerRepository
-                .findOne(searchSpec);
-                .findOne(searchSpec);
-
-        if (result.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(contentProgressTrackerMapper.toDTO(result.get()));
-    }
-
-    /**
      * Method generates a specification that describes our desired tracker
      * properties.
      *
@@ -271,28 +239,6 @@ public class ProgressTrackingService {
             List<Predicate> predicates = new ArrayList<>();
 
             predicates.add(builder.equal(root.get("courseId"), courseId));
-            predicates.add(builder.equal(root.get("userId"), userId));
-
-            return builder.and(predicates.toArray(
-                new Predicate[predicates.size()]));
-        };
-    }
-
-    /**
-     * Method generates a specification that describes our desired tracker
-     * properties.
-     *
-     * @param contentReference a content reference id
-     * @param userId a user id
-     * @return A specification describing said tracker
-     */
-    private Specification<ContentProgressTracker> getContentProgressSpec(
-        final ContentReference contentReference, final UUID userId) {
-        return (root, query, builder) -> {
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            predicates.add(builder.equal(root.get("contentReference"), contentReference));
             predicates.add(builder.equal(root.get("userId"), userId));
 
             return builder.and(predicates.toArray(
