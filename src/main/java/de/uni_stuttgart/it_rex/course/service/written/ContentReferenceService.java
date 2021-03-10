@@ -1,9 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
-import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
-import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ContentReferenceMapper;
 import org.slf4j.Logger;
@@ -35,16 +33,6 @@ public class ContentReferenceService {
   private final ContentReferenceRepository contentReferenceRepository;
 
   /**
-   * The TimePeriod Repository.
-   */
-  private final TimePeriodRepository timePeriodRepository;
-
-  /**
-   * The Chapter Repository.
-   */
-  private final ChapterRepository chapterRepository;
-
-  /**
    * ContentReference mapper.
    */
   private final ContentReferenceMapper contentReferenceMapper;
@@ -53,17 +41,13 @@ public class ContentReferenceService {
    * Constructor.
    *
    * @param newContentReferenceRepository
-   * @param newTimePeriodRepository
    * @param newContentReferenceMapper
    */
   @Autowired
-  public ContentReferenceService(final ContentReferenceRepository newContentReferenceRepository,
-                                 final TimePeriodRepository newTimePeriodRepository,
-                                 final ChapterRepository newChapterRepository,
-                                 final ContentReferenceMapper newContentReferenceMapper) {
+  public ContentReferenceService(
+      final ContentReferenceRepository newContentReferenceRepository,
+      final ContentReferenceMapper newContentReferenceMapper) {
     this.contentReferenceRepository = newContentReferenceRepository;
-    this.timePeriodRepository = newTimePeriodRepository;
-    this.chapterRepository = newChapterRepository;
     this.contentReferenceMapper = newContentReferenceMapper;
   }
 
@@ -101,7 +85,8 @@ public class ContentReferenceService {
   @Transactional(readOnly = true)
   public Optional<ContentReferenceDTO> findOne(final UUID id) {
     LOGGER.debug("Request to get ContentReference : {}", id);
-    return contentReferenceMapper.toDTO(contentReferenceRepository.findById(id));
+    return contentReferenceMapper
+        .toDTO(contentReferenceRepository.findById(id));
   }
 
   /**
@@ -113,7 +98,8 @@ public class ContentReferenceService {
   public void delete(final UUID id) {
     LOGGER.debug("Request to delete ContentReference : {}", id);
 
-    final Optional<ContentReference> toDeleteOptional = contentReferenceRepository.findById(id);
+    final Optional<ContentReference> toDeleteOptional
+        = contentReferenceRepository.findById(id);
 
     if (!toDeleteOptional.isPresent()) {
       return;
@@ -124,19 +110,24 @@ public class ContentReferenceService {
   /**
    * Update a ContentReference without overwriting it.
    *
-   * @param contentReferenceDTO the ContentReference that is used as an update.
+   * @param contentReferenceDTO the ContentReference that is used as an
+   *                            update.
    * @return the persisted ContentReference.
    */
   @Transactional
-  public ContentReferenceDTO patch(final ContentReferenceDTO contentReferenceDTO) {
-    LOGGER.debug("Request to update ContentReference : {}", contentReferenceDTO);
+  public ContentReferenceDTO patch(
+      final ContentReferenceDTO contentReferenceDTO) {
+    LOGGER
+        .debug("Request to update ContentReference : {}", contentReferenceDTO);
     Optional<ContentReference> oldContentReference =
         contentReferenceRepository.findById(contentReferenceDTO.getId());
 
     if (oldContentReference.isPresent()) {
       ContentReference oldContentReferenceEntity = oldContentReference.get();
-      contentReferenceMapper.updateContentReferenceFromContentReferenceDTO(contentReferenceDTO, oldContentReferenceEntity);
-      return contentReferenceMapper.toDTO(contentReferenceRepository.save(oldContentReferenceEntity));
+      contentReferenceMapper.updateContentReferenceFromContentReferenceDTO(
+          contentReferenceDTO, oldContentReferenceEntity);
+      return contentReferenceMapper.toDTO(contentReferenceRepository.save(
+          oldContentReferenceEntity));
     }
     return null;
   }

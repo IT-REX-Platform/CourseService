@@ -47,6 +47,7 @@ public class ChapterService {
   /**
    * Constructor.
    *
+   * @param newContentReferenceService
    * @param newChapterRepository
    * @param newChapterMapper
    */

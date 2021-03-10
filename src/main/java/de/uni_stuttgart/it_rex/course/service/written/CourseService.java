@@ -145,7 +145,6 @@ public class CourseService {
                 .getCourseGroupString(storedCourse.getId(), COURSEROLE.OWNER);
         keycloakAdminService.addUserToGroup(auth.getName(), groupName);
 
-       // CourseDTO courseDto = courseMapper.toDTO(storedCourse);
         addRoleofUserToDto(storedCourse);
         return storedCourse;
     }
@@ -158,7 +157,8 @@ public class CourseService {
     @Transactional(readOnly = true)
     public List<CourseDTO> findAll() {
         LOGGER.debug("Request to get all Courses");
-        List<CourseDTO> courseDtos = courseMapper.toDTO(courseRepository.findAll());
+        List<CourseDTO> courseDtos = courseMapper
+            .toDTO(courseRepository.findAll());
         addRoleofUserToDto(courseDtos);
         return courseDtos;
     }
@@ -174,7 +174,8 @@ public class CourseService {
     public Optional<CourseDTO> findOne(final UUID id) {
         LOGGER.debug("Request to get Course : {}", id);
 
-        Optional<CourseDTO> courseDto = courseMapper.toDTO(courseRepository.findById(id));
+        Optional<CourseDTO> courseDto = courseMapper
+            .toDTO(courseRepository.findById(id));
         addRoleofUserToDto(courseDto);
         return courseDto;
     }
@@ -264,16 +265,20 @@ public class CourseService {
         LOGGER.debug("Request to get user Courses");
 
         List<Course> courses;
-        Example<Course> courseExample = Example.of(applyFiltersToExample(publishState));
-        Specification<Course> spec = getSpecFromActiveAndExample(activeOnly, courseExample);
+        Example<Course> courseExample = Example.of(
+            applyFiltersToExample(publishState));
+        Specification<Course> spec =
+            getSpecFromActiveAndExample(activeOnly, courseExample);
         courses = courseRepository.findAll(spec);
 
         List<CourseDTO> courseDtos = courseMapper.toDTO(courses);
         addRoleofUserToDto(courseDtos);
-        courseDtos = courseDtos.stream().filter(o -> o.getCourseRole() != null).collect(Collectors.toList());
+        courseDtos = courseDtos.stream().filter(o -> o.getCourseRole() != null)
+            .collect(Collectors.toList());
         courseDtos = courseDtos.stream().filter(
-                o -> !(o.getCourseRole() == COURSEROLE.PARTICIPANT && o.getPublishState() == PUBLISHSTATE.UNPUBLISHED))
-                .collect(Collectors.toList());
+            o -> !(o.getCourseRole() == COURSEROLE.PARTICIPANT
+                && o.getPublishState() == PUBLISHSTATE.UNPUBLISHED))
+            .collect(Collectors.toList());
         return courseDtos;
     }
 
@@ -308,10 +313,12 @@ public class CourseService {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (activeOnly.isPresent() && activeOnly.get()) {
-                predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"),
-                    LocalDate.now()));
-            }
+            activeOnly.ifPresent(active -> {
+                if (active) {
+                    predicates.add(builder.greaterThanOrEqualTo(
+                        root.get("endDate"), LocalDate.now()));
+                }
+            });
 
             predicates.add(QueryByExamplePredicateBuilder
                 .getPredicate(root, builder, example));
@@ -353,28 +360,29 @@ public class CourseService {
      *
      * @param courseDto the courseDto.
      */
-    private void addRoleofUserToDto(CourseDTO courseDto) {
-        Map<UUID, COURSEROLE> coursesAndRoles = RexAuthz.getCoursesAndRolesOfUser();
+    private void addRoleofUserToDto(final CourseDTO courseDto) {
+        Map<UUID, COURSEROLE> coursesAndRoles
+            = RexAuthz.getCoursesAndRolesOfUser();
         courseDto.setCourseRole(coursesAndRoles.get(courseDto.getId()));
     }
 
     /**
-     * adds the {@link COURSEROLE} of the user to a {@link List} of
-     * {@link CourseDTO}.
+     * adds the {@link COURSEROLE} of the user to a {@link List} of {@link
+     * CourseDTO}.
      *
      * @param courseDtos the courseDtos.
      */
-    private void addRoleofUserToDto(List<CourseDTO> courseDtos) {
-        courseDtos.forEach(o -> addRoleofUserToDto(o));
+    private void addRoleofUserToDto(final List<CourseDTO> courseDtos) {
+        courseDtos.forEach(this::addRoleofUserToDto);
     }
 
     /**
-     * adds the {@link COURSEROLE} of the user to a {@link Optional} of
-     * {@link CourseDTO} if presend.
+     * adds the {@link COURSEROLE} of the user to a {@link Optional} of {@link
+     * CourseDTO} if presend.
      *
      * @param courseDto the courseDto.
      */
-    private void addRoleofUserToDto(Optional<CourseDTO> courseDto) {
-        courseDto.ifPresent(o -> addRoleofUserToDto(o));
+    private void addRoleofUserToDto(final Optional<CourseDTO> courseDto) {
+        courseDto.ifPresent(this::addRoleofUserToDto);
     }
 }

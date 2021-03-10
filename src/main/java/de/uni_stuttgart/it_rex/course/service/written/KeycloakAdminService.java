@@ -19,7 +19,8 @@ public class KeycloakAdminService {
     /**
      * Logger.
      */
-    private static final Logger log = LoggerFactory.getLogger(KeycloakAdminService.class);
+    private static final Logger LOGGER
+        = LoggerFactory.getLogger(KeycloakAdminService.class);
 
     final String serverUri;
     final String realm;
@@ -49,19 +50,19 @@ public class KeycloakAdminService {
         this.clientId = newClientId;
         this.clientSecret = newClientSecret;
 
-        log.debug("KeycloakAdminService ctor");
-        log.debug("serverUri: {}", this.serverUri);
-        log.debug("realm: {}", this.realm);
-        log.debug("clientId: {}", this.clientId);
-        log.debug("clientSecret: {}", this.clientSecret);
+        LOGGER.debug("KeycloakAdminService ctor");
+        LOGGER.debug("serverUri: {}", this.serverUri);
+        LOGGER.debug("realm: {}", this.realm);
+        LOGGER.debug("clientId: {}", this.clientId);
+        LOGGER.debug("clientSecret: {}", this.clientSecret);
 
-         keycloak = KeycloakBuilder.builder()
-             .serverUrl(this.serverUri)
-             .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-             .realm(this.realm)
-             .clientId(this.clientId)
-             .clientSecret(this.clientSecret)
-             .build();
+        keycloak = KeycloakBuilder.builder()
+            .serverUrl(this.serverUri)
+            .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+            .realm(this.realm)
+            .clientId(this.clientId)
+            .clientSecret(this.clientSecret)
+            .build();
 
         // TODO: Resteasy client for pooling, for handling multiple requests at the same time.
         // .resteasyClient(
@@ -124,7 +125,8 @@ public class KeycloakAdminService {
                 .roles().get(curRoleName).toRepresentation());
         }
 
-        keycloak.realm(this.realm).groups().group(groupId).roles().realmLevel().add(roles);
+        keycloak.realm(this.realm).groups().group(groupId).roles().realmLevel()
+            .add(roles);
     }
 
     /**
