@@ -25,11 +25,17 @@ import java.util.stream.IntStream;
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ChapterMapper {
 
+    /**
+     * The CourseRepository.
+     */
     @Autowired
     private CourseRepository courseRepository;
 
+    /**
+     * The ContentReferenceMapper.
+     */
     @Autowired
-    private  ContentReferenceMapper contentReferenceMapper;
+    private ContentReferenceMapper contentReferenceMapper;
 
     /**
      * Updates an entity from a DTO.
@@ -40,8 +46,8 @@ public abstract class ChapterMapper {
     @Mapping(target = "course", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy =
         NullValuePropertyMappingStrategy.IGNORE)
-    public abstract void updateChapterFromChapterDTO
-    (ChapterDTO update, @MappingTarget Chapter toUpdate);
+    public abstract void updateChapterFromChapterDTO(
+        ChapterDTO update, @MappingTarget Chapter toUpdate);
 
     /**
      * Converts an entity to a DTO.
@@ -50,7 +56,7 @@ public abstract class ChapterMapper {
      * @return the dto
      */
     @Mapping(target = "courseId", source = "course.id")
-    public abstract ChapterDTO toDTO(final Chapter chapter);
+    public abstract ChapterDTO toDTO(Chapter chapter);
 
     /**
      * Converts an optional entity to a optional DTO.
@@ -71,25 +77,44 @@ public abstract class ChapterMapper {
      * @param chapters the entities
      * @return the DTOs
      */
-    public abstract List<ChapterDTO> toDTO(final Collection<Chapter> chapters);
+    public abstract List<ChapterDTO> toDTO(Collection<Chapter> chapters);
 
-    public abstract List<Chapter> toEntity(final List<ChapterDTO> chapterDTOS);
+    /**
+     * Converts a list of DTOs to a list of entities.
+     *
+     * @param chapterDTOs the DTOs
+     * @return the entities
+     */
+    public abstract List<Chapter> toEntity(List<ChapterDTO> chapterDTOs);
 
+    /**
+     * Sets the Course when a DTO is converted to an entity.
+     *
+     * @param chapterDTO the ChapterDTO
+     * @param chapter    the Chapter entity
+     */
     @AfterMapping
     protected void setCourse(
-        ChapterDTO chapterDTO, @MappingTarget Chapter chapter) {
+        final ChapterDTO chapterDTO, @MappingTarget final Chapter chapter) {
         if (chapterDTO.getCourseId() != null) {
             courseRepository.findById(chapterDTO.getCourseId())
                 .ifPresent(chapter::setCourse);
         }
     }
 
+    /**
+     * Sets the ContentReferences when a DTO is converted to an entity.
+     *
+     * @param chapterDTO the ChapterDTO
+     * @param chapter    the Chapter entity
+     */
     @AfterMapping
     protected void setContentReferences(
-        ChapterDTO chapterDTO, @MappingTarget Chapter chapter) {
+        final ChapterDTO chapterDTO, @MappingTarget final Chapter chapter) {
         if (chapterDTO.getContentReferences() != null) {
             chapter.setContentReferences(IntStream
-                .range(0, chapterDTO.getContentReferences().size()).mapToObj(i -> {
+                .range(0, chapterDTO.getContentReferences().size())
+                .mapToObj(i -> {
                     final ContentReferenceDTO contentReferenceDTO
                         = chapterDTO.getContentReferences().get(i);
                     final ContentReference contentReference
@@ -108,5 +133,5 @@ public abstract class ChapterMapper {
      */
     @Mapping(target = "course", ignore = true)
     @Mapping(target = "contentReferences", ignore = true)
-    public abstract Chapter toEntity(final ChapterDTO chapterDTO);
+    public abstract Chapter toEntity(ChapterDTO chapterDTO);
 }

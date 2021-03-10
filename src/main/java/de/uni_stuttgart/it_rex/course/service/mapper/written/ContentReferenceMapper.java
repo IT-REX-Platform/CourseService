@@ -19,9 +19,15 @@ import java.util.Optional;
 @Mapper(componentModel = "spring")
 public abstract class ContentReferenceMapper {
 
+    /**
+     * The ChapterRepository.
+     */
     @Autowired
     private ChapterRepository chapterRepository;
 
+    /**
+     * The TimePeriodRepository.
+     */
     @Autowired
     private TimePeriodRepository timePeriodRepository;
 
@@ -37,22 +43,40 @@ public abstract class ContentReferenceMapper {
     @BeanMapping(nullValuePropertyMappingStrategy =
         NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateContentReferenceFromContentReferenceDTO(
-        final ContentReferenceDTO update,
-        @MappingTarget final ContentReference toUpdate);
+        ContentReferenceDTO update,
+        @MappingTarget ContentReference toUpdate);
 
+    /**
+     * Converts a DTO to an entity.
+     *
+     * @param contentReferenceDTO the DTO
+     * @return the entity
+     */
     @Mapping(target = "chapter", ignore = true)
     @Mapping(target = "timePeriod", ignore = true)
     @Mapping(target = "index", ignore = true)
     public abstract ContentReference toEntity(
-        final ContentReferenceDTO contentReferenceDTO);
+        ContentReferenceDTO contentReferenceDTO);
 
+    /**
+     * Converts a list of DTOs to a list of entities.
+     *
+     * @param contentReferenceDTOs the DTOs
+     * @return the entities
+     */
     public abstract List<ContentReference> toEntity(
-        final Collection<ContentReferenceDTO> contentReferenceDTOs);
+        Collection<ContentReferenceDTO> contentReferenceDTOs);
 
+    /**
+     * Sets the Relationships when a DTO is converted to an entity.
+     *
+     * @param contentReferenceDTO the DTO
+     * @param contentReference    the entity
+     */
     @AfterMapping
-    protected void setMappings(
-        ContentReferenceDTO contentReferenceDTO,
-        @MappingTarget ContentReference contentReference) {
+    protected void setRelationships(
+        final ContentReferenceDTO contentReferenceDTO,
+        @MappingTarget final ContentReference contentReference) {
         if (contentReferenceDTO.getChapterId() != null) {
             chapterRepository.findById(contentReferenceDTO.getChapterId())
                 .ifPresent(contentReference::setChapter);
@@ -63,21 +87,39 @@ public abstract class ContentReferenceMapper {
         }
     }
 
+    /**
+     * Sets the index when a DTO is converted to an entity.
+     *
+     * @param contentReference the entity
+     */
     @AfterMapping
-    protected void setIndex(@MappingTarget ContentReference contentReference) {
-        contentReference.setIndex(  contentReference
-                .getChapter()
-                .getContentReferences()
-                .indexOf(contentReference));
+    protected void setIndex(
+        @MappingTarget final ContentReference contentReference) {
+        contentReference.setIndex(contentReference
+            .getChapter()
+            .getContentReferences()
+            .indexOf(contentReference));
     }
 
+    /**
+     * Converts an entity to a DTO.
+     *
+     * @param contentReference the entity
+     * @return the DTO
+     */
     @Mapping(target = "chapterId", source = "chapter.id")
     @Mapping(target = "timePeriodId", source = "timePeriod.id")
     public abstract ContentReferenceDTO toDTO(
-        final ContentReference contentReference);
+        ContentReference contentReference);
 
+    /**
+     * Converts a list of entities to a list of DTOs.
+     *
+     * @param contentReferences the entities
+     * @return the DTOs
+     */
     public abstract List<ContentReferenceDTO> toDTO(
-        final Collection<ContentReference> contentReferences);
+        Collection<ContentReference> contentReferences);
 
     /**
      * Converts an optional entity to a optional DTO.

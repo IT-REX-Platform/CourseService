@@ -40,7 +40,7 @@ public abstract class CourseMapper {
      * @return the dto
      */
     @Mapping(target = "courseRole", ignore = true)
-    public abstract CourseDTO toDTO(final Course course);
+    public abstract CourseDTO toDTO(Course course);
 
     /**
      * Converts a list of entities to a list of DTOs.
@@ -48,7 +48,7 @@ public abstract class CourseMapper {
      * @param courses the entities
      * @return the DTOs
      */
-    public abstract List<CourseDTO> toDTO(final Collection<Course> courses);
+    public abstract List<CourseDTO> toDTO(Collection<Course> courses);
 
     /**
      * Converts an optional entity to a optional DTO.
@@ -71,7 +71,7 @@ public abstract class CourseMapper {
      */
     @Mapping(target = "timePeriods", source = "timePeriods",
         dependsOn = "chapters")
-    public abstract Course toEntity(final CourseDTO courseDTO);
+    public abstract Course toEntity(CourseDTO courseDTO);
 
     /**
      * Converts a list of DTOs to a list of entities.
@@ -79,5 +79,5 @@ public abstract class CourseMapper {
      * @param courseDTOs the entities
      * @return the entities
      */
-    public abstract List<Course> toEntity(final List<CourseDTO> courseDTOs);
+    public abstract List<Course> toEntity(List<CourseDTO> courseDTOs);
 }
