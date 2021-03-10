@@ -132,7 +132,6 @@ class ContentReferenceServiceIT {
 
     final ContentReferenceDTO patch = new ContentReferenceDTO();
     patch.setId(theId);
- //   patch.setEndDate(NEW_DATE);
 
     contentReferenceService.patch(patch);
 
@@ -140,11 +139,7 @@ class ContentReferenceServiceIT {
 
     expected.setId(theId);
     expected.setChapterId(contentReferenceDTO.getChapterId());
-   // expected.setStartDate(contentReferenceDTO.getStartDate());
     expected.setContentId(contentReferenceDTO.getContentId());
- //  expected.setChapterIds(Collections.emptySet());
- //  expected.setTimePeriodIds(Collections.emptySet());
- //  expected.setEndDate(NEW_DATE);
 
     final ContentReferenceDTO result = contentReferenceService.findAll().get(0);
 
