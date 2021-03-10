@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "chapter")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Chapter implements Serializable, Organizable{
+public class Chapter implements Serializable {
 
     /**
      * Constructor.
@@ -118,7 +118,8 @@ public class Chapter implements Serializable, Organizable{
      *
      * @param newContentReferences the content references
      */
-    public void setContentReferences(final Collection<ContentReference> newContentReferences) {
+    public void setContentReferences(
+        final Collection<ContentReference> newContentReferences) {
         if (newContentReferences == null) {
             return;
         }
@@ -131,7 +132,8 @@ public class Chapter implements Serializable, Organizable{
      *
      * @param newContentReference the content reference
      */
-    public void addContentReference(final ContentReference newContentReference) {
+    public void addContentReference(
+        final ContentReference newContentReference) {
         if (newContentReference == null) {
             return;
         }
@@ -144,14 +146,16 @@ public class Chapter implements Serializable, Organizable{
      *
      * @param newContentReferences the content references
      */
-    public void addContentReferences(final Collection<ContentReference> newContentReferences) {
+    public void addContentReferences(
+        final Collection<ContentReference> newContentReferences) {
         if (newContentReferences == null) {
             return;
         }
-        contentReferences.addAll(newContentReferences.stream().map(newContentReference -> {
-            newContentReference.chapter = this;
-            return newContentReference;
-        }).collect(Collectors.toList()));
+        contentReferences.addAll(newContentReferences.stream()
+            .map(newContentReference -> {
+                newContentReference.chapter = this;
+                return newContentReference;
+            }).collect(Collectors.toList()));
     }
 
     /**
@@ -159,15 +163,26 @@ public class Chapter implements Serializable, Organizable{
      *
      * @param newContentReference the content references
      */
-    public void removeContentReference(final ContentReference newContentReference) {
+    public void removeContentReference(
+        final ContentReference newContentReference) {
         newContentReference.chapter = null;
         getContentReferences().remove(newContentReference);
     }
 
+    /**
+     * Getter.
+     *
+     * @return the Course
+     */
     public Course getCourse() {
         return course;
     }
 
+    /**
+     * Sets the Course and the appropriate relationship.
+     *
+     * @param newCourse the Course
+     */
     public void setCourse(final Course newCourse) {
         if (course != null) {
             course.removeChapter(this);

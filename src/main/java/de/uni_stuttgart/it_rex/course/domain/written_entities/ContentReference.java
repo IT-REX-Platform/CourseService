@@ -127,12 +127,22 @@ public class ContentReference implements Serializable {
         newTimePeriod.contentReferences.add(this);
     }
 
+    /**
+     * Getter.
+     *
+     * @return the index
+     */
     public int getIndex() {
         return index;
     }
 
-    public void setIndex(final int index) {
-        this.index = index;
+    /**
+     * Setter.
+     *
+     * @param newIndex the index
+     */
+    public void setIndex(final int newIndex) {
+        this.index = newIndex;
     }
 
     /**

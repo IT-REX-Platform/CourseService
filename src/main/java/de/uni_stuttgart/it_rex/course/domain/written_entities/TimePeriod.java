@@ -22,12 +22,18 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "time_period")
-public class TimePeriod implements Serializable, Organizable {
+public class TimePeriod implements Serializable {
 
+    /**
+     * Constructor.
+     */
     public TimePeriod() {
         this.contentReferences = new ArrayList<>();
     }
 
+    /**
+     * The id.
+     */
     @Id
     @GeneratedValue
     private UUID id;
@@ -57,28 +63,80 @@ public class TimePeriod implements Serializable, Organizable {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     protected Course course;
 
+    /**
+     * Getter.
+     *
+     * @return the id.
+     */
     public UUID getId() {
         return id;
     }
 
-    public void setId(final UUID id) {
-        this.id = id;
+    /**
+     * Setter.
+     *
+     * @param newId the id.
+     */
+    public void setId(final UUID newId) {
+        this.id = newId;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the start date
+     */
     public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(final LocalDate startDate) {
-        this.startDate = startDate;
+    /**
+     * Setter.
+     *
+     * @param newStartDate the start date.
+     */
+    public void setStartDate(final LocalDate newStartDate) {
+        this.startDate = newStartDate;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the end date.
+     */
     public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(final LocalDate endDate) {
-        this.endDate = endDate;
+    /**
+     * Setter.
+     *
+     * @param newEndDate the end date
+     */
+    public void setEndDate(final LocalDate newEndDate) {
+        this.endDate = newEndDate;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the course.
+     */
+    public Course getCourse() {
+        return course;
+    }
+
+    /**
+     * Sets the course and the relationships.
+     *
+     * @param newCourse the course
+     */
+    public void setCourse(final Course newCourse) {
+        if (course != null) {
+            course.removeTimePeriod(this);
+        }
+        newCourse.getTimePeriods().add(this);
+        this.course = newCourse;
     }
 
     /**
@@ -101,12 +159,22 @@ public class TimePeriod implements Serializable, Organizable {
         addContentReferences(newContentReferences);
     }
 
+    /**
+     * Adds a ContentReference and sets the relationships appropriately.
+     *
+     * @param newContentReference the ContentReference
+     */
     public void addContentReference(
         final ContentReference newContentReference) {
         newContentReference.timePeriod = this;
         this.contentReferences.add(newContentReference);
     }
 
+    /**
+     * Adds ContentReferences and sets the relationships appropriately.
+     *
+     * @param newContentReferences the ContentReference
+     */
     public void addContentReferences(
         final Collection<ContentReference> newContentReferences) {
         contentReferences
@@ -116,22 +184,15 @@ public class TimePeriod implements Serializable, Organizable {
             }).collect(Collectors.toSet()));
     }
 
+    /**
+     * Removes a ContentReferences and removes the relationships.
+     *
+     * @param toRemove the ContentReference
+     */
     public void removeContentReference(
-        final ContentReference newContentReference) {
-        newContentReference.timePeriod = null;
-        this.contentReferences.remove(newContentReference);
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(final Course newCourse) {
-        if (course != null) {
-            course.removeTimePeriod(this);
-        }
-        newCourse.getTimePeriods().add(this);
-        this.course = newCourse;
+        final ContentReference toRemove) {
+        toRemove.timePeriod = null;
+        this.contentReferences.remove(toRemove);
     }
 
     /**
@@ -163,5 +224,20 @@ public class TimePeriod implements Serializable, Organizable {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(id).append(course).toHashCode();
+    }
+
+    /**
+     * To String method.
+     *
+     * @return the String.
+     */
+    @Override
+    public String toString() {
+        return "TimePeriod{"
+            + "id=" + id
+            + ", startDate=" + startDate
+            + ", endDate=" + endDate
+            + ", contentReferences=" + contentReferences
+            + ", course=" + course + '}';
     }
 }
