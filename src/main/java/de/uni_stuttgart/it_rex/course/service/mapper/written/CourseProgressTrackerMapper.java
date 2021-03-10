@@ -1,14 +1,19 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentProgressTrackerDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -74,12 +79,15 @@ public abstract class CourseProgressTrackerMapper {
         trackerDTO.setCourseId(tracker.getCourseId());
         trackerDTO.setLastContentReference(lastContentReference);
 
-        trackerDTO.setContentProgressTrackers(
-            tracker.getContentProgressTrackers().stream().map(
-                contentProgressTrackerMapper::toDTO)
-                .collect(
-                    Collectors.toSet())
-        );
+        Map<UUID, ContentProgressTrackerDTO> contentProgressTrackers = new HashMap<>();
+        for (ContentProgressTracker contentProgressTracker : tracker.getContentProgressTrackers()){
+            contentProgressTrackers.put(
+                contentProgressTracker.getContentReference().getId(),
+                contentProgressTrackerMapper.toDTO(contentProgressTracker)
+            );
+        }
+
+        trackerDTO.setContentProgressTrackers(contentProgressTrackers);
 
         return trackerDTO;
     }

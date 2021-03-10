@@ -1,11 +1,19 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 
+import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker;
+
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
+/**
+ * The CourseProgressTrackerDTO serves to send the data of a @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker}
+ * to the client and collect all @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker}-objects of a course.
+ *
+ * This DTO is not used to create {@link de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker}-objects.
+ */
 public class CourseProgressTrackerDTO {
 
     private UUID id;
@@ -21,9 +29,9 @@ public class CourseProgressTrackerDTO {
     private Optional<ContentReferenceDTO> lastContentReference;
 
     /**
-     * Content Progress Trackers.
+     * A Map of Content Reference Id to respective Content Progress Trackers.
      */
-    private Set<ContentProgressTrackerDTO> contentProgressTrackers;
+    private Map<UUID, ContentProgressTrackerDTO> contentProgressTrackers;
 
     /**
      * Getter.
@@ -48,7 +56,7 @@ public class CourseProgressTrackerDTO {
      *
      * @return list containing content progress trackers.
      */
-    public Set<ContentProgressTrackerDTO> getContentProgressTrackers() {
+    public Map<UUID, ContentProgressTrackerDTO> getContentProgressTrackers() {
         return contentProgressTrackers;
     }
 
@@ -70,12 +78,7 @@ public class CourseProgressTrackerDTO {
         this.lastContentReference = Optional.ofNullable(newLastContentReference);
     }
 
-    /**
-     * Setter.
-     *
-     * @param newContentProgressTrackers the content ref id
-     */
-    public void setContentProgressTrackers(final Set<ContentProgressTrackerDTO> newContentProgressTrackers) {
+    public void setContentProgressTrackers(final Map<UUID, ContentProgressTrackerDTO> newContentProgressTrackers) {
         this.contentProgressTrackers = newContentProgressTrackers;
     }
 

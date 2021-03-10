@@ -4,6 +4,12 @@ import de.uni_stuttgart.it_rex.course.domain.enumeration.ContentProgressState;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Used to retrieve @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker}-objects
+ * and send them to the client.
+ *
+ * Not used for creation of new entities.
+ */
 public class ContentProgressTrackerDTO {
 
     private UUID id;
