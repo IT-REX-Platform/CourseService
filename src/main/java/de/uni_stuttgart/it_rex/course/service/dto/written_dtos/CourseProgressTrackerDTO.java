@@ -1,15 +1,14 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 public class CourseProgressTrackerDTO {
+
+    private UUID id;
 
     /**
      * Id of the course the represented tracker belongs to.
@@ -78,6 +77,14 @@ public class CourseProgressTrackerDTO {
      */
     public void setContentProgressTrackers(final Set<ContentProgressTrackerDTO> newContentProgressTrackers) {
         this.contentProgressTrackers = newContentProgressTrackers;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     /**

@@ -75,6 +75,10 @@ public class ContentProgressTracker implements Serializable {
         return id;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public ContentReference getContentReference() {
         return contentReference;
     }

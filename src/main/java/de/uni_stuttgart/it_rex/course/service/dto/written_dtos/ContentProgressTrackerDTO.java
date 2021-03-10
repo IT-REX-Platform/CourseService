@@ -124,6 +124,7 @@ public class ContentProgressTrackerDTO {
     @Override
     public String toString() {
         return "ContentProgressTrackerDTO{"
+            + ", id='" + id + '\''
             + ", state='" + state + '\''
             + ", progress='" + progress + '\''
             + '}';

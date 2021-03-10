@@ -20,19 +20,6 @@ public abstract class CourseProgressTrackerMapper {
     @Autowired
     private ContentProgressTrackerMapper contentProgressTrackerMapper;
 
-//    /**
-//     * Updates an entity from another entity.
-//     *
-//     * @param update   the update
-//     * @param toUpdate the updated entity.
-//     */
-//    @BeanMapping(nullValuePropertyMappingStrategy =
-//        NullValuePropertyMappingStrategy.IGNORE)
-//    public abstract void updateCourseProgressTrackerFromCourseProgressTracker(
-//        CourseProgressTracker update,
-//        @MappingTarget CourseProgressTracker toUpdate);
-
-
     /**
      * Converts an entity to a DTO.
      *
@@ -40,13 +27,7 @@ public abstract class CourseProgressTrackerMapper {
      * @return the dto
      */
     public CourseProgressTrackerDTO toDTO(final CourseProgressTracker tracker) {
-        final CourseProgressTrackerDTO trackerDTO = setBasicProperties(tracker);
-        /*if (tracker.getChapters() != null) {
-            final List<UUID> chapters = tracker.getChapters().stream()
-                .map(ChapterIndex::getChapterId).collect(Collectors.toList());
-            trackerDTO.setChapters(chapters);
-        }*/
-        return trackerDTO;
+        return setBasicProperties(tracker);
     }
 
     /**
@@ -86,12 +67,10 @@ public abstract class CourseProgressTrackerMapper {
         final CourseProgressTrackerDTO trackerDTO =
             new CourseProgressTrackerDTO();
         Optional<ContentReference> optionalContentReference = tracker.getLastContentReference();
-        ContentReferenceDTO lastContentReference;
-        if (optionalContentReference.isPresent()){
-            lastContentReference = contentReferenceMapper.toDTO(optionalContentReference.get());
-        } else {
-            lastContentReference = null;
-        }
+        ContentReferenceDTO lastContentReference = optionalContentReference.map(
+            contentReference -> contentReferenceMapper.toDTO(contentReference))
+            .orElse(null);
+        trackerDTO.setId(tracker.getId());
         trackerDTO.setCourseId(tracker.getCourseId());
         trackerDTO.setLastContentReference(lastContentReference);
 
