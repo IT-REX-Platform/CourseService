@@ -117,6 +117,7 @@ public class Course implements Serializable {
         fetch = FetchType.LAZY,
         orphanRemoval = true,
         mappedBy = "course")
+    @OrderBy("chapterNumber")
     private final List<Chapter> chapters;
 
     /**

@@ -12,6 +12,9 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
+            <column name="chapter_number" type="integer">
+                <constraints nullable="false"/>
+            </column>
             <column name="course_id" type="${uuidType}">
                 <constraints nullable="false"/>
             </column>

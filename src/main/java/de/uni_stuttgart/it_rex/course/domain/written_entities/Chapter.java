@@ -52,6 +52,12 @@ public class Chapter implements Serializable {
     private String name;
 
     /**
+     * Number of the chapter.
+     */
+    @Column(name = "chapter_number")
+    private int chapterNumber;
+
+    /**
      * The Course.
      */
     @ManyToOne
@@ -102,6 +108,24 @@ public class Chapter implements Serializable {
      */
     public void setName(final String newTitle) {
         this.name = newTitle;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the chapter number.
+     */
+    public int getChapterNumber() {
+        return chapterNumber;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param nweChapterNumber the chapter number.
+     */
+    public void setChapterNumber(final int nweChapterNumber) {
+        this.chapterNumber = nweChapterNumber;
     }
 
     /**
