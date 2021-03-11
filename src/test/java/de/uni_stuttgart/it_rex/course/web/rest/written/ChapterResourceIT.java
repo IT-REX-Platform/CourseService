@@ -148,6 +148,7 @@ public class ChapterResourceIT {
     // Initialize the database
     Chapter chapter = ChapterUtil.createChapter();
     chapter.setCourse(THE_COURSE);
+    chapter.setName(NEW_NAME);
     chapterRepository.saveAndFlush(chapter);
 
     // Get the Chapter
