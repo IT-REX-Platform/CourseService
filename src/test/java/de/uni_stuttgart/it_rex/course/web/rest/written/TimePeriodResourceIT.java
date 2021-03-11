@@ -44,8 +44,6 @@ public class TimePeriodResourceIT {
 
   private static final UUID NON_EXISTING_ID = UUID.randomUUID();
 
-  private static final String NEW_TITLE = "BBBBBBBBBB";
-
   private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 
   @Autowired
