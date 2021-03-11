@@ -3,9 +3,7 @@ package de.uni_stuttgart.it_rex.course.service.written;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
-import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
-import de.uni_stuttgart.it_rex.course.service.written.exception.ChapterNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,26 +125,5 @@ public class ChapterService {
       return chapterMapper.toDTO(chapterRepository.save(oldChapterEntity));
     }
     return null;
-  }
-
-  /**
-   * Adds a ContentReference to a Chapter by id.
-   *
-   * @param chapterId the id of the Chapter
-   * @param contentId the id of the Content
-   * @return the added ContentReference
-   */
-  @Transactional
-  public ContentReferenceDTO addToChapter(final UUID chapterId,
-                                          final UUID contentId) {
-    final Chapter chapter = chapterRepository.findById(chapterId)
-        .orElseThrow(() -> new ChapterNotFoundException(
-            String.format("Chapter with id not found", chapterId)));
-
-    final ContentReferenceDTO contentReferenceDTO = new ContentReferenceDTO();
-    contentReferenceDTO.setContentId(contentId);
-    contentReferenceDTO.setChapterId(chapter.getId());
-
-    return contentReferenceService.save(contentReferenceDTO);
   }
 }

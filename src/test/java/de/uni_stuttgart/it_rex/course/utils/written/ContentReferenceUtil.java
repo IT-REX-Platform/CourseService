@@ -1,10 +1,8 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
-import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,6 +19,7 @@ public final class ContentReferenceUtil {
      */
     public static ContentReference createContentReference() {
         ContentReference contentReference = new ContentReference();
+        contentReference.setContentReferenceType(EnumUtil.generateRandomContentReferenceType());
         contentReference.setContentId(UUID.randomUUID());
         return contentReference;
     }
@@ -54,6 +53,7 @@ public final class ContentReferenceUtil {
      */
     public static ContentReferenceDTO createContentReferenceDTO() {
         ContentReferenceDTO contentReferenceDTO = new ContentReferenceDTO();
+        contentReferenceDTO.setContentReferenceType(EnumUtil.generateRandomContentReferenceType());
         contentReferenceDTO.setContentId(UUID.randomUUID());
         return contentReferenceDTO;
     }

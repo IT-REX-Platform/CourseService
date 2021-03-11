@@ -49,25 +49,7 @@ public class ChapterResourceIT {
 
   private static final UUID NON_EXISTING_ID = UUID.randomUUID();
 
-  private static final UUID COURSE_ID = UUID.randomUUID();
-
-  private static final UUID FIRST_CHAPTER_ID = UUID.randomUUID();
-  private static final UUID SECOND_CHAPTER_ID = UUID.randomUUID();
-  private static final UUID THIRD_CHAPTER_ID = UUID.randomUUID();
-
-  private static final String FIRST_TITLE = "AAAAAAAAAA";
   private static final String NEW_TITLE = "BBBBBBBBBB";
-  private static final String THIRD_TITLE = "CCCCCCCCC";
-
-  private static final LocalDate FIRST_START_DATE = LocalDate.ofEpochDay(0L);
-  private static final LocalDate NEW_START_DATE = LocalDate.now(ZoneId.systemDefault());
-  private static final LocalDate THIRD_START_DATE = LocalDate.now(ZoneId.systemDefault());
-
-  private static final LocalDate FIRST_END_DATE = LocalDate.ofEpochDay(0L);
-  private static final LocalDate SECOND_END_DATE = LocalDate.now(ZoneId.systemDefault());
-  private static final LocalDate THIRD_END_DATE = LocalDate.now(ZoneId.systemDefault());
-
-  private static final List<ContentReference> EXPECTED_CONTENTS = createContentReferenceList(34);
 
   private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 

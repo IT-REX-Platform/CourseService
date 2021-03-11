@@ -25,7 +25,7 @@ public final class CourseUtil {
         course.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
         course.setMaxFoodSum(NumbersUtil.generateRandomInteger(1000, 200000));
         course.setCourseDescription(StringUtil.generateRandomString(300, 600));
-        course.setPublishState(PublishStateUtil.generateRandomPublishState());
+        course.setPublishState(EnumUtil.generateRandomPublishState());
         return course;
     }
 
@@ -42,7 +42,7 @@ public final class CourseUtil {
         courseDTO.setMaxFoodSum(NumbersUtil.generateRandomInteger(1000, 200000));
         courseDTO.setRemainActiveOffset(NumbersUtil.generateRandomInteger(33, 34563));
         courseDTO.setCourseDescription(StringUtil.generateRandomString(300, 600));
-        courseDTO.setPublishState(PublishStateUtil.generateRandomPublishState());
+        courseDTO.setPublishState(EnumUtil.generateRandomPublishState());
         return courseDTO;
     }
 
