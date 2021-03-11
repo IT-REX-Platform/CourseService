@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.domain.written_entities;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.CONTENTREFERENCETYPE;
 import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
 import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
@@ -7,6 +8,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -38,6 +41,13 @@ public class ContentReference implements Serializable {
      */
     @Column(name = "content_id")
     private UUID contentId;
+
+    /**
+     * The CONTENTREFERENCETYPE.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "content_reference_type_state")
+    private CONTENTREFERENCETYPE contentreferencetype;
 
     /**
      * The Chapters.
@@ -87,6 +97,25 @@ public class ContentReference implements Serializable {
      */
     public void setContentId(final UUID newContentId) {
         this.contentId = newContentId;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the CONTENTREFERENCETYPE
+     */
+    public CONTENTREFERENCETYPE getContentreferencetype() {
+        return contentreferencetype;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newContentreferencetype the CONTENTREFERENCETYPE
+     */
+    public void setContentreferencetype(
+        final CONTENTREFERENCETYPE newContentreferencetype) {
+        this.contentreferencetype = newContentreferencetype;
     }
 
     /**
@@ -174,5 +203,4 @@ public class ContentReference implements Serializable {
     public int hashCode() {
         return new HashCodeBuilder().append(id).toHashCode();
     }
-
 }

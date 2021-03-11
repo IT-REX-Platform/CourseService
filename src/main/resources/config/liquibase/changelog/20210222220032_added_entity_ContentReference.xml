@@ -15,6 +15,9 @@
             <column name="chapter_id" type="${uuidType}">
                 <constraints nullable="false"/>
             </column>
+            <column name="content_reference_type_state" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="time_period_id" type="${uuidType}">
                 <constraints nullable="true"/>
             </column>

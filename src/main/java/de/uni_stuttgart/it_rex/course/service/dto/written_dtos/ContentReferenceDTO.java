@@ -1,5 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
+import de.uni_stuttgart.it_rex.course.domain.enumeration.CONTENTREFERENCETYPE;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,6 +17,11 @@ public class ContentReferenceDTO {
     private UUID contentId;
 
     /**
+     * The CONTENTREFERENCETYPE.
+     */
+    private CONTENTREFERENCETYPE contentreferencetype;
+
+    /**
      * The Course Id.
      */
     private UUID chapterId;
@@ -26,6 +33,7 @@ public class ContentReferenceDTO {
 
     /**
      * Getter.
+     *
      * @return the id
      */
     public UUID getId() {
@@ -34,6 +42,7 @@ public class ContentReferenceDTO {
 
     /**
      * Setter.
+     *
      * @param newId the id
      */
     public void setId(final UUID newId) {
@@ -42,6 +51,7 @@ public class ContentReferenceDTO {
 
     /**
      * Getter.
+     *
      * @return the Content Id
      */
     public UUID getContentId() {
@@ -50,6 +60,7 @@ public class ContentReferenceDTO {
 
     /**
      * Setter.
+     *
      * @param newContentId the Content Id
      */
     public void setContentId(final UUID newContentId) {
@@ -58,6 +69,26 @@ public class ContentReferenceDTO {
 
     /**
      * Getter.
+     *
+     * @return the CONTENTREFERENCETYPE
+     */
+    public CONTENTREFERENCETYPE getContentreferencetype() {
+        return contentreferencetype;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newContentreferencetype the CONTENTREFERENCETYPE
+     */
+    public void setContentreferencetype(
+        final CONTENTREFERENCETYPE newContentreferencetype) {
+        this.contentreferencetype = newContentreferencetype;
+    }
+
+    /**
+     * Getter.
+     *
      * @return the Chapter Id.
      */
     public UUID getChapterId() {
@@ -66,6 +97,7 @@ public class ContentReferenceDTO {
 
     /**
      * Setter.
+     *
      * @param newChapterId the Chapter Id.
      */
     public void setChapterId(final UUID newChapterId) {
@@ -74,6 +106,7 @@ public class ContentReferenceDTO {
 
     /**
      * Getter.
+     *
      * @return the TimePeriod id.
      */
     public UUID getTimePeriodId() {
@@ -82,6 +115,7 @@ public class ContentReferenceDTO {
 
     /**
      * Setter.
+     *
      * @param newTimePeriodId the TimePeriod id.
      */
     public void setTimePeriodId(final UUID newTimePeriodId) {
@@ -90,6 +124,7 @@ public class ContentReferenceDTO {
 
     /**
      * Equals method.
+     *
      * @param o the other object
      * @return if they are equal
      */
@@ -110,6 +145,7 @@ public class ContentReferenceDTO {
 
     /**
      * Hash code.
+     *
      * @return the Hash code
      */
     @Override
@@ -123,6 +159,7 @@ public class ContentReferenceDTO {
 
     /**
      * To String method.
+     *
      * @return the String
      */
     @Override
