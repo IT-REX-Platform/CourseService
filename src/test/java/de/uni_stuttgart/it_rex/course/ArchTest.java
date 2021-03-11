@@ -9,7 +9,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 class ArchTest {
 
- /*   @Test
+  @Test
     void servicesAndRepositoriesShouldNotDependOnWebLayer() {
 
         JavaClasses importedClasses = new ClassFileImporter()
@@ -25,5 +25,5 @@ class ArchTest {
                 .resideInAnyPackage("..de.uni_stuttgart.it_rex.course.web..")
         .because("Services and repositories should not depend on web layer")
         .check(importedClasses);
-    }*/
+  }
 }

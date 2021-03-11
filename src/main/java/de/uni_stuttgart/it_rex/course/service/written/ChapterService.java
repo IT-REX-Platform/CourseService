@@ -5,7 +5,7 @@ import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
-import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
+import de.uni_stuttgart.it_rex.course.service.written.exception.ChapterNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,12 +106,6 @@ public class ChapterService {
   @Transactional
   public void delete(final UUID id) {
     LOGGER.debug("Request to delete Chapter : {}", id);
-
-    final Optional<Chapter> toDeleteOptional = chapterRepository.findById(id);
-
-    if (!toDeleteOptional.isPresent()) {
-      return;
-    }
     chapterRepository.deleteById(id);
   }
 
@@ -146,8 +140,8 @@ public class ChapterService {
   public ContentReferenceDTO addToChapter(final UUID chapterId,
                                           final UUID contentId) {
     final Chapter chapter = chapterRepository.findById(chapterId)
-        .orElseThrow(() -> new BadRequestAlertException("Invalid id",
-            Chapter.class.getName(), "idnotfound"));
+        .orElseThrow(() -> new ChapterNotFoundException(
+            String.format("Chapter with id not found", chapterId)));
 
     final ContentReferenceDTO contentReferenceDTO = new ContentReferenceDTO();
     contentReferenceDTO.setContentId(contentId);

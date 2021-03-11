@@ -4,15 +4,18 @@ import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
+import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
+import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
+import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
+import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,8 +25,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -41,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration tests for the {@link ChapterResource} REST controller.
  */
-@Disabled
 @SpringBootTest(classes = {CourseServiceApp.class, TestSecurityConfiguration.class})
 @AutoConfigureMockMvc
 @WithMockUser
@@ -56,11 +56,11 @@ public class ChapterResourceIT {
   private static final UUID THIRD_CHAPTER_ID = UUID.randomUUID();
 
   private static final String FIRST_TITLE = "AAAAAAAAAA";
-  private static final String SECOND_TITLE = "BBBBBBBBBB";
+  private static final String NEW_TITLE = "BBBBBBBBBB";
   private static final String THIRD_TITLE = "CCCCCCCCC";
 
   private static final LocalDate FIRST_START_DATE = LocalDate.ofEpochDay(0L);
-  private static final LocalDate SECOND_START_DATE = LocalDate.now(ZoneId.systemDefault());
+  private static final LocalDate NEW_START_DATE = LocalDate.now(ZoneId.systemDefault());
   private static final LocalDate THIRD_START_DATE = LocalDate.now(ZoneId.systemDefault());
 
   private static final LocalDate FIRST_END_DATE = LocalDate.ofEpochDay(0L);
@@ -75,6 +75,9 @@ public class ChapterResourceIT {
   private ChapterRepository chapterRepository;
 
   @Autowired
+  private CourseRepository courseRepository;
+
+  @Autowired
   private ChapterResource chapterResource;
 
   @Autowired
@@ -84,109 +87,38 @@ public class ChapterResourceIT {
   private ContentReferenceRepository contentReferenceRepository;
 
   @Autowired
-  private EntityManager em;
-
-  @Autowired
   private MockMvc restChapterMockMvc;
 
-  private Chapter chapter1;
-  private Chapter chapter2;
-  private Chapter chapter3;
-
-  private static List<ContentReference> firstContents;
-  private static List<ContentReference> secondContents;
-  private static List<ContentReference> thirdContents;
-
-  /**
-   * Create an entity for this test.
-   * <p>
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static Chapter createFirstChapter(EntityManager em) {
-    Chapter chapter = new Chapter();
-    chapter.setName(FIRST_TITLE);
-  //  chapter.setStartDate(FIRST_START_DATE);
-  //  chapter.setEndDate(FIRST_END_DATE);
-    return chapter;
-  }
-
-  /**
-   * Create an entity for this test.
-   * <p>
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static Chapter createSecondChapter(EntityManager em) {
-    Chapter chapter = new Chapter();
-    chapter.setName(SECOND_TITLE);
-  //  chapter.setStartDate(SECOND_START_DATE);
-  //  chapter.setEndDate(SECOND_END_DATE);
-    return chapter;
-  }
-
-  /**
-   * Create an entity for this test.
-   * <p>
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static Chapter createThirdChapter(EntityManager em) {
-    Chapter chapter = new Chapter();
-    chapter.setName(THIRD_TITLE);
- //  chapter.setStartDate(THIRD_START_DATE);
- //  chapter.setEndDate(THIRD_END_DATE);
-    return chapter;
-  }
-
-  /**
-   * Create an updated entity for this test.
-   * <p>
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static Chapter createUpdatedEntity(EntityManager em) {
-    Chapter chapter = new Chapter();
-    chapter.setName(SECOND_TITLE);
-  // chapter.setStartDate(SECOND_START_DATE);
-  // chapter.setEndDate(SECOND_END_DATE);
-    return chapter;
-  }
+  private static Course THE_COURSE;
 
   @BeforeEach
-  public void initTest() {
-    firstContents = createContentReferenceList(34);
-    secondContents = createContentReferenceList(69);
-    thirdContents = createContentReferenceList(42);
-    chapter1 = createFirstChapter(em);
-    chapter2 = createSecondChapter(em);
-    chapter3 = createThirdChapter(em);
+  void init() {
+    THE_COURSE = CourseUtil.createCourse();
+    courseRepository.save(THE_COURSE);
   }
 
   @AfterEach
   public void cleanup() {
     chapterRepository.deleteAll();
     contentReferenceRepository.deleteAll();
+    courseRepository.deleteAll();
   }
 
   @Test
   @Transactional
   public void createChapter() throws Exception {
-    int databaseSizeBeforeCreate = chapterRepository.findAll().size();
+    final int databaseSizeBeforeCreate = chapterRepository.findAll().size();
+    final ChapterDTO chapterDTO = ChapterUtil.createChapterDTO();
+    chapterDTO.setCourseId(THE_COURSE.getId());
+
     // Create the Chapter
     restChapterMockMvc.perform(post("/api/chapters").with(csrf())
         .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(chapterMapper
-            .toDTO(chapter1))))
+        .content(TestUtil.convertObjectToJsonBytes(chapterDTO)))
         .andExpect(status().isCreated());
 
     // Validate the Chapter in the database
-    List<Chapter> chapterList = chapterRepository.findAll();
-    assertThat(chapterList).hasSize(databaseSizeBeforeCreate + 1);
-    Chapter testChapter = chapterList.get(chapterList.size() - 1);
-    assertEquals(FIRST_TITLE, testChapter.getName());
-  // assertEquals(FIRST_START_DATE, testChapter.getStartDate());
-  // assertEquals(FIRST_END_DATE, testChapter.getEndDate());
+    assertThat(chapterRepository.findAll()).hasSize(databaseSizeBeforeCreate + 1);
   }
 
   @Test
@@ -195,12 +127,14 @@ public class ChapterResourceIT {
     int databaseSizeBeforeCreate = chapterRepository.findAll().size();
 
     // Create the Chapter with an existing ID
-    chapter2.setId(UUID.randomUUID());
+    final ChapterDTO chapterDTO2 = ChapterUtil.createChapterDTO();
+    chapterDTO2.setCourseId(THE_COURSE.getId());
+    chapterDTO2.setId(UUID.randomUUID());
 
     // An entity with an existing ID cannot be created, so this API call must fail
     restChapterMockMvc.perform(post("/api/chapters").with(csrf())
         .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(chapter2)))
+        .content(TestUtil.convertObjectToJsonBytes(chapterDTO2)))
         .andExpect(status().isBadRequest());
 
     // Validate the Chapter in the database
@@ -209,36 +143,36 @@ public class ChapterResourceIT {
   }
 
   @Test
+  @Transactional
   public void getAllChapters() throws Exception {
     // Initialize the database
-    chapterRepository.saveAndFlush(chapter2);
+    final Chapter chapter = ChapterUtil.createChapter();
+    chapter.setCourse(THE_COURSE);
 
     // Get all the Chapter
     restChapterMockMvc.perform(get("/api/chapters?sort=id,desc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.[*].id").value(hasItem(chapter2.getId().toString())))
-        .andExpect(jsonPath("$.[*].title").value(hasItem(SECOND_TITLE)))
-        .andExpect(jsonPath("$.[*].courseId").value(hasItem(COURSE_ID.toString())))
-        .andExpect(jsonPath("$.[*].startDate").value(hasItem(SECOND_START_DATE.toString())))
-        .andExpect(jsonPath("$.[*].endDate").value(hasItem(SECOND_END_DATE.toString())));
+        .andExpect(jsonPath("$.[*].id").value(hasItem(chapter.getId().toString())))
+        .andExpect(jsonPath("$.[*].name").value(hasItem(chapter.getName())))
+        .andExpect(jsonPath("$.[*].courseId").value(hasItem(chapter.getCourse().getId().toString())));
   }
 
   @Test
   @Transactional
   public void getChapter() throws Exception {
     // Initialize the database
-    chapterRepository.saveAndFlush(chapter2);
+    Chapter chapter = ChapterUtil.createChapter();
+    chapter.setCourse(THE_COURSE);
+    chapterRepository.saveAndFlush(chapter);
 
     // Get the Chapter
-    restChapterMockMvc.perform(get("/api/chapters/{id}", chapter2.getId()))
+    restChapterMockMvc.perform(get("/api/chapters/{id}", chapter.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.id").value(chapter2.getId().toString()))
-        .andExpect(jsonPath("$.title").value(SECOND_TITLE))
-        .andExpect(jsonPath("$.courseId").value(COURSE_ID.toString()))
-        .andExpect(jsonPath("$.startDate").value(SECOND_START_DATE.toString()))
-        .andExpect(jsonPath("$.endDate").value(SECOND_END_DATE.toString()));
+        .andExpect(jsonPath("$.id").value(chapter.getId().toString()))
+        .andExpect(jsonPath("$.name").value(chapter.getName()))
+        .andExpect(jsonPath("$.courseId").value(chapter.getCourse().getId().toString()));
   }
 
   @Test
@@ -251,45 +185,15 @@ public class ChapterResourceIT {
 
   @Test
   @Transactional
-  public void updateChapter() throws Exception {
-    // Initialize the database
-    chapterRepository.saveAndFlush(chapter1);
-
-    int databaseSizeBeforeUpdate = chapterRepository.findAll().size();
-
-    // Update the chapter
-    Chapter updatedChapter = chapterRepository.findById(chapter1.getId()).get();
-    // Disconnect from session so that the updates on updatedChapter are not directly saved in db
-    em.detach(updatedChapter);
-
-    updatedChapter.setName(SECOND_TITLE);
-   // updatedChapter.setStartDate(SECOND_START_DATE);
-   // updatedChapter.setEndDate(SECOND_END_DATE);
-
-    restChapterMockMvc.perform(put("/api/chapters").with(csrf())
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(chapterMapper
-            .toDTO(updatedChapter))))
-        .andExpect(status().isOk());
-
-    // Validate the chapter in the database
-    List<Chapter> chapterList = chapterRepository.findAll();
-    assertThat(chapterList).hasSize(databaseSizeBeforeUpdate);
-    Chapter testChapter = chapterList.get(chapterList.size() - 1);
-    assertThat(testChapter.getName()).isEqualTo(SECOND_TITLE);
- //   assertThat(testChapter.getStartDate()).isEqualTo(SECOND_START_DATE);
- //   assertThat(testChapter.getEndDate()).isEqualTo(SECOND_END_DATE);
-  }
-
-  @Test
-  @Transactional
   public void updateNonExistingChapter() throws Exception {
     int databaseSizeBeforeUpdate = chapterRepository.findAll().size();
+    final ChapterDTO chapterDTO = ChapterUtil.createChapterDTO();
+    chapterDTO.setCourseId(THE_COURSE.getId());
 
     // If the entity doesn't have an ID, it will throw BadRequestAlertException
     restChapterMockMvc.perform(put("/api/chapters").with(csrf())
         .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(chapter3)))
+        .content(TestUtil.convertObjectToJsonBytes(chapterDTO)))
         .andExpect(status().isBadRequest());
 
     // Validate the Chapter in the database
@@ -298,64 +202,29 @@ public class ChapterResourceIT {
   }
 
   @Test
-  @Transactional
   public void deleteChapter() throws Exception {
     // Initialize the database
-    final Chapter toDelete = chapterRepository.saveAndFlush(chapter2);
+    final Chapter chapter = ChapterUtil.createChapter();
+    chapter.setCourse(THE_COURSE);
+    chapterRepository.saveAndFlush(chapter);
 
-    chapterRepository.saveAndFlush(toDelete);
+    final int databaseSizeBeforeDelete = courseRepository.findAll().size();
 
-    int databaseSizeBeforeDelete = chapterRepository.findAll().size();
-
-    // Delete the chapter
-    restChapterMockMvc.perform(delete("/api/chapters/{id}", toDelete.getId()).with(csrf())
+    // Delete the course
+    restChapterMockMvc.perform(delete("/api/chapters/{id}", chapter.getId()).with(csrf())
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
 
     // Validate the database contains one less item
-    List<Chapter> chapterList = chapterRepository.findAll();
+    final List<Chapter> chapterList = chapterRepository.findAll();
     assertThat(chapterList).hasSize(databaseSizeBeforeDelete - 1);
-  }
-
-  @Test
-  @Transactional
-  void patchChapter() throws URISyntaxException {
-    Chapter toUpdate = new Chapter();
-    toUpdate.setName(FIRST_TITLE);
-  //  toUpdate.setStartDate(FIRST_START_DATE);
-  //  toUpdate.setEndDate(FIRST_END_DATE);
-   // toUpdate.setContents(EXPECTED_CONTENTS);
-
-    UUID id = chapterResource.createChapter(chapterMapper.toDTO(toUpdate)).getBody().getId();
-    Chapter update = new Chapter();
-    update.setId(id);
-    update.setName(SECOND_TITLE);
-   // update.setEndDate(SECOND_END_DATE);
-
-    chapterResource.patchChapter(chapterMapper.toDTO(update));
-
-    Chapter expected = new Chapter();
-    expected.setId(id);
-    expected.setName(SECOND_TITLE);
-  //  expected.setStartDate(FIRST_START_DATE);
-  //  expected.setEndDate(SECOND_END_DATE);
-   // expected.setContents(EXPECTED_CONTENTS);
-
-    ChapterDTO updated = chapterResource.getChapter(id).getBody();
-
-    expected.setId(id);
-
-    assertEquals(updated.getId(), expected.getId());
-    assertEquals(updated.getName(), expected.getName());
- //  assertEquals(updated.getStartDate(), expected.getStartDate());
- //  assertEquals(updated.getEndDate(), expected.getEndDate());
   }
 
   @Test
   @Transactional
   void patchChapterWithoutId() {
     Chapter toUpdate = new Chapter();
-    toUpdate.setName(SECOND_TITLE);
+    toUpdate.setName(NEW_TITLE);
 
     Exception e = assertThrows(BadRequestAlertException.class, () -> chapterResource.patchChapter(chapterMapper.toDTO(toUpdate)));
     assertThat(e.getMessage()).isEqualTo(EXPECTED_EXCEPTION_MESSAGE);
