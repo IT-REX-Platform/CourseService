@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
+import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;

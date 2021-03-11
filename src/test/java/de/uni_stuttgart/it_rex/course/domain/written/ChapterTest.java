@@ -1,6 +1,5 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
 import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
 import org.junit.jupiter.api.Test;
 

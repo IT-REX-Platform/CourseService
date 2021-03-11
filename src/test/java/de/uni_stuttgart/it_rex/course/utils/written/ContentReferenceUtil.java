@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
+import de.uni_stuttgart.it_rex.course.domain.written.ContentReference;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 
 import java.util.List;

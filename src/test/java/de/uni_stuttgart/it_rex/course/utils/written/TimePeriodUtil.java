@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
+import de.uni_stuttgart.it_rex.course.domain.written.TimePeriod;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 
 import java.time.LocalDate;

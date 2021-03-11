@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentReference;
+import de.uni_stuttgart.it_rex.course.domain.written.Chapter;
+import de.uni_stuttgart.it_rex.course.domain.written.ContentReference;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;

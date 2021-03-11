@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain.written_entities;
+package de.uni_stuttgart.it_rex.course.domain.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.CONTENTREFERENCETYPE;
 import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;

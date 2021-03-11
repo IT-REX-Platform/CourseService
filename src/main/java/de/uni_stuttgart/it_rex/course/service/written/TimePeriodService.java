@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
+import de.uni_stuttgart.it_rex.course.domain.written.TimePeriod;
 import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.TimePeriodMapper;
