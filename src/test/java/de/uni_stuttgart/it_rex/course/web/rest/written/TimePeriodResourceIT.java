@@ -4,6 +4,7 @@ import de.uni_stuttgart.it_rex.course.CourseServiceApp;
 import de.uni_stuttgart.it_rex.course.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.Course;
 import de.uni_stuttgart.it_rex.course.domain.written_entities.TimePeriod;
+import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.TimePeriodRepository;
@@ -46,20 +47,24 @@ public class TimePeriodResourceIT {
 
   private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 
+
+  @Autowired
+  private ChapterRepository chapterRepository;
+
+  @Autowired
+  private CourseRepository courseRepository;
+
   @Autowired
   private TimePeriodRepository timePeriodRepository;
 
   @Autowired
-  private CourseRepository courseRepository;
+  private ContentReferenceRepository contentReferenceRepository;
 
   @Autowired
   private TimePeriodResource timePeriodResource;
 
   @Autowired
   private TimePeriodMapper timePeriodMapper;
-
-  @Autowired
-  private ContentReferenceRepository contentReferenceRepository;
 
   @Autowired
   private MockMvc restTimePeriodMockMvc;
@@ -74,8 +79,9 @@ public class TimePeriodResourceIT {
 
   @AfterEach
   public void cleanup() {
-    timePeriodRepository.deleteAll();
     contentReferenceRepository.deleteAll();
+    chapterRepository.deleteAll();
+    timePeriodRepository.deleteAll();
     courseRepository.deleteAll();
   }
 

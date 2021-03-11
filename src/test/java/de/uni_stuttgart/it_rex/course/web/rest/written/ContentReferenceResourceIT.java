@@ -51,20 +51,21 @@ public class ContentReferenceResourceIT {
 
   private static final String EXPECTED_EXCEPTION_MESSAGE = "Invalid id";
 
-  @Autowired
-  private ContentReferenceRepository contentReferenceRepository;
-
-  @Autowired
-  private CourseRepository courseRepository;
-
-  @Autowired
-  private ContentReferenceResource contentReferenceResource;
 
   @Autowired
   private ChapterRepository chapterRepository;
 
   @Autowired
+  private CourseRepository courseRepository;
+
+  @Autowired
   private TimePeriodRepository timePeriodRepository;
+
+  @Autowired
+  private ContentReferenceRepository contentReferenceRepository;
+
+  @Autowired
+  private ContentReferenceResource contentReferenceResource;
 
   @Autowired
   private ContentReferenceMapper contentReferenceMapper;
@@ -91,7 +92,8 @@ public class ContentReferenceResourceIT {
   @AfterEach
   public void cleanup() {
     contentReferenceRepository.deleteAll();
-    contentReferenceRepository.deleteAll();
+    chapterRepository.deleteAll();
+    timePeriodRepository.deleteAll();
     courseRepository.deleteAll();
   }
 
