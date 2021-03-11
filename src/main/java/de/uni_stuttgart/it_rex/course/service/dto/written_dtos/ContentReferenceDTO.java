@@ -19,7 +19,7 @@ public class ContentReferenceDTO {
     /**
      * The CONTENTREFERENCETYPE.
      */
-    private CONTENTREFERENCETYPE contentreferencetype;
+    private CONTENTREFERENCETYPE contentReferenceType;
 
     /**
      * The Course Id.
@@ -72,18 +72,18 @@ public class ContentReferenceDTO {
      *
      * @return the CONTENTREFERENCETYPE
      */
-    public CONTENTREFERENCETYPE getContentreferencetype() {
-        return contentreferencetype;
+    public CONTENTREFERENCETYPE getContentReferenceType() {
+        return contentReferenceType;
     }
 
     /**
      * Setter.
      *
-     * @param newContentreferencetype the CONTENTREFERENCETYPE
+     * @param newContentReferenceType the CONTENTREFERENCETYPE
      */
-    public void setContentreferencetype(
-        final CONTENTREFERENCETYPE newContentreferencetype) {
-        this.contentreferencetype = newContentreferencetype;
+    public void setContentReferenceType(
+        final CONTENTREFERENCETYPE newContentReferenceType) {
+        this.contentReferenceType = newContentReferenceType;
     }
 
     /**

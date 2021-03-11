@@ -47,7 +47,7 @@ public class ContentReference implements Serializable {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "content_reference_type_state")
-    private CONTENTREFERENCETYPE contentreferencetype;
+    private CONTENTREFERENCETYPE contentReferenceType;
 
     /**
      * The Chapters.
@@ -104,18 +104,18 @@ public class ContentReference implements Serializable {
      *
      * @return the CONTENTREFERENCETYPE
      */
-    public CONTENTREFERENCETYPE getContentreferencetype() {
-        return contentreferencetype;
+    public CONTENTREFERENCETYPE getContentReferenceType() {
+        return contentReferenceType;
     }
 
     /**
      * Setter.
      *
-     * @param newContentreferencetype the CONTENTREFERENCETYPE
+     * @param newContentReferenceType the CONTENTREFERENCETYPE
      */
-    public void setContentreferencetype(
-        final CONTENTREFERENCETYPE newContentreferencetype) {
-        this.contentreferencetype = newContentreferencetype;
+    public void setContentReferenceType(
+        final CONTENTREFERENCETYPE newContentReferenceType) {
+        this.contentReferenceType = newContentReferenceType;
     }
 
     /**
