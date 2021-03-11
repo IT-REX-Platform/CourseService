@@ -270,7 +270,7 @@ public class Course implements Serializable {
      *
      * @return the time periods
      */
-    public Collection<TimePeriod> getTimePeriods() {
+    public List<TimePeriod> getTimePeriods() {
         return timePeriods;
     }
 
@@ -330,7 +330,7 @@ public class Course implements Serializable {
      *
      * @return the chapters
      */
-    public Collection<Chapter> getChapters() {
+    public List<Chapter> getChapters() {
         return chapters;
     }
 

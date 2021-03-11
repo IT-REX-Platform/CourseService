@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
+import de.uni_stuttgart.it_rex.course.domain.written.Chapter;
 import de.uni_stuttgart.it_rex.course.domain.written.TimePeriod;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.TimePeriodDTO;
 
@@ -24,6 +25,16 @@ public final class TimePeriodUtil {
         timePeriod.setStartDate(LocalDate.now().minusDays(NumbersUtil.generateRandomInteger(20, 200)));
         timePeriod.setEndDate(LocalDate.now().plusDays(NumbersUtil.generateRandomInteger(20, 200)));
         return timePeriod;
+    }
+
+    /**
+     * Creates a List of random entities.
+     *
+     * @param number the length of the list
+     * @return the entities
+     */
+    public static List<TimePeriod> createTimePeriods(final int number) {
+        return IntStream.range(0, number).mapToObj(i -> createTimePeriod()).collect(Collectors.toList());
     }
 
     /**
