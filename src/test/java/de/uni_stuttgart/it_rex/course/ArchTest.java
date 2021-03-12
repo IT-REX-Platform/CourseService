@@ -18,12 +18,12 @@ class ArchTest {
 
         noClasses()
             .that()
-                .resideInAnyPackage("de.uni_stuttgart.it_rex.course.service..")
+            .resideInAnyPackage("de.uni_stuttgart.it_rex.course.service..")
             .or()
-                .resideInAnyPackage("de.uni_stuttgart.it_rex.course.repository..")
+            .resideInAnyPackage("de.uni_stuttgart.it_rex.course.repository..")
             .should().dependOnClassesThat()
-                .resideInAnyPackage("..de.uni_stuttgart.it_rex.course.web..")
-        .because("Services and repositories should not depend on web layer")
-        .check(importedClasses);
+            .resideInAnyPackage("..de.uni_stuttgart.it_rex.course.web..")
+            .because("Services and repositories should not depend on web layer")
+            .check(importedClasses);
     }
 }

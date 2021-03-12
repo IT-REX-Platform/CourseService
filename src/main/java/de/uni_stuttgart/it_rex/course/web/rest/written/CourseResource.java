@@ -1,7 +1,7 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
-import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.domain.enumeration.COURSEROLE;
+import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseDTO;
 import de.uni_stuttgart.it_rex.course.service.written.CourseService;
 import de.uni_stuttgart.it_rex.course.web.rest.errors.BadRequestAlertException;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,6 +64,20 @@ public class CourseResource {
     }
 
     /**
+     * {@code GET  /courses/:id} : get the "id" course.
+     *
+     * @param id the id of the courseDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)}
+     * and with body the courseDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/courses/{id}")
+    public ResponseEntity<CourseDTO> getCourse(@PathVariable final UUID id) {
+        log.debug("REST request to get Course : {}", id);
+        Optional<CourseDTO> courseDTO = courseService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(courseDTO);
+    }
+
+    /**
      * {@code POST  /courses} : Create a new course.
      *
      * @param courseDTO the course to create.
@@ -82,100 +95,13 @@ public class CourseResource {
             throw new BadRequestAlertException("A new courseDTO cannot already "
                 + "have an ID", ENTITY_NAME, "idexists");
         }
+
         CourseDTO result = courseService.create(courseDTO);
         return ResponseEntity
             .created(new URI("/api/courses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName,
                 true, ENTITY_NAME, result.getId().toString()))
             .body(result);
-    }
-
-    /**
-     * {@code PUT  /course} : Updates an existing course.
-     *
-     * @param courseDTO the course to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-     * body the updated course,
-     * or with status {@code 400 (Bad Request)} if the course is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the course couldn't
-     * be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PutMapping("/courses")
-    public ResponseEntity<CourseDTO> updateCourse(
-        @RequestBody final CourseDTO courseDTO)
-        throws URISyntaxException {
-        log.debug("REST request to update Course : {}", courseDTO);
-        if (courseDTO.getId() == null) {
-            throw new BadRequestAlertException(
-                "Invalid id", ENTITY_NAME, "idnull");
-        }
-        CourseDTO result = courseService.save(courseDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME,
-                courseDTO.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * {@code GET  /courses/:id} : get the "id" course.
-     *
-     * @param id the id of the courseDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)}
-     * and with body the courseDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/courses/{id}")
-    public ResponseEntity<CourseDTO> getCourse(@PathVariable final UUID id) {
-        log.debug("REST request to get Course : {}", id);
-        Optional<CourseDTO> courseDTO = courseService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(courseDTO);
-    }
-
-    /**
-     * {@code DELETE  /courses/:id} : delete the "id" course.
-     *
-     * @param id the id of the courseDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/courses/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
-        log.debug("REST request to delete Course : {}", id);
-        courseService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil
-            .createEntityDeletionAlert(applicationName, true,
-                ENTITY_NAME,
-                id.toString())).build();
-    }
-
-    /**
-     * {@code POST  /courses/:id/join} : Makes the currently logged in user join a course by id.
-     *
-     * @param id the id of the course to join.
-     * @return an OK request for now.
-     */
-    @PostMapping("/courses/{id}/join")
-    public ResponseEntity<Void> joinCourse(@PathVariable final UUID id) {
-        log.debug("REST request to join a course: {}", id);
-
-        courseService.join(id);
-
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * {@code POST  /courses/:id/leave} : Makes the currently logged in user leave a course by id.
-     *
-     * @param id the id of the course to leave.
-     * @return an OK request for now.
-     */
-    @PostMapping("/courses/{id}/leave")
-    public ResponseEntity<Void> leaveCourse(@PathVariable final UUID id) {
-        log.debug("REST request to leave a course: {}", id);
-
-        courseService.leave(id);
-
-        return ResponseEntity.ok().build();
     }
 
     /**
@@ -196,11 +122,59 @@ public class CourseResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
                 "idnull");
         }
-        CourseDTO result = courseService.patch(courseDTO);
+        final CourseDTO result = courseService.patch(courseDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
                 true, ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * {@code DELETE  /courses/:id} : delete the "id" course.
+     *
+     * @param id the id of the courseDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/courses/{id}")
+    public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
+        log.debug("REST request to delete Course : {}", id);
+        courseService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil
+            .createEntityDeletionAlert(applicationName, true,
+                ENTITY_NAME,
+                id.toString())).build();
+    }
+
+    /**
+     * {@code POST  /courses/:id/join} : Makes the currently logged in user join
+     * a course by id.
+     *
+     * @param id the id of the course to join.
+     * @return an OK request for now.
+     */
+    @PostMapping("/courses/{id}/join")
+    public ResponseEntity<Void> joinCourse(@PathVariable final UUID id) {
+        log.debug("REST request to join a course: {}", id);
+
+        courseService.join(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * {@code POST  /courses/:id/leave} : Makes the currently logged in user
+     * leave a course by id.
+     *
+     * @param id the id of the course to leave.
+     * @return an OK request for now.
+     */
+    @PostMapping("/courses/{id}/leave")
+    public ResponseEntity<Void> leaveCourse(@PathVariable final UUID id) {
+        log.debug("REST request to leave a course: {}", id);
+
+        courseService.leave(id);
+
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -215,7 +189,8 @@ public class CourseResource {
     public List<CourseDTO> getAllPublishedCourses(
         @RequestParam("activeOnly") final Optional<Boolean> activeOnly) {
         log.debug("REST request to get all published Courses");
-        return courseService.findAll(Optional.of(PUBLISHSTATE.PUBLISHED), activeOnly);
+        return courseService.findAll(Optional.of(
+            PUBLISHSTATE.PUBLISHED), activeOnly);
     }
 
     /**
@@ -229,8 +204,7 @@ public class CourseResource {
      * @param activeOnly Set true to only include active courses (current time
      *                   between course start and end date + offset).
      * @return A list of courses that fit the given parameters.
-     * 
-     * 
+     *
      * @return
      */
     @GetMapping("/courses/user")

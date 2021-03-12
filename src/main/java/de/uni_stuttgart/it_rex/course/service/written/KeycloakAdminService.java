@@ -4,7 +4,6 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
@@ -20,7 +19,8 @@ public class KeycloakAdminService {
     /**
      * Logger.
      */
-    private static final Logger log = LoggerFactory.getLogger(KeycloakAdminService.class);
+    private static final Logger LOGGER
+        = LoggerFactory.getLogger(KeycloakAdminService.class);
 
     final String serverUri;
     final String realm;
@@ -50,19 +50,19 @@ public class KeycloakAdminService {
         this.clientId = newClientId;
         this.clientSecret = newClientSecret;
 
-        log.debug("KeycloakAdminService ctor");
-        log.debug("serverUri: {}", this.serverUri);
-        log.debug("realm: {}", this.realm);
-        log.debug("clientId: {}", this.clientId);
-        log.debug("clientSecret: {}", this.clientSecret);
+        LOGGER.debug("KeycloakAdminService ctor");
+        LOGGER.debug("serverUri: {}", this.serverUri);
+        LOGGER.debug("realm: {}", this.realm);
+        LOGGER.debug("clientId: {}", this.clientId);
+        LOGGER.debug("clientSecret: {}", this.clientSecret);
 
-         keycloak = KeycloakBuilder.builder()
-             .serverUrl(this.serverUri)
-             .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-             .realm(this.realm)
-             .clientId(this.clientId)
-             .clientSecret(this.clientSecret)
-             .build();
+        keycloak = KeycloakBuilder.builder()
+            .serverUrl(this.serverUri)
+            .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+            .realm(this.realm)
+            .clientId(this.clientId)
+            .clientSecret(this.clientSecret)
+            .build();
 
         // TODO: Resteasy client for pooling, for handling multiple requests at the same time.
         // .resteasyClient(
@@ -125,7 +125,8 @@ public class KeycloakAdminService {
                 .roles().get(curRoleName).toRepresentation());
         }
 
-        keycloak.realm(this.realm).groups().group(groupId).roles().realmLevel().add(roles);
+        keycloak.realm(this.realm).groups().group(groupId).roles().realmLevel()
+            .add(roles);
     }
 
     /**
@@ -170,7 +171,8 @@ public class KeycloakAdminService {
      * @param groupName the name of the group to remove.
      */
     public void removeGroup(String groupName) {
-        List<GroupRepresentation> groups = keycloak.realm(this.realm).groups().groups(groupName, 0, Integer.MAX_VALUE);
+        List<GroupRepresentation> groups = keycloak.realm(this.realm).groups()
+            .groups(groupName, 0, Integer.MAX_VALUE);
 
         if (groups.isEmpty()) {
             // TODO: Maybe throw exception?

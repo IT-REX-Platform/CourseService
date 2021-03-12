@@ -1,7 +1,11 @@
 package de.uni_stuttgart.it_rex.course.utils.written;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static de.uni_stuttgart.it_rex.course.utils.written.NumbersUtil.generateRandomInteger;
 
@@ -20,5 +24,9 @@ public final class StringUtil {
     byte[] array = new byte[generateRandomInteger(lowerBound, upperBound)];
     RANDOM.nextBytes(array);
     return new String(array, Charset.forName("UTF-8"));
+  }
+
+  public static String loadLongString() throws IOException {
+    return Files.lines(Path.of("src/test/resources/CourseDescription.txt")).collect(Collectors.joining("\n"));
   }
 }

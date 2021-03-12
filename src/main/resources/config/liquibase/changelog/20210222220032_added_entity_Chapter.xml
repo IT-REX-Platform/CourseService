@@ -9,11 +9,14 @@
             <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="title" type="varchar(255)">
+            <column name="name" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
+            <column name="chapter_number" type="integer">
+                <constraints nullable="false"/>
+            </column>
             <column name="course_id" type="${uuidType}">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="start_date" type="date">
                 <constraints nullable="true"/>

@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.course.service.written;
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.Chapter;
+import de.uni_stuttgart.it_rex.course.domain.written.Chapter;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ChapterMapper;
@@ -28,6 +28,11 @@ public class ChapterService {
       = LoggerFactory.getLogger(ChapterService.class);
 
   /**
+   * ContentReferenceService.
+   */
+  private final ContentReferenceService contentReferenceService;
+
+  /**
    * Chapter Repository.
    */
   private final ChapterRepository chapterRepository;
@@ -40,12 +45,16 @@ public class ChapterService {
   /**
    * Constructor.
    *
+   * @param newContentReferenceService
    * @param newChapterRepository
    * @param newChapterMapper
    */
   @Autowired
-  public ChapterService(final ChapterRepository newChapterRepository,
-                        final ChapterMapper newChapterMapper) {
+  public ChapterService(
+      final ContentReferenceService newContentReferenceService,
+      final ChapterRepository newChapterRepository,
+      final ChapterMapper newChapterMapper) {
+    this.contentReferenceService = newContentReferenceService;
     this.chapterRepository = newChapterRepository;
     this.chapterMapper = newChapterMapper;
   }
@@ -56,6 +65,7 @@ public class ChapterService {
    * @param chapterDTO the Chapter to save.
    * @return the persisted Chapter.
    */
+  @Transactional
   public ChapterDTO save(final ChapterDTO chapterDTO) {
     LOGGER.debug("Request to save Chapter : {}", chapterDTO);
     final Chapter chapter = chapterRepository
@@ -94,12 +104,6 @@ public class ChapterService {
   @Transactional
   public void delete(final UUID id) {
     LOGGER.debug("Request to delete Chapter : {}", id);
-
-    final Optional<Chapter> toDeleteOptional = chapterRepository.findById(id);
-
-    if (!toDeleteOptional.isPresent()) {
-      return;
-    }
     chapterRepository.deleteById(id);
   }
 

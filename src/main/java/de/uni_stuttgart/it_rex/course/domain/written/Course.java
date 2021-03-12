@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain.written_entities;
+package de.uni_stuttgart.it_rex.course.domain.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
 import org.hibernate.annotations.Cache;
@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -21,6 +20,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -38,6 +38,7 @@ public class Course implements Serializable {
      * Constructor.
      */
     public Course() {
+        this.timePeriods = new ArrayList<>();
         this.chapters = new ArrayList<>();
     }
 
@@ -99,14 +100,24 @@ public class Course implements Serializable {
     private PUBLISHSTATE publishState;
 
     /**
-     * Chapter items.
+     * Time period items.
      */
     @OneToMany(cascade = CascadeType.ALL,
-        fetch = FetchType.EAGER,
-        orphanRemoval = true)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
-    @OrderBy("index")
-    private List<ChapterIndex> chapters;
+        fetch = FetchType.LAZY,
+        orphanRemoval = true,
+        mappedBy = "course")
+    @OrderBy("startDate")
+    private final List<TimePeriod> timePeriods;
+
+    /**
+     * Chapters.
+     */
+    @OneToMany(cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        orphanRemoval = true,
+        mappedBy = "course")
+    @OrderBy("chapterNumber")
+    private final List<Chapter> chapters;
 
     /**
      * Getter.
@@ -256,9 +267,69 @@ public class Course implements Serializable {
     /**
      * Getter.
      *
+     * @return the time periods
+     */
+    public List<TimePeriod> getTimePeriods() {
+        return timePeriods;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newTimePeriods the time periods
+     */
+    public void setTimePeriods(final Collection<TimePeriod> newTimePeriods) {
+        if (newTimePeriods == null) {
+            return;
+        }
+        timePeriods.clear();
+        addTimePeriods(newTimePeriods);
+    }
+
+    /**
+     * Adds a TimePeriod.
+     *
+     * @param newTimePeriod the time period
+     */
+    public void addTimePeriod(final TimePeriod newTimePeriod) {
+        if (newTimePeriod == null) {
+            return;
+        }
+        timePeriods.add(newTimePeriod);
+        newTimePeriod.course = this;
+    }
+
+    /**
+     * Adds a set of TimePeriods.
+     *
+     * @param newTimePeriods the chapterIndexes
+     */
+    public void addTimePeriods(final Collection<TimePeriod> newTimePeriods) {
+        if (newTimePeriods == null) {
+            return;
+        }
+        timePeriods.addAll(newTimePeriods.stream().map(newTimePeriod -> {
+            newTimePeriod.course = this;
+            return newTimePeriod;
+        }).collect(Collectors.toList()));
+    }
+
+    /**
+     * Removes a TimePeriod.
+     *
+     * @param newTimePeriod the time period
+     */
+    public void removeTimePeriod(final TimePeriod newTimePeriod) {
+        newTimePeriod.course = null;
+        timePeriods.remove(newTimePeriod);
+    }
+
+    /**
+     * Getter.
+     *
      * @return the chapters
      */
-    public List<ChapterIndex> getChapters() {
+    public List<Chapter> getChapters() {
         return chapters;
     }
 
@@ -267,31 +338,50 @@ public class Course implements Serializable {
      *
      * @param newChapters the chapters
      */
-    public void setChapters(final List<ChapterIndex> newChapters) {
-        getChapters().clear();
-        addChapterIndex(newChapters);
+    public void setChapters(final Collection<Chapter> newChapters) {
+        if (newChapters == null) {
+            return;
+        }
+        chapters.clear();
+        addChapters(newChapters);
     }
 
     /**
-     * Adds a ChapterIndex.
+     * Adds a Chapter.
      *
-     * @param chapterIndex the chapterIndex
+     * @param newChapter the chapter
      */
-    public void addChapterIndex(final ChapterIndex chapterIndex) {
-        chapterIndex.setCourseId(getId());
-        getChapters().add(chapterIndex);
+    public void addChapter(final Chapter newChapter) {
+        if (newChapter == null) {
+            return;
+        }
+        chapters.add(newChapter);
+        newChapter.course = this;
     }
 
     /**
-     * Adds a list of ChapterIndexes.
+     * Adds a set of Chapters.
      *
-     * @param chapterIndexes the chapterIndexes
+     * @param newChapters the chapters
      */
-    public void addChapterIndex(final List<ChapterIndex> chapterIndexes) {
-        getChapters().addAll(chapterIndexes.stream().map(chapterIndex -> {
-            chapterIndex.setCourseId(getId());
-            return chapterIndex;
+    public void addChapters(final Collection<Chapter> newChapters) {
+        if (newChapters == null) {
+            return;
+        }
+        chapters.addAll(newChapters.stream().map(newChapter -> {
+            newChapter.course = this;
+            return newChapter;
         }).collect(Collectors.toList()));
+    }
+
+    /**
+     * Removes a Chapter.
+     *
+     * @param newChapter the chapter
+     */
+    public void removeChapter(final Chapter newChapter) {
+        newChapter.course = null;
+        chapters.remove(newChapter);
     }
 
     /**
@@ -301,25 +391,26 @@ public class Course implements Serializable {
      * @return if they are equal.
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Course)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Course course = (Course) o;
-        return Objects.equals(getId(), course.getId())
-            && Objects.equals(getName(), course.getName())
-            && Objects.equals(getStartDate(), course.getStartDate())
-            && Objects.equals(getEndDate(), course.getEndDate())
-            && Objects.equals(getRemainActiveOffset(),
-                                                course.getRemainActiveOffset())
-            && Objects.equals(getMaxFoodSum(), course.getMaxFoodSum())
-            && Objects.equals(getCourseDescription(),
-            course.getCourseDescription())
-            && getPublishState() == course.getPublishState()
-            && Objects.equals(getChapters(), course.getChapters());
+        Course course = (Course) o;
+        return id.equals(course.id) &&
+            Objects.equals(name, course.name) &&
+            Objects.equals(startDate, course.startDate) &&
+            Objects.equals(endDate, course.endDate) &&
+            Objects
+                .equals(remainActiveOffset, course.remainActiveOffset) &&
+            Objects.equals(maxFoodSum, course.maxFoodSum) &&
+            Objects
+                .equals(courseDescription, course.courseDescription) &&
+            publishState == course.publishState &&
+            Objects.equals(timePeriods, course.timePeriods) &&
+            Objects.equals(chapters, course.chapters);
     }
 
     /**
@@ -329,15 +420,9 @@ public class Course implements Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(),
-            getName(),
-            getStartDate(),
-            getEndDate(),
-            getRemainActiveOffset(),
-            getMaxFoodSum(),
-            getCourseDescription(),
-            getPublishState(),
-            getChapters());
+        return Objects
+            .hash(id, name, startDate, endDate, remainActiveOffset, maxFoodSum,
+                courseDescription, publishState, timePeriods, chapters);
     }
 
     /**
@@ -347,15 +432,17 @@ public class Course implements Serializable {
      */
     @Override
     public String toString() {
-        return "Course{"
-            + "id=" + id
-            + ", name='" + name + '\''
-            + ", startDate=" + startDate
-            + ", endDate=" + endDate
-            + ", remainActiveOffset= " + remainActiveOffset
-            + ", maxFoodSum=" + maxFoodSum
-            + ", courseDescription='" + courseDescription + '\''
-            + ", publishState=" + publishState
-            + '}';
+        return "Course{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", startDate=" + startDate +
+            ", endDate=" + endDate +
+            ", remainActiveOffset=" + remainActiveOffset +
+            ", maxFoodSum=" + maxFoodSum +
+            ", courseDescription='" + courseDescription + '\'' +
+            ", publishState=" + publishState +
+            ", timePeriods=" + timePeriods +
+            ", chapters=" + chapters +
+            '}';
     }
 }
