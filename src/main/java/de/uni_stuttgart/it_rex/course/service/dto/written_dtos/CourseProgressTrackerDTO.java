@@ -1,7 +1,8 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker;
+import de.uni_stuttgart.it_rex.course.domain.written.ContentProgressTracker;
+import de.uni_stuttgart.it_rex.course.domain.written.CourseProgressTracker;
 
 import java.util.Map;
 import java.util.Objects;
@@ -9,10 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The CourseProgressTrackerDTO serves to send the data of a @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker}
- * to the client and collect all @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker}-objects of a course.
+ * The CourseProgressTrackerDTO serves to send the data of a @{@link CourseProgressTracker}
+ * to the client and collect all @{@link ContentProgressTracker}-objects of a course.
  *
- * This DTO is not used to create {@link de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker}-objects.
+ * This DTO is not used to create {@link CourseProgressTracker}-objects.
  */
 public class CourseProgressTrackerDTO {
 

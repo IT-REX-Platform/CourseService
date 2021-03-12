@@ -1,5 +1,7 @@
 package de.uni_stuttgart.it_rex.course.web.rest.written;
 
+import de.uni_stuttgart.it_rex.course.domain.written.ContentProgressTracker;
+import de.uni_stuttgart.it_rex.course.domain.written.CourseProgressTracker;
 import de.uni_stuttgart.it_rex.course.security.written.RexAuthz;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ChapterDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentProgressTrackerDTO;
@@ -30,15 +32,15 @@ public class ProgressResource {
     /**
      * Logger.
      */
-    private final Logger log = LoggerFactory.getLogger(ChapterResource.class);
+    private final Logger log = LoggerFactory.getLogger(ProgressResource.class);
 
     /**
-     * Entity name for the @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker}.
+     * Entity name for the @{@link CourseProgressTracker}.
      */
     private static final String ENTITY_NAME_COURSEPT = "CourseProgressTracker";
 
     /**
-     * Entity name for the @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker}.
+     * Entity name for the @{@link ContentProgressTracker}.
      */
     private static final String ENTITY_NAME_CONTENTPT = "ContentProgressTracker";
 
@@ -96,6 +98,15 @@ public class ProgressResource {
         return ResponseUtil.wrapOrNotFound(Optional.of(progress));
     }
 
+    /**
+     * {@code PUT  /courses/{courseTrackerId}/contentReference : set the last accessed content reference for a specific user}
+     *
+     * @param courseTrackerId the user's tracker to update
+     * @param contentReferenceDTO the contentReference to store as last accessed
+     * @return {@link ResponseEntity} with status {@code 200 (OK)} and the updated
+     * {@link CourseProgressTrackerDTO} in its body, or with {@code 404 (Not Found)}
+     * if there is not tracker with the given Id or the contentReferenceDTO was invalid.
+     */
     @PutMapping("/courses/{courseTrackerId}/contentReference")
     public ResponseEntity<CourseProgressTrackerDTO> updateLastAccessedContentReference(
         @PathVariable final UUID courseTrackerId,
@@ -113,7 +124,8 @@ public class ProgressResource {
      *
      * @param trackerId id of Content Progress Tracker
      * @return the {@link ResponseEntity} with status {@code 200 (OK)}
-     * and with body the chapter, or with status {@code 404 (Not Found)}.
+     * and with the {@link ContentProgressTrackerDTO} in the body,
+     * or with status {@code 404 (Not Found)} in case of an invalid id.
      */
     @GetMapping("/content/{trackerId}")
     public ResponseEntity<ContentProgressTrackerDTO> getContentProgress(
@@ -171,7 +183,6 @@ public class ProgressResource {
         log.debug("REST request to put Content Progress for Content Item : {}",
             trackerId);
 
-        UUID userId = RexAuthz.getUserId();
         ContentProgressTrackerDTO contentProgressTrackerDTO =
             progressTrackingService.updateContentProgress(trackerId, progress);
 

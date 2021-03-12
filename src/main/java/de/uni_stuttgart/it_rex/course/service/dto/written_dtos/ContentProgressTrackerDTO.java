@@ -1,11 +1,13 @@
 package de.uni_stuttgart.it_rex.course.service.dto.written_dtos;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.ContentProgressState;
+import de.uni_stuttgart.it_rex.course.domain.written.ContentProgressTracker;
+
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Used to retrieve @{@link de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker}-objects
+ * Used to retrieve @{@link ContentProgressTracker}-objects
  * and send them to the client.
  *
  * Not used for creation of new entities.

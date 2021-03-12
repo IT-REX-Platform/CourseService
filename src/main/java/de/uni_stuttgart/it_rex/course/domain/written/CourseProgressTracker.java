@@ -1,6 +1,4 @@
-package de.uni_stuttgart.it_rex.course.domain.written_entities;
-
-import de.uni_stuttgart.it_rex.course.domain.written.ContentReference;
+package de.uni_stuttgart.it_rex.course.domain.written;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,7 +1,6 @@
-package de.uni_stuttgart.it_rex.course.domain.written_entities;
+package de.uni_stuttgart.it_rex.course.domain.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.ContentProgressState;
-import de.uni_stuttgart.it_rex.course.domain.written.ContentReference;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

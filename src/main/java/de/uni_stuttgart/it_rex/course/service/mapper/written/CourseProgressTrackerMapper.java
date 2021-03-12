@@ -1,8 +1,8 @@
 package de.uni_stuttgart.it_rex.course.service.mapper.written;
 
 import de.uni_stuttgart.it_rex.course.domain.written.ContentReference;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.ContentProgressTracker;
-import de.uni_stuttgart.it_rex.course.domain.written_entities.CourseProgressTracker;
+import de.uni_stuttgart.it_rex.course.domain.written.ContentProgressTracker;
+import de.uni_stuttgart.it_rex.course.domain.written.CourseProgressTracker;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentProgressTrackerDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
