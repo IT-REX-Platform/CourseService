@@ -1,5 +1,7 @@
 package de.uni_stuttgart.it_rex.course.domain.written_entities;
 
+import de.uni_stuttgart.it_rex.course.domain.written.ContentReference;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
