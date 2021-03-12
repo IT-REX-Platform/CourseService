@@ -96,7 +96,6 @@ public class CourseService {
 
     /**
      * Creates a Course.
-     * TODO: transaction handling
      *
      * First create the TimePeriods and store them.
      * Then store the Course entity.
@@ -314,7 +313,7 @@ public class CourseService {
             List<Predicate> predicates = new ArrayList<>();
 
             activeOnly.ifPresent(active -> {
-                if (active) {
+                if (Boolean.TRUE.equals(active)) {
                     predicates.add(builder.greaterThanOrEqualTo(
                         root.get("endDate"), LocalDate.now()));
                 }

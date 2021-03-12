@@ -89,16 +89,19 @@ public abstract class ContentReferenceMapper {
 
     /**
      * Sets the index when a DTO is converted to an entity.
+     * Only sets the index when a chapter exists.
      *
      * @param contentReference the entity
      */
     @AfterMapping
     protected void setIndex(
         @MappingTarget final ContentReference contentReference) {
-        contentReference.setIndex(contentReference
-            .getChapter()
-            .getContentReferences()
-            .indexOf(contentReference));
+        if (contentReference.getChapter() != null) {
+            contentReference.setIndex(contentReference
+                .getChapter()
+                .getContentReferences()
+                .indexOf(contentReference));
+        }
     }
 
     /**

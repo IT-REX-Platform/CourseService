@@ -113,7 +113,7 @@ public abstract class ChapterMapper {
         final ChapterDTO chapterDTO, @MappingTarget final Chapter chapter) {
         if (chapterDTO.getContentReferences() != null) {
             chapter.setContentReferences(IntStream
-                .range(0, chapterDTO.getContentReferences().size())
+                .range(0, chapterDTO.getContentReferences().size() - 1)
                 .mapToObj(i -> {
                     final ContentReferenceDTO contentReferenceDTO
                         = chapterDTO.getContentReferences().get(i);

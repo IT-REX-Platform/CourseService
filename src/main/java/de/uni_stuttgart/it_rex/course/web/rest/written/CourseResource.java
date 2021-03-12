@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -102,34 +101,6 @@ public class CourseResource {
             .created(new URI("/api/courses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName,
                 true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * {@code PUT  /course} : Updates an existing course.
-     *
-     * @param courseDTO the course to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-     * body the updated course,
-     * or with status {@code 400 (Bad Request)} if the course is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the course couldn't
-     * be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PutMapping("/courses")
-    public ResponseEntity<CourseDTO> updateCourse(
-        @RequestBody final CourseDTO courseDTO)
-        throws URISyntaxException {
-        log.debug("REST request to update Course : {}", courseDTO);
-        if (courseDTO.getId() == null) {
-            throw new BadRequestAlertException(
-                "Invalid id", ENTITY_NAME, "idnull");
-        }
-        CourseDTO result = courseService.save(courseDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
-                true, ENTITY_NAME,
-                courseDTO.getId().toString()))
             .body(result);
     }
 

@@ -1,8 +1,6 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.CONTENTREFERENCETYPE;
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -16,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -135,6 +134,7 @@ public class ContentReference implements Serializable {
     public void setChapter(final Chapter newChapter) {
         chapter = newChapter;
         newChapter.contentReferences.add(this);
+        index = newChapter.contentReferences.size() - 1;
     }
 
     /**
@@ -181,17 +181,19 @@ public class ContentReference implements Serializable {
      * @return if they are equal.
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ContentReference)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final ContentReference contentReference = (ContentReference) o;
-        return new EqualsBuilder()
-            .append(id, contentReference.id)
-            .isEquals();
+        ContentReference that = (ContentReference) o;
+        return index == that.index && id.equals(that.id) &&
+            contentId.equals(that.contentId) &&
+            contentReferenceType == that.contentReferenceType &&
+            chapter.equals(that.chapter) &&
+            Objects.equals(timePeriod, that.timePeriod);
     }
 
     /**
@@ -201,6 +203,24 @@ public class ContentReference implements Serializable {
      */
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).toHashCode();
+        return Objects.hash(id, index, contentId, contentReferenceType, chapter,
+            timePeriod);
+    }
+
+    /**
+     * Converts the entity to a string.
+     *
+     * @return the string
+     */
+    @Override
+    public String toString() {
+        return "ContentReference{" +
+            "id=" + id +
+            ", index=" + index +
+            ", contentId=" + contentId +
+            ", contentReferenceType=" + contentReferenceType +
+            ", chapter=" + chapter +
+            ", timePeriod=" + timePeriod +
+            '}';
     }
 }

@@ -27,121 +27,147 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = {CourseServiceApp.class, TestSecurityConfiguration.class})
+@SpringBootTest(classes = {CourseServiceApp.class,
+    TestSecurityConfiguration.class})
 class ContentReferenceServiceIT {
-  private static final int NUMBER_OF_CONTENT_REFERENCES = 20;
-  private static final int THE_CHOSEN_INDEX = 13;
-  private static final LocalDate NEW_DATE = LocalDate.now().plusDays(200);
+    private static final int NUMBER_OF_CONTENT_REFERENCES = 20;
+    private static final int THE_CHOSEN_INDEX = 13;
+    private static final LocalDate NEW_DATE = LocalDate.now().plusDays(200);
 
-  @Autowired
-  private ContentReferenceService contentReferenceService;
+    @Autowired
+    private ContentReferenceService contentReferenceService;
 
-  @Autowired
-  private ContentReferenceRepository contentReferenceRepository;
+    @Autowired
+    private ContentReferenceRepository contentReferenceRepository;
 
-  @Autowired
-  private CourseRepository courseRepository;
+    @Autowired
+    private CourseRepository courseRepository;
 
-  @Autowired
-  private ChapterRepository chapterRepository;
+    @Autowired
+    private ChapterRepository chapterRepository;
 
-  private static Course THE_COURSE;
+    private static Course THE_COURSE;
 
-  private static Chapter THE_CHAPTER;
+    private static Chapter THE_CHAPTER;
 
-  @BeforeEach
-  void init() {
-    THE_COURSE = CourseUtil.createCourse();
-    courseRepository.save(THE_COURSE);
+    @BeforeEach
+    void init() {
+        THE_COURSE = CourseUtil.createCourse();
+        courseRepository.save(THE_COURSE);
 
-    THE_CHAPTER = ChapterUtil.createChapter();
-    THE_CHAPTER.setCourse(THE_COURSE);
-    chapterRepository.save(THE_CHAPTER);
-  }
+        THE_CHAPTER = ChapterUtil.createChapter();
+        THE_CHAPTER.setCourse(THE_COURSE);
+        chapterRepository.save(THE_CHAPTER);
+    }
 
-  @AfterEach
-  void cleanUp() {
-    courseRepository.deleteAll();
-    contentReferenceRepository.deleteAll();
-  }
+    @AfterEach
+    void cleanUp() {
+        courseRepository.deleteAll();
+        contentReferenceRepository.deleteAll();
+    }
 
-  @Test
-  void save() {
-    final ContentReferenceDTO contentReferenceDTO = ContentReferenceUtil.createContentReferenceDTO();
-    contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
-    contentReferenceService.save(contentReferenceDTO);
-    final ContentReferenceDTO result = contentReferenceService.findAll().get(0);
-    contentReferenceDTO.setId(result.getId());
-    ContentReferenceUtil.equalsContentReferenceDTO(contentReferenceDTO, result);
-  }
+    @Test
+    void save() {
+        final ContentReferenceDTO contentReferenceDTO =
+            ContentReferenceUtil.createContentReferenceDTO();
+        contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
+        contentReferenceService.save(contentReferenceDTO);
+        final ContentReferenceDTO result =
+            contentReferenceService.findAll().get(0);
+        contentReferenceDTO.setId(result.getId());
+        ContentReferenceUtil
+            .equalsContentReferenceDTO(contentReferenceDTO, result);
+    }
 
-  @Test
-  @Transactional
-  void findAll() {
-    final int numberOfEntitiesBefore = contentReferenceRepository.findAll().size();
-    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
+    @Test
+    @Transactional
+    void findAll() {
+        final int numberOfEntitiesBefore =
+            contentReferenceRepository.findAll().size();
+        final List<ContentReferenceDTO> contentReferenceDTOs =
+            ContentReferenceUtil
+                .createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
-    contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
-      contentReferenceService.save(contentReferenceDTO);
-    });
+        contentReferenceDTOs.forEach(contentReferenceDTO -> {
+            contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
+            contentReferenceService.save(contentReferenceDTO);
+        });
 
-    final int numberOfEntitiesAfter = contentReferenceRepository.findAll().size();
-    assertEquals(numberOfEntitiesBefore + contentReferenceDTOs.size(), numberOfEntitiesAfter);
-  }
+        final int numberOfEntitiesAfter =
+            contentReferenceRepository.findAll().size();
+        assertEquals(numberOfEntitiesBefore + contentReferenceDTOs.size(),
+            numberOfEntitiesAfter);
+    }
 
-  @Test
-  void findOne() {
-    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
+    @Test
+    void findOne() {
+        final List<ContentReferenceDTO> contentReferenceDTOs =
+            ContentReferenceUtil
+                .createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
-    contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
-      contentReferenceService.save(contentReferenceDTO);
-    });
+        contentReferenceDTOs.forEach(contentReferenceDTO -> {
+            contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
+            contentReferenceService.save(contentReferenceDTO);
+        });
 
-    final ContentReferenceDTO theChosenContentReference = contentReferenceService.findAll().get(THE_CHOSEN_INDEX);
-    final ContentReferenceDTO result = contentReferenceService.findOne(theChosenContentReference.getId()).get();
+        final ContentReferenceDTO theChosenContentReference =
+            contentReferenceService.findAll().get(THE_CHOSEN_INDEX);
+        final ContentReferenceDTO result =
+            contentReferenceService.findOne(theChosenContentReference.getId())
+                .get();
 
-    assertEquals(theChosenContentReference, result);
-  }
+        assertEquals(theChosenContentReference, result);
+    }
 
-  @Test
-  void delete() {
-    final int numberOfEntitiesBefore = contentReferenceRepository.findAll().size();
-    final List<ContentReferenceDTO> contentReferenceDTOs = ContentReferenceUtil.createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
+    @Test
+    void delete() {
+        final int numberOfEntitiesBefore =
+            contentReferenceRepository.findAll().size();
+        final List<ContentReferenceDTO> contentReferenceDTOs =
+            ContentReferenceUtil
+                .createContentReferenceDTOs(NUMBER_OF_CONTENT_REFERENCES);
 
-    contentReferenceDTOs.forEach(contentReferenceDTO -> {
-      contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
-      contentReferenceService.save(contentReferenceDTO);
-    });
+        contentReferenceDTOs.forEach(contentReferenceDTO -> {
+            contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
+            contentReferenceService.save(contentReferenceDTO);
+        });
 
-    final ContentReferenceDTO theChosenContentReference = contentReferenceService.findAll().get(THE_CHOSEN_INDEX);
-    contentReferenceService.delete(theChosenContentReference.getId());
+        final ContentReferenceDTO theChosenContentReference =
+            contentReferenceService.findAll().get(THE_CHOSEN_INDEX);
+        contentReferenceService.delete(theChosenContentReference.getId());
 
-    final int numberOfEntitiesAfter = contentReferenceRepository.findAll().size();
-    assertThat(contentReferenceService.findAll(), not(hasItem(theChosenContentReference)));
-    assertEquals(numberOfEntitiesBefore + contentReferenceDTOs.size() - 1, numberOfEntitiesAfter);
-  }
+        final int numberOfEntitiesAfter =
+            contentReferenceRepository.findAll().size();
+        assertThat(contentReferenceService.findAll(),
+            not(hasItem(theChosenContentReference)));
+        assertEquals(numberOfEntitiesBefore + contentReferenceDTOs.size() - 1,
+            numberOfEntitiesAfter);
+    }
 
-  @Test
-  void patch() {
-    final ContentReferenceDTO contentReferenceDTO = ContentReferenceUtil.createContentReferenceDTO();
-    contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
-    final UUID theId = contentReferenceService.save(contentReferenceDTO).getId();
+    @Test
+    void patch() {
+        final ContentReferenceDTO contentReferenceDTO =
+            ContentReferenceUtil.createContentReferenceDTO();
+        contentReferenceDTO.setChapterId(THE_CHAPTER.getId());
+        final UUID theId =
+            contentReferenceService.save(contentReferenceDTO).getId();
 
-    final ContentReferenceDTO patch = new ContentReferenceDTO();
-    patch.setId(theId);
+        final ContentReferenceDTO patch = new ContentReferenceDTO();
+        patch.setId(theId);
 
-    contentReferenceService.patch(patch);
+        contentReferenceService.patch(patch);
 
-    final ContentReferenceDTO expected = new ContentReferenceDTO();
+        final ContentReferenceDTO expected = new ContentReferenceDTO();
 
-    expected.setId(theId);
-    expected.setChapterId(contentReferenceDTO.getChapterId());
-    expected.setContentId(contentReferenceDTO.getContentId());
+        expected.setId(theId);
+        expected.setChapterId(contentReferenceDTO.getChapterId());
+        expected.setContentId(contentReferenceDTO.getContentId());
+        expected.setContentReferenceType(
+            contentReferenceDTO.getContentReferenceType());
 
-    final ContentReferenceDTO result = contentReferenceService.findAll().get(0);
+        final ContentReferenceDTO result =
+            contentReferenceService.findAll().get(0);
 
-    assertEquals(expected, result);
-  }
+        assertEquals(expected, result);
+    }
 }

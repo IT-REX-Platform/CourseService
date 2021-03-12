@@ -1,8 +1,6 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
 import de.uni_stuttgart.it_rex.course.domain.enumeration.PUBLISHSTATE;
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -24,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -392,15 +391,26 @@ public class Course implements Serializable {
      * @return if they are equal.
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Course)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Course course = (Course) o;
-        return new EqualsBuilder().append(id, course.id).isEquals();
+        Course course = (Course) o;
+        return id.equals(course.id) &&
+            Objects.equals(name, course.name) &&
+            Objects.equals(startDate, course.startDate) &&
+            Objects.equals(endDate, course.endDate) &&
+            Objects
+                .equals(remainActiveOffset, course.remainActiveOffset) &&
+            Objects.equals(maxFoodSum, course.maxFoodSum) &&
+            Objects
+                .equals(courseDescription, course.courseDescription) &&
+            publishState == course.publishState &&
+            Objects.equals(timePeriods, course.timePeriods) &&
+            Objects.equals(chapters, course.chapters);
     }
 
     /**
@@ -410,7 +420,9 @@ public class Course implements Serializable {
      */
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).toHashCode();
+        return Objects
+            .hash(id, name, startDate, endDate, remainActiveOffset, maxFoodSum,
+                courseDescription, publishState, timePeriods, chapters);
     }
 
     /**
@@ -420,15 +432,17 @@ public class Course implements Serializable {
      */
     @Override
     public String toString() {
-        return "Course{"
-            + "id=" + id
-            + ", name='" + name + '\''
-            + ", startDate=" + startDate
-            + ", endDate=" + endDate
-            + ", remainActiveOffset= " + remainActiveOffset
-            + ", maxFoodSum=" + maxFoodSum
-            + ", courseDescription='" + courseDescription + '\''
-            + ", publishState=" + publishState
-            + '}';
+        return "Course{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", startDate=" + startDate +
+            ", endDate=" + endDate +
+            ", remainActiveOffset=" + remainActiveOffset +
+            ", maxFoodSum=" + maxFoodSum +
+            ", courseDescription='" + courseDescription + '\'' +
+            ", publishState=" + publishState +
+            ", timePeriods=" + timePeriods +
+            ", chapters=" + chapters +
+            '}';
     }
 }

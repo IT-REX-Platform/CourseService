@@ -1,7 +1,5 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -20,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -122,10 +121,10 @@ public class Chapter implements Serializable {
     /**
      * Setter.
      *
-     * @param nweChapterNumber the chapter number.
+     * @param newChapterNumber the chapter number.
      */
-    public void setChapterNumber(final int nweChapterNumber) {
-        this.chapterNumber = nweChapterNumber;
+    public void setChapterNumber(final int newChapterNumber) {
+        this.chapterNumber = newChapterNumber;
     }
 
     /**
@@ -163,6 +162,7 @@ public class Chapter implements Serializable {
         }
         contentReferences.add(newContentReference);
         newContentReference.chapter = this;
+        newContentReference.setIndex(this.contentReferences.size() - 1);
     }
 
     /**
@@ -178,6 +178,7 @@ public class Chapter implements Serializable {
         contentReferences.addAll(newContentReferences.stream()
             .map(newContentReference -> {
                 newContentReference.chapter = this;
+                newContentReference.setIndex(this.contentReferences.size() - 1);
                 return newContentReference;
             }).collect(Collectors.toList()));
     }
@@ -222,18 +223,19 @@ public class Chapter implements Serializable {
      * @return if they are equal.
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Chapter)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Chapter chapter = (Chapter) o;
-        return new EqualsBuilder()
-            .append(id, chapter.id)
-            .append(course, chapter.course)
-            .isEquals();
+        Chapter chapter = (Chapter) o;
+        return chapterNumber == chapter.chapterNumber &&
+            id.equals(chapter.id) &&
+            Objects.equals(name, chapter.name) &&
+            course.equals(chapter.course) && Objects
+            .equals(contentReferences, chapter.contentReferences);
     }
 
     /**
@@ -243,6 +245,22 @@ public class Chapter implements Serializable {
      */
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(course).toHashCode();
+        return Objects.hash(id, name, chapterNumber, course, contentReferences);
+    }
+
+    /**
+     * Converts the entity to a string.
+     *
+     * @return the string
+     */
+    @Override
+    public String toString() {
+        return "Chapter{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", chapterNumber=" + chapterNumber +
+            ", course=" + course +
+            ", contentReferences=" + contentReferences +
+            '}';
     }
 }

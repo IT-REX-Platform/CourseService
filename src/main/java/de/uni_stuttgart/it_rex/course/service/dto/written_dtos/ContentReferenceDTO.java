@@ -129,18 +129,19 @@ public class ContentReferenceDTO {
      * @return if they are equal
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ContentReferenceDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final ContentReferenceDTO that = (ContentReferenceDTO) o;
-        return Objects.equals(getId(), that.getId())
-            && Objects.equals(getContentId(), that.getContentId())
-            && Objects.equals(getChapterId(), that.getChapterId())
-            && Objects.equals(getTimePeriodId(), that.getTimePeriodId());
+        ContentReferenceDTO that = (ContentReferenceDTO) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(contentId, that.contentId) &&
+            contentReferenceType == that.contentReferenceType &&
+            Objects.equals(chapterId, that.chapterId) &&
+            Objects.equals(timePeriodId, that.timePeriodId);
     }
 
     /**
@@ -150,11 +151,8 @@ public class ContentReferenceDTO {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(
-            getId(),
-            getContentId(),
-            getChapterId(),
-            getTimePeriodId());
+        return Objects
+            .hash(id, contentId, contentReferenceType, chapterId, timePeriodId);
     }
 
     /**
@@ -164,10 +162,12 @@ public class ContentReferenceDTO {
      */
     @Override
     public String toString() {
-        return "ContentReferenceDTO{"
-            + "id=" + id
-            + ", contentId=" + contentId
-            + ", chapterId=" + chapterId
-            + ", timePeriodId=" + timePeriodId + '}';
+        return "ContentReferenceDTO{" +
+            "id=" + id +
+            ", contentId=" + contentId +
+            ", contentReferenceType=" + contentReferenceType +
+            ", chapterId=" + chapterId +
+            ", timePeriodId=" + timePeriodId +
+            '}';
     }
 }

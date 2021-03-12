@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -86,32 +85,6 @@ public class ChapterResource {
     ChapterDTO result = chapterService.save(chapterDTO);
     return ResponseEntity.created(new URI("/api/chapters/" + result.getId()))
       .headers(HeaderUtil.createEntityCreationAlert(applicationName,
-        true, ENTITY_NAME, result.getId().toString()))
-      .body(result);
-  }
-
-  /**
-   * {@code PUT  /chapters} : Updates an existing chapter.
-   *
-   * @param chapterDTO the chapter to update.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
-   * body the updated chapter, or with status {@code 400 (Bad Request)} if the
-   * chapter is not valid, or with status {@code 500 (Internal Server Error)} if
-   * the chapter couldn't be updated.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
-   */
-  @PutMapping("/chapters")
-  public ResponseEntity<ChapterDTO> updateChapter(
-    @RequestBody final ChapterDTO chapterDTO)
-    throws URISyntaxException {
-    log.debug("REST request to update Chapter : {}", chapterDTO);
-    if (chapterDTO.getId() == null) {
-      throw new BadRequestAlertException(
-        "Invalid id", ENTITY_NAME, "idnull");
-    }
-    ChapterDTO result = chapterService.save(chapterDTO);
-    return ResponseEntity.ok()
-      .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
         true, ENTITY_NAME, result.getId().toString()))
       .body(result);
   }

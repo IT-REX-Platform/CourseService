@@ -1,8 +1,5 @@
 package de.uni_stuttgart.it_rex.course.domain.written;
 
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.EqualsBuilder;
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -155,6 +153,9 @@ public class TimePeriod implements Serializable {
      */
     public void setContentReferences(
         final List<ContentReference> newContentReferences) {
+        if (newContentReferences == null) {
+            return;
+        }
         contentReferences.clear();
         addContentReferences(newContentReferences);
     }
@@ -166,6 +167,9 @@ public class TimePeriod implements Serializable {
      */
     public void addContentReference(
         final ContentReference newContentReference) {
+        if (newContentReference == null) {
+            return;
+        }
         newContentReference.timePeriod = this;
         this.contentReferences.add(newContentReference);
     }
@@ -177,6 +181,9 @@ public class TimePeriod implements Serializable {
      */
     public void addContentReferences(
         final Collection<ContentReference> newContentReferences) {
+        if (newContentReferences == null) {
+            return;
+        }
         contentReferences
             .addAll(newContentReferences.stream().map(newContentReference -> {
                 newContentReference.timePeriod = this;
@@ -202,18 +209,18 @@ public class TimePeriod implements Serializable {
      * @return if they are equal.
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TimePeriod)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final TimePeriod timePeriod = (TimePeriod) o;
-        return new EqualsBuilder()
-            .append(id, timePeriod.id)
-            .append(course, timePeriod.course)
-            .isEquals();
+        TimePeriod that = (TimePeriod) o;
+        return id.equals(that.id) && startDate.equals(that.startDate) &&
+            endDate.equals(that.endDate) && Objects
+            .equals(contentReferences, that.contentReferences) &&
+            course.equals(that.course);
     }
 
     /**
@@ -223,7 +230,7 @@ public class TimePeriod implements Serializable {
      */
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(course).toHashCode();
+        return Objects.hash(id, startDate, endDate, contentReferences, course);
     }
 
     /**
@@ -233,11 +240,12 @@ public class TimePeriod implements Serializable {
      */
     @Override
     public String toString() {
-        return "TimePeriod{"
-            + "id=" + id
-            + ", startDate=" + startDate
-            + ", endDate=" + endDate
-            + ", contentReferences=" + contentReferences
-            + ", course=" + course + '}';
+        return "TimePeriod{" +
+            "id=" + id +
+            ", startDate=" + startDate +
+            ", endDate=" + endDate +
+            ", contentReferences=" + contentReferences +
+            ", course=" + course +
+            '}';
     }
 }
