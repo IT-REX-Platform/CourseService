@@ -10,7 +10,7 @@ public enum CONTENTREFERENCETYPE {
      */
     QUIZ,
     /**
-     * A Resource
+     * A Video
      */
-    RESOURCE
+    VIDEO
 }
