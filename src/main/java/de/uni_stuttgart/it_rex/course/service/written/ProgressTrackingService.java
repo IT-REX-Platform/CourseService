@@ -193,7 +193,6 @@ public class ProgressTrackingService {
         final UUID courseId, final UUID userId) {
 
         Optional<CourseProgressTracker> result = courseProgressTrackerRepository.findOne(getCourseProgressSpec(courseId, userId));
-        LOGGER.debug("Result: {}", result);
 
         if (result.isEmpty()) {
             return startCourseProgressTracking(courseId, userId);
