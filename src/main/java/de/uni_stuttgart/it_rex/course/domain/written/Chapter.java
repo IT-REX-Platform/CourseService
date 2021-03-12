@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -175,12 +176,9 @@ public class Chapter implements Serializable {
         if (newContentReferences == null) {
             return;
         }
-        contentReferences.addAll(newContentReferences.stream()
-            .map(newContentReference -> {
-                newContentReference.chapter = this;
-                newContentReference.setIndex(this.contentReferences.size() - 1);
-                return newContentReference;
-            }).collect(Collectors.toList()));
+        for (ContentReference c : newContentReferences){
+            addContentReference(c);
+        }
     }
 
     /**
