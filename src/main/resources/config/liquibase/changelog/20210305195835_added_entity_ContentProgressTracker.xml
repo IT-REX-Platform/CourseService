@@ -18,7 +18,7 @@
             <column name="state" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="progress" type="float">
+            <column name="progress" type="float4">
                 <constraints nullable="false" />
             </column>
             <column name="course_progress_tracker_id" type="${uuidType}">
