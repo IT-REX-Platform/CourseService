@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -205,11 +204,13 @@ public class TimePeriod implements Serializable {
     /**
      * Equals method.
      *
+     * Only compare the Id (primary key) here as Hibernate handles the rest.
+     *
      * @param o the other instance.
      * @return if they are equal.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -217,20 +218,20 @@ public class TimePeriod implements Serializable {
             return false;
         }
         TimePeriod that = (TimePeriod) o;
-        return id.equals(that.id) && startDate.equals(that.startDate) &&
-            endDate.equals(that.endDate) && Objects
-            .equals(contentReferences, that.contentReferences) &&
-            course.equals(that.course);
+        return id != null && id.equals(that.getId());
     }
 
     /**
      * Hash code.
      *
+     * Use a constant value here because the Id is generated and set when
+     * persisting and can be null before that.
+     *
      * @return the hash code.
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, startDate, endDate, contentReferences, course);
+        return 13;
     }
 
     /**

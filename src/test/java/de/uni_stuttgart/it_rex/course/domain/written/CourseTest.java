@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 class CourseTest {
-
     private static final UUID FIRST_ID = UUID.randomUUID();
     private static final UUID SECOND_ID = UUID.randomUUID();
 
@@ -20,10 +19,12 @@ class CourseTest {
     private static final String SECOND_NAME = "BBBBBBBBBB";
 
     private static final LocalDate FIRST_START_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate SECOND_START_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate SECOND_START_DATE =
+        LocalDate.now(ZoneId.systemDefault());
 
     private static final LocalDate FIRST_END_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate SECOND_END_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate SECOND_END_DATE =
+        LocalDate.now(ZoneId.systemDefault());
 
     private static final Integer FIRST_REMAIN_ACTIVE_OFFSET = 0;
     private static final Integer SECOND_REMAIN_ACTIVE_OFFSET = 1;
@@ -34,11 +35,13 @@ class CourseTest {
     private static final String FIRST_COURSE_DESCRIPTION = "AAAAAAAAAA";
     private static final String SECOND_COURSE_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final PUBLISHSTATE FIRST_PUBLISH_STATE = PUBLISHSTATE.PUBLISHED;
-    private static final PUBLISHSTATE SECOND_PUBLISH_STATE = PUBLISHSTATE.UNPUBLISHED;
+    private static final PUBLISHSTATE FIRST_PUBLISH_STATE =
+        PUBLISHSTATE.PUBLISHED;
+    private static final PUBLISHSTATE SECOND_PUBLISH_STATE =
+        PUBLISHSTATE.UNPUBLISHED;
 
     @Test
-    void equalsVerifier() throws Exception {
+    void equalsVerifier() {
 
         Course course1 = new Course();
         course1.setId(FIRST_ID);
@@ -72,10 +75,9 @@ class CourseTest {
 
         assertEquals(course1.hashCode(), course1.hashCode());
         assertEquals(course1, course1);
-        assertEquals(course1, course3);
-        assertNotEquals(course1, course2);
-        assertNotEquals(course1.hashCode(), course2.hashCode());
 
-        assertNotEquals(SECOND_COURSE_DESCRIPTION, course1);
+        assertEquals(course1, course3);
+
+        assertNotEquals(course1, course2);
     }
 }

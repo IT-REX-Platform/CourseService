@@ -18,10 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * A Chapter.
@@ -176,7 +173,7 @@ public class Chapter implements Serializable {
         if (newContentReferences == null) {
             return;
         }
-        for (ContentReference c : newContentReferences){
+        for (ContentReference c : newContentReferences) {
             addContentReference(c);
         }
     }
@@ -216,12 +213,14 @@ public class Chapter implements Serializable {
 
     /**
      * Equals method.
+     * <p>
+     * Only compare the Id (primary key) here as Hibernate handles the rest.
      *
      * @param o the other instance.
      * @return if they are equal.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -229,21 +228,20 @@ public class Chapter implements Serializable {
             return false;
         }
         Chapter chapter = (Chapter) o;
-        return chapterNumber == chapter.chapterNumber &&
-            id.equals(chapter.id) &&
-            Objects.equals(name, chapter.name) &&
-            course.equals(chapter.course) && Objects
-            .equals(contentReferences, chapter.contentReferences);
+        return id != null && id.equals(chapter.getId());
     }
 
     /**
      * Hash code.
+     * <p>
+     * Use a constant value here because the Id is generated and set when
+     * persisting and can be null before that.
      *
      * @return the hash code.
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, chapterNumber, course, contentReferences);
+        return 13;
     }
 
     /**
