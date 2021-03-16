@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -387,11 +386,13 @@ public class Course implements Serializable {
     /**
      * Equals method.
      *
+     * Only compare the Id (primary key) here as Hibernate handles the rest.
+     *
      * @param o the other instance.
      * @return if they are equal.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -399,30 +400,20 @@ public class Course implements Serializable {
             return false;
         }
         Course course = (Course) o;
-        return id.equals(course.id) &&
-            Objects.equals(name, course.name) &&
-            Objects.equals(startDate, course.startDate) &&
-            Objects.equals(endDate, course.endDate) &&
-            Objects
-                .equals(remainActiveOffset, course.remainActiveOffset) &&
-            Objects.equals(maxFoodSum, course.maxFoodSum) &&
-            Objects
-                .equals(courseDescription, course.courseDescription) &&
-            publishState == course.publishState &&
-            Objects.equals(timePeriods, course.timePeriods) &&
-            Objects.equals(chapters, course.chapters);
+        return id != null && id.equals(course.getId());
     }
 
     /**
      * Hash code.
      *
+     * Use a constant value here because the Id is generated and set when
+     * persisting and can be null before that.
+     *
      * @return the hash code.
      */
     @Override
     public int hashCode() {
-        return Objects
-            .hash(id, name, startDate, endDate, remainActiveOffset, maxFoodSum,
-                courseDescription, publishState, timePeriods, chapters);
+        return 13;
     }
 
     /**

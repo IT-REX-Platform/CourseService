@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -177,11 +176,13 @@ public class ContentReference implements Serializable {
     /**
      * Equals method.
      *
+     * Only compare the Id (primary key) here as Hibernate handles the rest.
+     *
      * @param o the other instance.
      * @return if they are equal.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -189,22 +190,20 @@ public class ContentReference implements Serializable {
             return false;
         }
         ContentReference that = (ContentReference) o;
-        return index == that.index && id.equals(that.id) &&
-            contentId.equals(that.contentId) &&
-            contentReferenceType == that.contentReferenceType &&
-            chapter.equals(that.chapter) &&
-            Objects.equals(timePeriod, that.timePeriod);
+        return id != null && id.equals(that.getId());
     }
 
     /**
      * Hash code.
      *
+     * Use a constant value here because the Id is generated and set when
+     * persisting and can be null before that.
+     *
      * @return the hash code.
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, index, contentId, contentReferenceType, chapter,
-            timePeriod);
+        return 13;
     }
 
     /**
