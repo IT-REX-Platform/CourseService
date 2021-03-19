@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Course implements Serializable {
 
+    public static final int HASH_CODE = 69;
+
     /**
      * Constructor.
      */
@@ -413,7 +415,7 @@ public class Course implements Serializable {
      */
     @Override
     public int hashCode() {
-        return 13;
+        return HASH_CODE;
     }
 
     /**

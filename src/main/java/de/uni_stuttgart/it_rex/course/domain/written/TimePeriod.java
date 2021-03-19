@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @Table(name = "time_period")
 public class TimePeriod implements Serializable {
 
+    public static final int HASH_CODE = 42;
+
     /**
      * Constructor.
      */
@@ -231,7 +233,7 @@ public class TimePeriod implements Serializable {
      */
     @Override
     public int hashCode() {
-        return 13;
+        return HASH_CODE;
     }
 
     /**

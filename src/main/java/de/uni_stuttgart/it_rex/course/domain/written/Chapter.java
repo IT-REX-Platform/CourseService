@@ -28,6 +28,8 @@ import java.util.UUID;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Chapter implements Serializable {
 
+    public static final int HASH_CODE = 13;
+
     /**
      * Constructor.
      */
@@ -241,7 +243,7 @@ public class Chapter implements Serializable {
      */
     @Override
     public int hashCode() {
-        return 13;
+        return HASH_CODE;
     }
 
     /**
