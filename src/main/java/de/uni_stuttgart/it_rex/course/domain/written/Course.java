@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Course implements Serializable {
 
+    /**
+     * Constant hash code.
+     */
     public static final int HASH_CODE = 69;
 
     /**

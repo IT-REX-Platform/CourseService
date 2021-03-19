@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 @Table(name = "time_period")
 public class TimePeriod implements Serializable {
 
+    /**
+     * Constant hash code.
+     */
     public static final int HASH_CODE = 42;
 
     /**

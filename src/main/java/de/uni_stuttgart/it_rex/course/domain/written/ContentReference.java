@@ -21,7 +21,11 @@ import java.util.UUID;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ContentReference implements Serializable {
 
+    /**
+     * Constant hash code.
+     */
     public static final int HASH_CODE = 420;
+
     /**
      * Identifier.
      */
