@@ -1,4 +1,4 @@
-def agentLabel
+--remove-orphansdef agentLabel
 if (BRANCH_NAME == 'main') {
     agentLabel = 'master'
 } else {
@@ -67,7 +67,7 @@ pipeline {
                 echo 'Deploying....'
                 dir('docker') {
                     sh 'docker-compose down'
-                    sh 'docker-compose up -d --build'
+                    sh 'docker-compose up -d --build --remove-orphans'
                 }
             }
         }
