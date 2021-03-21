@@ -65,11 +65,9 @@ pipeline {
             }
             steps {
                 echo 'Deploying....'
-                dir('docker') {
-                    sh './gradlew jibDockerBuild'
-                    sh 'docker-compose down'
-                    sh 'docker-compose up -d --build --remove-orphans'
-                }
+                sh './gradlew jibDockerBuild'
+                sh 'docker-compose down'
+                sh 'docker-compose up -d --build --remove-orphans'
             }
         }
 
