@@ -22,6 +22,11 @@ import java.util.UUID;
 public class ContentReference implements Serializable {
 
     /**
+     * Constant hash code.
+     */
+    public static final int HASH_CODE = 420;
+
+    /**
      * Identifier.
      */
     @Id
@@ -203,7 +208,7 @@ public class ContentReference implements Serializable {
      */
     @Override
     public int hashCode() {
-        return 13;
+        return HASH_CODE;
     }
 
     /**

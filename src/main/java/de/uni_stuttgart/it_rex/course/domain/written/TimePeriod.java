@@ -22,6 +22,11 @@ import java.util.stream.Collectors;
 public class TimePeriod implements Serializable {
 
     /**
+     * Constant hash code.
+     */
+    public static final int HASH_CODE = 42;
+
+    /**
      * Constructor.
      */
     public TimePeriod() {
@@ -231,7 +236,7 @@ public class TimePeriod implements Serializable {
      */
     @Override
     public int hashCode() {
-        return 13;
+        return HASH_CODE;
     }
 
     /**

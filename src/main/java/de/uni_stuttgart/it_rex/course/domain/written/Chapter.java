@@ -29,6 +29,11 @@ import java.util.UUID;
 public class Chapter implements Serializable {
 
     /**
+     * Constant hash code.
+     */
+    public static final int HASH_CODE = 13;
+
+    /**
      * Constructor.
      */
     public Chapter() {
@@ -241,7 +246,7 @@ public class Chapter implements Serializable {
      */
     @Override
     public int hashCode() {
-        return 13;
+        return HASH_CODE;
     }
 
     /**

@@ -34,6 +34,11 @@ import java.util.stream.Collectors;
 public class Course implements Serializable {
 
     /**
+     * Constant hash code.
+     */
+    public static final int HASH_CODE = 69;
+
+    /**
      * Constructor.
      */
     public Course() {
@@ -413,7 +418,7 @@ public class Course implements Serializable {
      */
     @Override
     public int hashCode() {
-        return 13;
+        return HASH_CODE;
     }
 
     /**

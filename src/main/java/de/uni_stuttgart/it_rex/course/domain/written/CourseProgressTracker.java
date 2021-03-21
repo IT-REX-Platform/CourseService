@@ -18,12 +18,19 @@ import java.util.UUID;
 /**
  * Models the progress of one user in one course.
  * <p>
- * The CourseProgressTracker stores the last content a user accessed and accumulates the progress of a user's {@link ContentProgressTracker}s of a course.
- * There is only one instance of this class per courseId-userId combination.
+ * The CourseProgressTracker stores the last content a user accessed and
+ * accumulates the progress of a user's {@link ContentProgressTracker}s of a
+ * course. There is only one instance of this class per courseId-userId
+ * combination.
  */
 @Entity
 @Table(name = "course_progress_tracker")
 public class CourseProgressTracker implements Serializable {
+
+    /**
+     * Constant hash code.
+     */
+    public static final int HASH_CODE = 77;
 
     /**
      * Intialize a CourseProgressTracker for a user in a course, specified by their respective Ids.
@@ -161,7 +168,9 @@ public class CourseProgressTracker implements Serializable {
     /**
      * Equals method.
      *
-     * @param o the other object.
+     * Only compare the Id (primary key) here as Hibernate handles the rest.
+     *
+     * @param o the other instance.
      * @return if they are equal.
      */
     @Override
@@ -173,22 +182,20 @@ public class CourseProgressTracker implements Serializable {
             return false;
         }
         CourseProgressTracker tracker = (CourseProgressTracker) o;
-        return Objects.equals(getId(), tracker.getId())
-            && Objects.equals(getCourseId(), tracker.getCourseId())
-            && Objects.equals(getUserId(), tracker.getUserId())
-            && Objects.equals(
-            getLastContentReference(), tracker.getLastContentReference());
+        return Objects.equals(getId(), tracker.getId());
     }
 
     /**
      * Hash code.
      *
-     * @return
+     * Use a constant value here because the Id is generated and set when
+     * persisting and can be null before that.
+     *
+     * @return the hash code.
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getCourseId(), getUserId(),
-            getLastContentReference());
+        return HASH_CODE;
     }
 
     /**

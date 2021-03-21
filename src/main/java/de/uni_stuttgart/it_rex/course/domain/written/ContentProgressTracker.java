@@ -23,6 +23,11 @@ import java.util.UUID;
 @Table(name = "content_progress_tracker")
 public class ContentProgressTracker implements Serializable {
 
+    /**
+     * Constant hash code.
+     */
+    public static final int HASH_CODE = 123456;
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -91,10 +96,45 @@ public class ContentProgressTracker implements Serializable {
         return state;
     }
 
-    public float getProgress() { return progress; }
+    public float getProgress() {
+        return progress;
+    }
 
     public CourseProgressTracker getCourseProgressTracker() {
         return courseProgressTracker;
+    }
+
+    /**
+     * Equals method.
+     * <p>
+     * Only compare the Id (primary key) here as Hibernate handles the rest.
+     *
+     * @param o the other instance.
+     * @return if they are equal.
+     */
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ContentProgressTracker)) {
+            return false;
+        }
+        final ContentProgressTracker that = (ContentProgressTracker) o;
+        return getId().equals(that.getId());
+    }
+
+    /**
+     * Hash code.
+     * <p>
+     * Use a constant value here because the Id is generated and set when
+     * persisting and can be null before that.
+     *
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return HASH_CODE;
     }
 
     /**
