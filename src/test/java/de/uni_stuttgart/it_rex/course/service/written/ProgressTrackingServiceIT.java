@@ -13,8 +13,10 @@ import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceReposit
 import de.uni_stuttgart.it_rex.course.repository.written.CourseProgressTrackerRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.CourseRepository;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentProgressTrackerDTO;
+import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.ContentReferenceDTO;
 import de.uni_stuttgart.it_rex.course.service.dto.written_dtos.CourseProgressTrackerDTO;
 import de.uni_stuttgart.it_rex.course.service.mapper.written.ContentReferenceMapper;
+import de.uni_stuttgart.it_rex.course.service.mapper.written.CourseProgressTrackerMapper;
 import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.ContentReferenceUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseProgressTrackerUtil;
@@ -37,8 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProgressTrackingServiceIT {
 
     private static final UUID USER_ID = UUID.randomUUID();
-    private static final UUID COURSE_TRACKER_ID = UUID.randomUUID();
-    private static final UUID CONTENT_REFERENCE_ID = UUID.randomUUID();
+    private static final UUID SECOND_USER_ID = UUID.randomUUID();
 
     private static final float progress = 0.2f;
 
@@ -47,6 +48,9 @@ class ProgressTrackingServiceIT {
 
     @Autowired
     private ContentReferenceMapper contentReferenceMapper;
+
+    @Autowired
+    private CourseProgressTrackerMapper courseProgressTrackerMapper;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -88,11 +92,11 @@ class ProgressTrackingServiceIT {
     }
     @AfterEach
     void cleanUp(){
-        courseRepository.deleteAll();
-        chapterRepository.deleteAll();
-        contentReferenceRepository.deleteAll();
+        contentProgressTrackerRepository.deleteAll();
         courseProgressTrackerRepository.deleteAll();
         contentReferenceRepository.deleteAll();
+        chapterRepository.deleteAll();
+        courseRepository.deleteAll();
     }
 
     @Test
@@ -138,29 +142,28 @@ class ProgressTrackingServiceIT {
     @Test
     void createCourseProgressTracker(){
         CourseProgressTrackerDTO result
-            = progressTrackingService.findOrCreateCourseProgressTracker(COURSE.getId(), USER_ID);
+            = progressTrackingService.findOrCreateCourseProgressTracker(COURSE.getId(), SECOND_USER_ID);
         assertEquals(result.getCourseId(), COURSE.getId());
     }
 
     @Test
     void findCourseProgressTracker() {
-        //Create Tracker
-        CourseProgressTrackerDTO courseProgressTracker
-            = progressTrackingService.findOrCreateCourseProgressTracker(COURSE.getId(), USER_ID);
-
         //Find Tracker
         CourseProgressTrackerDTO result
             = progressTrackingService.findOrCreateCourseProgressTracker(COURSE.getId(), USER_ID);
-        assertEquals(result.getCourseId(), courseProgressTracker.getCourseId());
+        assertEquals(result.getCourseId(), COURSE_TRACKER.getCourseId());
     }
 
     @Test
     void updateLastAccessedContentReference() {
+        Optional <ContentReference> CONTENT_REFERENCE_TO_COMPARE = contentReferenceRepository.findById(CONTENT_REFERENCE.getId());
+        ContentReferenceDTO contentReferenceDTO = contentReferenceMapper.toDTO(CONTENT_REFERENCE);
         CourseProgressTrackerDTO courseProgressTracker
-            = progressTrackingService.findOrCreateCourseProgressTracker(COURSE.getId(), USER_ID);
+            = progressTrackingService.findOrCreateCourseProgressTracker(COURSE.getId(), SECOND_USER_ID);
         CourseProgressTrackerDTO result
             = progressTrackingService.updateLastAccessedContentReference(
-                courseProgressTracker.getId(), contentReferenceMapper.toDTO(CONTENT_REFERENCE));
-        assertEquals(result.getLastContentReference(), CONTENT_REFERENCE);
+                courseProgressTracker.getId(), contentReferenceDTO);
+        Optional <ContentReferenceDTO> contentReferenceDTO1 = contentReferenceMapper.toDTO(CONTENT_REFERENCE_TO_COMPARE);
+        assertEquals(result.getLastContentReference(), contentReferenceDTO1);
     }
 }
