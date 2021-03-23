@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -152,35 +151,6 @@ public class ContentProgressTracker implements Serializable {
      */
     public void setProgress(final float newProgress) {
         this.progress = newProgress;
-    }
-
-    /**
-     * Equals method.
-     *
-     * @param o the other object.
-     * @return if they are equal.
-     */
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ContentProgressTracker)) {
-            return false;
-        }
-        ContentProgressTracker tracker = (ContentProgressTracker) o;
-        return id != null && id.equals(tracker.getId());
-    }
-
-    /**
-     * Hash code.
-     *
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getUserId(), getState(), getProgress(),
-            getContentReference(), getCourseProgressTracker());
     }
 
     /**
