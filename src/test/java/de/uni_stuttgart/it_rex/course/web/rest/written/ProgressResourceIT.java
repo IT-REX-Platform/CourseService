@@ -8,7 +8,6 @@ import de.uni_stuttgart.it_rex.course.domain.written.ContentProgressTracker;
 import de.uni_stuttgart.it_rex.course.domain.written.ContentReference;
 import de.uni_stuttgart.it_rex.course.domain.written.Course;
 import de.uni_stuttgart.it_rex.course.domain.written.CourseProgressTracker;
-import de.uni_stuttgart.it_rex.course.domain.written.TimePeriod;
 import de.uni_stuttgart.it_rex.course.repository.written.ChapterRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentProgressTrackerRepository;
 import de.uni_stuttgart.it_rex.course.repository.written.ContentReferenceRepository;
@@ -18,7 +17,6 @@ import de.uni_stuttgart.it_rex.course.service.mapper.written.ContentProgressTrac
 import de.uni_stuttgart.it_rex.course.utils.written.ChapterUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.ContentReferenceUtil;
 import de.uni_stuttgart.it_rex.course.utils.written.CourseUtil;
-import de.uni_stuttgart.it_rex.course.utils.written.TimePeriodUtil;
 import de.uni_stuttgart.it_rex.course.web.rest.TestUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -194,31 +192,6 @@ class ProgressResourceIT {
         contentReferenceRepository.deleteAll();
     }
 
-
-    //To fix: RexAuthzException
-    //@Test
-    //@Transactional
-    //public void createContentProgress() throws Exception{
-    //    int databaseSizeBeforeCreate = contentProgressTrackerRepository.findAll().size();
-    //    //Create Content Tracker
-    //    restContentTrackerMockMvc.perform(post("/api/progress/content").with(csrf())
-    //        .contentType(MediaType.APPLICATION_JSON)
-    //        .content(TestUtil.convertObjectToJsonBytes(contentProgressTrackerMapper
-    //            .toDTO(contentProgressTracker1)))
-    //        .param("courseTrackerId", FIRST_CONTENT_ID.toString()))
-    //        .andExpect(status().isCreated());
-//
-    //    //Validate Content Tracker in Database
-    //    List<ContentProgressTracker> trackerList = contentProgressTrackerRepository.findAll();
-    //    assertThat(trackerList).hasSize(databaseSizeBeforeCreate + 1);
-    //    ContentProgressTracker testTracker = trackerList.get(trackerList.size() - 1);
-    //    assertEquals(contentReference1, testTracker.getContentReference());
-    //    assertEquals(FIRST_USER_ID, testTracker.getUserId());
-    //    assertEquals(ContentProgressState.STARTED, testTracker.getState());
-    //    assertEquals(progress1, testTracker.getProgress());
-    //    assertEquals(courseProgressTracker, testTracker.getCourseProgressTracker());
-    //}
-
     @Test
     @Transactional
     public void getContentProgress() throws Exception{
@@ -297,22 +270,4 @@ class ProgressResourceIT {
         ContentProgressTracker testTracker = trackerList.get(trackerList.size() - 1);
         assertThat(testTracker.getState()).isEqualTo(COMPLETE);
     }
-
-
-    //To fix: RexAuthzException
-    //@Test
-    //@Transactional
-    //public void getCourseProgress() throws Exception{
-    //    //Initialize database
-    //    //courseProgressTrackerRepository.saveAndFlush(courseProgressTracker);
-//
-    //    //Get the Course Progress
-    //    //Missing Set of Content Trackers
-    //    restCourseTrackerMockMvc.perform(get("/api/progress/courses/{courseId}", courseProgressTracker.getCourseId()))
-    //        .andExpect(status().isOk())
-    //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-    //        .andExpect(jsonPath("$.id").value(courseProgressTracker.getId().toString()))
-    //        .andExpect(jsonPath("$.courseId").value(COURSE_ID.toString()))
-    //        .andExpect(jsonPath("$.lastContentReference").value(contentReference1.toString()));
-    //}
 }

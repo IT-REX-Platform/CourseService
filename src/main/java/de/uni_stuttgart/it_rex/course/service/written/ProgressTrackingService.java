@@ -226,7 +226,7 @@ public class ProgressTrackingService {
         }
         Optional<ContentReference> contentReferenceOptional = contentReferenceRepository.findById(contentReferenceDTO.getId());
         if (contentReferenceOptional.isEmpty()){
-            throw new NotFoundException(String.format("There not ContentReference with the id %s", contentReferenceDTO.getId()));
+            throw new NotFoundException(String.format("There is no ContentReference with the id %s", contentReferenceDTO.getId()));
         }
 
         CourseProgressTracker courseProgressTracker = courseProgressTrackerOptional.get();

@@ -152,4 +152,21 @@ public class ContentProgressTracker implements Serializable {
     public void setProgress(final float newProgress) {
         this.progress = newProgress;
     }
+
+    /**
+     * Converts the instance to a string.
+     *
+     * @return the string.
+     */
+    @Override
+    public String toString() {
+        return "CourseProgressTracker{"
+            + "id=" + id
+            + ", userId='" + userId + '\''
+            + ", state='" + state + '\''
+            + ", progress'" + progress + '\''
+            + ", ContentRef='" + contentReference + '\''
+            + ", CourseProgressTracker='" + courseProgressTracker + '\''
+            + '}';
+    }
 }
