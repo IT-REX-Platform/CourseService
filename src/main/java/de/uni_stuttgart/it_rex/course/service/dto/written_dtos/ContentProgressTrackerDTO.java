@@ -104,7 +104,7 @@ public class ContentProgressTrackerDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CourseProgressTrackerDTO)) {
+        if (!(o instanceof ContentProgressTrackerDTO)) {
             return false;
         }
         ContentProgressTrackerDTO tracker = (ContentProgressTrackerDTO) o;
