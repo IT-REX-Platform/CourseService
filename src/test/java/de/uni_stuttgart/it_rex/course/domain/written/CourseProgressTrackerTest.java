@@ -32,7 +32,7 @@ public class CourseProgressTrackerTest {
         CourseProgressTracker courseProgressTracker2 = new CourseProgressTracker();
         courseProgressTracker2.setId(SECOND_ID);
         courseProgressTracker2.setCourseId(SECOND_COURSE_ID);
-        courseProgressTracker2.setUserId(FIRST_USER_ID);
+        courseProgressTracker2.setUserId(SECOND_USER_ID);
         courseProgressTracker2.setLastContentReference(lastContentReference2);
 
         CourseProgressTracker courseProgressTracker3 = new CourseProgressTracker();
