@@ -253,6 +253,28 @@ class TimePeriodServiceIT {
     }
 
     @Test
+    void createTimePeriodsInRangeShortCourse() {
+        final LocalDate startDate = LocalDate.of(2021, 2, 1);
+        final LocalDate endDate = LocalDate.of(2021, 2, 5);
+        final UUID courseId = THE_COURSE.getId();
+        final int numberOfWeeks = 1;
+
+        final List<TimePeriodDTO> result =
+            timePeriodService
+                .createTimePeriodDTOsInRange(startDate, endDate, courseId);
+
+        assertEquals(numberOfWeeks, result.size());
+
+        List<TimePeriodDTO> expectedResult = List.of(
+            TimePeriodUtil
+                .createTimePeriodDTO(startDate, endDate, courseId,
+                    null)
+        );
+
+        assertTrue(TimePeriodUtil.equalsTimePeriodDTOs(expectedResult, result));
+    }
+
+    @Test
     void createTimePeriodsInRangeEndBeforeStartException() {
         final LocalDate startDate = LocalDate.of(2021, 2, 28);
         final LocalDate endDate = LocalDate.of(2021, 2, 1);
@@ -265,24 +287,6 @@ class TimePeriodServiceIT {
             });
 
         String expectedMessage = "End date is before start date.";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
-    void createTimePeriodsInRangeTooShortException() {
-        final LocalDate startDate = LocalDate.of(2021, 2, 1);
-        final LocalDate endDate = LocalDate.of(2021, 2, 5);
-        final UUID courseId = THE_COURSE.getId();
-
-        Exception exception =
-            assertThrows(InvalidTimeRangeException.class, () -> {
-                timePeriodService
-                    .createTimePeriodDTOsInRange(startDate, endDate, courseId);
-            });
-
-        String expectedMessage = "Given time range is too short";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));

@@ -136,15 +136,16 @@ public class TimePeriodService {
      * <p>
      * The time range is divided into weeks, starting on Monday and ending on
      * Sunday. For the first week set the range from the startDate to the first
-     * occurring Sunday. For the last week set the range from last occurring
-     * Monday to the endDate.
+     * occurring Sunday. If the the course ends before the first Sunday
+     * after the start date, one single TimePeriod is created from the original
+     * start and end date of the course. For the last week set the range from
+     * last occurring Monday to the endDate.
      *
      * @param startDate the start date of the range
      * @param endDate   the end date of the range
      * @param courseId  the course id of the related Course
      * @return a List of TimePeriodDTOs of the created TimePeriod entities.
      * @throws InvalidTimeRangeException if the endDate is before the startDate
-     * @throws InvalidTimeRangeException if the time range is too short
      */
     public List<TimePeriodDTO> createTimePeriodDTOsInRange(
         final LocalDate startDate, final LocalDate endDate,
@@ -154,23 +155,45 @@ public class TimePeriodService {
             LOGGER.error(msg);
             throw new InvalidTimeRangeException(msg);
         }
-        final int shiftOneWeek = 6;
 
         List<TimePeriodDTO> timePeriodDTOS = new ArrayList<>();
 
         LocalDate firstWeekEndDate =
             startDate.with(TemporalAdjusters.nextOrSame(
                 DayOfWeek.SUNDAY));
-        if (!firstWeekEndDate.isAfter(endDate)) {
-            timePeriodDTOS.add(
-                this.createTimePeriodDTO(startDate, firstWeekEndDate,
-                    courseId));
-        } else {
-            final String msg = "Given time range is too short";
-            LOGGER.error(msg);
-            throw new InvalidTimeRangeException(msg);
-        }
 
+        if (firstWeekEndDate.isAfter(endDate)) {
+            timePeriodDTOS
+                .add(this.createTimePeriodDTO(startDate, endDate, courseId));
+            return timePeriodDTOS;
+        } else {
+            return calculateTimePeriodDTOS(startDate, endDate, courseId,
+                timePeriodDTOS, firstWeekEndDate);
+        }
+    }
+
+    /**
+     * Calculate the TimePeriodDTOs in the given range.
+     *
+     * @param startDate        the start date of the range
+     * @param endDate          the end date of the range
+     * @param courseId         the course id of the related Course
+     * @param timePeriodDTOS   the List of timePeriodDTOs
+     * @param firstWeekEndDate the end date of the first week
+     * @return a List of TimePeriodDTOs of the created TimePeriod entities.
+     */
+    private List<TimePeriodDTO> calculateTimePeriodDTOS(
+        final LocalDate startDate,
+        final LocalDate endDate,
+        final UUID courseId,
+        final List<TimePeriodDTO> timePeriodDTOS,
+        final LocalDate firstWeekEndDate) {
+
+        final int shiftOneWeek = 6;
+
+        timePeriodDTOS.add(
+            this.createTimePeriodDTO(startDate, firstWeekEndDate,
+                courseId));
         LocalDate nextWeekStartDate = firstWeekEndDate.plusDays(1);
         LocalDate nextWeekEndDate = nextWeekStartDate.plusDays(shiftOneWeek);
 
