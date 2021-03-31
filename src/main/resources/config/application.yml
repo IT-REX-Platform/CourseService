@@ -169,6 +169,7 @@ spring:
             client-secret: internal
 
 server:
+  max-http-header-size: 48000
   servlet:
     session:
       cookie:

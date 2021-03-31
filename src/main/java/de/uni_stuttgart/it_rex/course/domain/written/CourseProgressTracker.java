@@ -114,7 +114,7 @@ public class CourseProgressTracker implements Serializable {
     /**
      * Getter.
      *
-     * @return the name.
+     * @return the last content reference.
      */
     public Optional<ContentReference> getLastContentReference() {
         return Optional.ofNullable(this.lastContentReference);
